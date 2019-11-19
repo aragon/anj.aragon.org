@@ -1,0 +1,44 @@
+* {
+  scroll-behavior: smooth;
+}
+
+@font-face {
+ font-family: 'FontRegular';
+ src: url('./fonts/Calibre-Regular.otf') format('opentype');
+}
+@font-face {
+ font-family: 'FontMedium';
+ src: url('./fonts/Calibre-Medium.otf') format('opentype');
+}
+@font-face {
+ font-family: 'FontLight';
+ src: url('./fonts/Calibre-Light.otf') format('opentype');
+}
+@font-face {
+ font-family: 'FontSemiBold';
+ src: url('./fonts/Calibre-Semibold.otf') format('opentype');
+}
+@font-face {
+ font-family: 'FontBold';
+ src: url('./fonts/HKGrotesk-Bold.ttf') format('opentype');
+}
+
+body {
+  font-family: 'FontRegular', sans-serif !important;
+  font-weight: 300;
+  font-size: 16px;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  scroll-behavior: smooth;
+}
+
+a, a span, button {
+  outline: none;
+  text-decoration: none;
+  transition: all 0.25s ease-in-out;
+}
+
+img {
+  max-width: 100%;
+}
