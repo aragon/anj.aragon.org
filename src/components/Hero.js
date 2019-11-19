@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { Link } from "react-static";
+import background from './assets/hero-background.svg';
 
 const Hero = () => (
   <HeroSection>
@@ -30,7 +31,10 @@ const HeroSection = styled.section`
   position: relative;
   overflow: hidden;
   padding-bottom: 0px;
-  min-height: 500px;
+  min-height: 550px;
+  background-image: url(${background});
+  background-position: 100% center;
+  background-repeat: no-repeat;
 `;
 
 const TextContainer = styled.div`
