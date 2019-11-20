@@ -1,0 +1,106 @@
+import React from 'react'
+import styled from 'styled-components'
+import { Link } from 'react-static'
+import { breakpoint } from '@aragon/ui'
+import background from './assets/subscribe-background.svg'
+import step1 from './assets/step1.svg'
+import step2 from './assets/step2.svg'
+import step3 from './assets/step3.svg'
+const medium = css => breakpoint('medium', css)
+
+const WhatHappens = () => (
+  <WhatHappensSection>
+    <Container>
+      <h3>What happens when you become a juror?</h3>
+      <p>
+        To get started, you must convert ANT or ETH into a token called ANJ. To
+        get selected as a juror, you must stake and activate your ANJ. The
+        conversion module above will convert ANT or ETH into ANJ, stake it, and
+        activate it for you automatically. That way you’re ready to start
+        earning rewards when Aragon Court launches.
+      </p>
+    </Container>
+    <StepsContainer>
+      <div>
+        <img src={step1} />
+        <h4>Get ANJ with ANT or ETH</h4>
+        <h6>Step 01</h6>
+      </div>
+      <div>
+        <img src={step2} />
+        <h4>Stake your ANJ</h4>
+        <h6>Step 02</h6>
+      </div>
+      <div>
+        <img src={step3} />
+        <h4>Activate your ANJ</h4>
+        <h6>Step 03</h6>
+      </div>
+    </StepsContainer>
+  </WhatHappensSection>
+)
+
+const WhatHappensSection = styled.section`
+  background: white;
+  padding: 80px;
+`
+const Container = styled.div`
+  width: 80%;
+  margin: auto;
+  text-align: center;
+
+  p {
+    font-family: 'FontRegular';
+    font-size: 24px;
+    line-height: 34px;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: #8a96a0;
+  }
+  h3 {
+    font-family: 'FontMedium', sans-serif;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 37px;
+    line-height: 1;
+    text-align: center;
+    color: #1c1c1c;
+  }
+`
+
+const StepsContainer = styled.div`
+  width: 80%;
+  margin: 80px auto 0 auto;
+  text-align: center;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  div {
+    padding: 15px;
+    text-align: center;
+  }
+
+  h4 {
+    font-family: 'FontRegular', sans-serif;
+    font-weight: 400;
+    font-size: 27px;
+    line-height: 38px;
+    text-align: center;
+    color: #1c1c1c;
+    margin: 30px 0 0 0;
+  }
+  h6 {
+    font-family: 'FontRegular', sans-serif;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 20px;
+    line-height: 31px;
+    text-align: center;
+    margin: 0;
+    color: #ff9780;
+  }
+  ${medium('flex-direction: row;')};
+`
+
+export default WhatHappens

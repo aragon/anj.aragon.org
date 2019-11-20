@@ -13,7 +13,7 @@ const Features = () => (
     <Container>
       <div>
         <img src={feature1} />
-        <h3>100% online income</h3>
+        <h3>Earn income online</h3>
         <p>
           Want to earn an online income? Jurors can earn rewards from anywhere
           with an internet connection.

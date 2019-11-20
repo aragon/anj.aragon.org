@@ -11,24 +11,19 @@ const About = () => (
     <Container>
       <RoadmapContainer>
         <Entry entrypoint>
-          <Title>Key dates & Term 0</Title>
+          <Title>ANJ Pre-Activation Begins</Title>
           <Subtitle>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore.
+            During this period potential jurors will be able to get the same
+            amount of ANJ per ANT. When disputes begin, ANJ will only be
+            accessible by staking ANT on a bonding curve for a variable market
+            rate.
           </Subtitle>
         </Entry>
         <Entry entrypoint>
-          <Title>Draw as a juror</Title>
+          <Title>First Disputes Begin</Title>
           <Subtitle>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore.
-          </Subtitle>
-        </Entry>
-        <Entry entrypoint>
-          <Title>Dispute</Title>
-          <Subtitle>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore.
+            Jurors with at least 100 activated ANJ earn subscription fees as
+            they await being drafted onto juries to adjudicate disputes.
           </Subtitle>
         </Entry>
         <Entry lastpoint />

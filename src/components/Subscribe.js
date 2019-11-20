@@ -7,13 +7,8 @@ const Subscribe = () => (
   <SubscribeSection>
     <Container>
       <div>
-        <h3>Request a demo!</h3>
-        <p>
-          Jurors can sign up by staking tokens to the Court, the more tokens a
-          juror has activated, the higher the chance to get drafted. Jurors will
-          deposit ANT into a bonding curve to mint ANJ tokens, likely using
-          Aragon Fundraising.
-        </p>
+        <h3>Are you up to date on Aragon Court?</h3>
+        <p>Enter your email address for latest updates on Aragon Court</p>
         <form
           action="https://one.us15.list-manage.com/subscribe/post?u=a590aa3843a54b079d48e6e18&amp;id=e81a44c4bd"
           method="post"
