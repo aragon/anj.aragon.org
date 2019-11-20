@@ -66,6 +66,7 @@ const SubscribeSection = styled.section`
   );
   background-image: url(${background});
   background-position: center;
+  background-size: cover;
   background-repeat: no-repeat;
   .email-field {
     display: inline-flex;

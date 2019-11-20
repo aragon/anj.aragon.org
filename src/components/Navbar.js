@@ -1,8 +1,8 @@
-import React from "react";
-import styled from "styled-components";
-import { Link } from './Router';
-import logo from "./assets/logo.svg";
-import MenuModal from "./MenuModal";
+import React from 'react'
+import styled from 'styled-components'
+import { Link } from './Router'
+import logo from './assets/logo.svg'
+import MenuModal from './MenuModal'
 
 class Navbar extends React.Component {
   render() {
@@ -14,9 +14,9 @@ class Navbar extends React.Component {
               <img src={logo} />
             </LogoLink>
             <LinksBox>
-              <Link to={"/"}>Get ANJ</Link>
-              <Link to={"/"}>About</Link>
-              <Link to={"/"}>Support</Link>
+              <Link to={'/'}>Get ANJ</Link>
+              <Link to={'/#about'}>About</Link>
+              <Link to={'/'}>Support</Link>
             </LinksBox>
           </Left>
           <Button href="/">
@@ -24,7 +24,7 @@ class Navbar extends React.Component {
           </Button>
         </CourtNavbar>
       </Container>
-    );
+    )
   }
 }
 
@@ -32,17 +32,17 @@ const Left = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-start;
-`;
+`
 const LinksBox = styled.div`
   a {
     font-family: 'FontMedium';
     font-weight: 500;
     font-size: 16px;
     line-height: 19px;
-    color: #FFFFFF;
+    color: #ffffff;
     padding: 15px;
   }
-`;
+`
 const Container = styled.div`
   width: 100%;
   height: 65px;
@@ -54,7 +54,7 @@ const Container = styled.div`
   justify-content: center;
   align-items: center;
   z-index: 3000;
-`;
+`
 
 const CourtNavbar = styled.div`
   width: 80%;
@@ -64,7 +64,7 @@ const CourtNavbar = styled.div`
   justify-content: space-between;
   align-items: center;
   z-index: 3000;
-`;
+`
 
 const Button = styled.a`
   background: #262626;
@@ -90,10 +90,10 @@ const Button = styled.a`
     color: rgba(1, 191, 227);
     background: linear-gradient(
       to right,
-      #FF7C7C 20%,
-      #FFC58F 40%,
-      #FFC58F 60%,
-      #FF7C7C 80%
+      #ff7c7c 20%,
+      #ffc58f 40%,
+      #ffc58f 60%,
+      #ff7c7c 80%
     );
     background-size: 200% auto;
     background-clip: text;
@@ -102,7 +102,8 @@ const Button = styled.a`
     -webkit-text-fill-color: transparent;
 
     animation: shine 4s linear infinite;
-  }`;
+  }
+`
 
 const LogoLink = styled.a`
   display: flex;
@@ -114,8 +115,6 @@ const LogoLink = styled.a`
   img {
     height: 50px;
   }
-`;
+`
 
-
-
-export default Navbar;
+export default Navbar

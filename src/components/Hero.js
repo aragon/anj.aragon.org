@@ -1,14 +1,16 @@
-import React from "react";
-import styled from "styled-components";
-import { Link } from "react-static";
-import background from './assets/hero-background.svg';
+import React from 'react'
+import styled from 'styled-components'
+import { Link } from 'react-static'
+import background from './assets/hero-background.svg'
 
 const Hero = () => (
   <HeroSection>
     <TextContainer>
       <h1>Become a Juror</h1>
       <div className="h1-animated-box">
-         <h1>for <span className="pink">Aragon Court</span></h1>
+        <h1>
+          for <span className="pink">Aragon Court</span>
+        </h1>
       </div>
       <h2>
         Aragon Court handles subjective disputes that require the judgement of
@@ -18,7 +20,7 @@ const Hero = () => (
       </h2>
     </TextContainer>
   </HeroSection>
-);
+)
 
 const HeroSection = styled.section`
   position: relative;
@@ -35,20 +37,20 @@ const HeroSection = styled.section`
   background-image: url(${background});
   background-position: 100% center;
   background-repeat: no-repeat;
-`;
+`
 
 const TextContainer = styled.div`
   width: 80%;
   margin: auto;
   h1 {
-    font-family: "FontBold";
+    font-family: 'FontBold';
     font-weight: bold;
     font-size: 86px;
     line-height: 1;
     margin: 0;
     text-align: left;
     letter-spacing: -0.447059px;
-    color: #FFFFFF;
+    color: #ffffff;
   }
   .h1-animted-box {
     display: flex;
@@ -63,10 +65,10 @@ const TextContainer = styled.div`
     color: rgba(1, 191, 227);
     background: linear-gradient(
       to right,
-      #FF7C7C 20%,
-      #FFC58F 40%,
-      #FFC58F 60%,
-      #FF7C7C 80%
+      #ff7c7c 20%,
+      #ffc58f 40%,
+      #ffc58f 60%,
+      #ff7c7c 80%
     );
     background-size: 200% auto;
     background-clip: text;
@@ -86,5 +88,5 @@ const TextContainer = styled.div`
     color: white;
     max-width: 750px;
   }
-`;
-export default Hero;
+`
+export default Hero

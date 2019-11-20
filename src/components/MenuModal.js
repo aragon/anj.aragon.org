@@ -1,52 +1,58 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
-import Modal from 'react-bootstrap/Modal';
-import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
-import Button from 'react-bootstrap/Button';
-import { Link } from 'react-static';
+import React, { useState } from 'react'
+import styled from 'styled-components'
+import Modal from 'react-bootstrap/Modal'
+import ButtonToolbar from 'react-bootstrap/ButtonToolbar'
+import Button from 'react-bootstrap/Button'
+import { Link } from 'react-static'
 import { useViewport } from '@aragon/ui'
 
 const MenuModal = () => {
   const { breakpoints, width } = useViewport()
-  const [modalShow, setModal] = useState(false);
+  const [modalShow, setModal] = useState(false)
 
-  console.log(useViewport(), breakpoints);
+  console.log(useViewport(), breakpoints)
 
   return (
-      <ButtonToolbar>
-        <Button
-          className={modalShow == true ? "hamburger hamburger-spin is-active" : "hamburger hamburger-spin"}
-          type="button"
-          onClick={() => setModal(!modalShow)}
-        >
-          <span className="hamburger-box">
-            <span className="hamburger-inner"></span>
-          </span>
-        </Button>
-        <StyledModal
-          size="lg"
-          aria-labelledby="title"
-          show={modalShow}
-        >
-          <LinksBox>
-            <div className="links">
-              <ul>
+    <ButtonToolbar>
+      <Button
+        className={
+          modalShow == true
+            ? 'hamburger hamburger-spin is-active'
+            : 'hamburger hamburger-spin'
+        }
+        type="button"
+        onClick={() => setModal(!modalShow)}
+      >
+        <span className="hamburger-box">
+          <span className="hamburger-inner" />
+        </span>
+      </Button>
+      <StyledModal size="lg" aria-labelledby="title" show={modalShow}>
+        <LinksBox>
+          <div className="links">
+            <ul>
               <li>
-                <a href={'/#team'} onClick={() => setModal(false)}>Get ANJ</a>
+                <a href={'/#team'} onClick={() => setModal(false)}>
+                  Get ANJ
+                </a>
               </li>
-                <li>
-                  <a href={'/#about'} onClick={() => setModal(false)}>About</a>
-                </li>
+              <li>
+                <a href={'/#about'} onClick={() => setModal(false)}>
+                  About
+                </a>
+              </li>
 
-                <li>
-                  <a href={'/#jobs'} onClick={() => setModal(false)}>Support</a>
-                </li>
-              </ul>
-            </div>
-          </LinksBox>
-        </StyledModal>
-      </ButtonToolbar>
-    );
+              <li>
+                <a href={'/#jobs'} onClick={() => setModal(false)}>
+                  Support
+                </a>
+              </li>
+            </ul>
+          </div>
+        </LinksBox>
+      </StyledModal>
+    </ButtonToolbar>
+  )
 }
 
 const MenuHeader = styled.div`
@@ -78,8 +84,8 @@ const LinksBox = styled.div`
     position: relative;
   }
   a {
-    color: white!important;
-    text-decoration: none!important;
+    color: white !important;
+    text-decoration: none !important;
   }
   h6 {
     position: absolute;
@@ -90,7 +96,7 @@ const LinksBox = styled.div`
     line-height: 1;
     letter-spacing: 6px;
     color: white;
-    transform: rotate(-90deg) translate(-50%,calc(100% + 278px));
+    transform: rotate(-90deg) translate(-50%, calc(100% + 278px));
   }
 `
 // ${large('display: flex; text-align: center; flex-direction: column;')};
@@ -108,7 +114,7 @@ const ImageBox = styled.div`
 `
 const StyledModal = styled(Modal)`
   background: black;
-  transition: all .25s linear;
+  transition: all 0.25s linear;
   .modal-dialog {
     max-width: 80%;
     width: 1000px;
@@ -129,16 +135,13 @@ const StyledModal = styled(Modal)`
     ul {
       list-style-type: none;
       padding: 60px 0;
-
     }
     li {
       font-family: 'FontBold';
       font-size: 2.92rem;
       line-height: 4.42rem;
-
     }
   }
 `
 
-
-export default MenuModal;
+export default MenuModal
