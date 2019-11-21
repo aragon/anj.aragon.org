@@ -1,7 +1,11 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Link } from 'react-static'
+import { breakpoint } from '@aragon/ui'
 import background from './assets/hero-background.svg'
+
+const medium = css => breakpoint('medium', css)
+const large = css => breakpoint('large', css)
 
 const Hero = () => (
   <HeroSection>
@@ -42,15 +46,19 @@ const HeroSection = styled.section`
 const TextContainer = styled.div`
   width: 80%;
   margin: auto;
+  padding-top: 40px;
+  ${medium('padding-top: 0;')};
   h1 {
     font-family: 'FontBold';
     font-weight: bold;
-    font-size: 86px;
+    font-size: 54px;
     line-height: 1;
     margin: 0;
     text-align: left;
     letter-spacing: -0.447059px;
     color: #ffffff;
+    ${medium('font-size: 76px;')};
+    ${large('font-size: 86px;')};
   }
   .h1-animted-box {
     display: flex;
@@ -81,7 +89,8 @@ const TextContainer = styled.div`
   h2 {
     font-family: 'FontRegular';
     font-weight: 500;
-    font-size: 24px;
+    font-size: 20px;
+    ${medium('font-size: 24px;')};
     line-height: 1.58;
     display: flex;
     align-items: left;

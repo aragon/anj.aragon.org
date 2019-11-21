@@ -4,6 +4,7 @@ import Features from '../components/Features'
 import WhatHappens from '../components/WhatHappens'
 import About from '../components/About'
 import BecomeAJuror from '../components/BecomeAJuror'
+import Basics from '../components/Basics'
 import Subscribe from '../components/Subscribe'
 
 export default () => (
@@ -13,6 +14,7 @@ export default () => (
     <WhatHappens />
     <About />
     <BecomeAJuror />
+    <Basics />
     <Subscribe />
   </div>
 )

@@ -3,9 +3,9 @@ import styled from 'styled-components'
 import { Link } from 'react-static'
 import { breakpoint } from '@aragon/ui'
 import background from './assets/subscribe-background.svg'
-import feature1 from './assets/feature1.svg'
-import feature2 from './assets/feature2.svg'
-import feature3 from './assets/feature3.svg'
+import feature1 from './assets/features1.svg'
+import feature2 from './assets/features2.svg'
+import feature3 from './assets/features3.svg'
 const medium = css => breakpoint('medium', css)
 
 const Features = () => (
@@ -40,8 +40,8 @@ const Features = () => (
 )
 
 const FeaturesSection = styled.section`
-  background: #1c1c1c;
-  padding: 0 0 50px 0;
+  background: white;
+  padding: 50px 0 50px 0;
 `
 const Container = styled.div`
   width: 80%;
@@ -72,7 +72,7 @@ const Container = styled.div`
     font-weight: 600;
     font-size: 27px;
     line-height: 38px;
-    color: #ffffff;
+    color: #000;
     margin: 15px 0 15px 0;
   }
   ${medium('flex-direction: row;')};

@@ -69,6 +69,7 @@ const SubscribeSection = styled.section`
   input {
     height: auto;
     width: 404px;
+    max-width: calc(80vw - 160px);
     padding: 12px 20px;
     background: #ffffff;
     border-radius: 8px 0 0 8px;
