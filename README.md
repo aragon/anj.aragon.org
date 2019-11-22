@@ -1,3 +1,1 @@
-# React-Static - Basic Template
-
-To use this template, run `react-static create` and use the `basic` template.
+![Aragon Court](./aragon-court.png)

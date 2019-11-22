@@ -51,6 +51,7 @@ export default {
               name="viewport"
               content="width=device-width, initial-scale=1"
             />
+            <title>Aragon Court</title>
             <link rel="icon" href="/favicon.png" />
             <link
               rel="stylesheet"
@@ -60,18 +61,17 @@ export default {
             />
 
             <meta name="twitter:card" content="summary" />
-            <meta name="twitter:site" content="@AragonCourt" />
-            <meta name="twitter:creator" content="@AragonOneTeam" />
+            <meta name="twitter:site" content="@AragonProject" />
             <meta name="twitter:description" content="Become a juror for Aragon Court" />
             <meta name="twitter:title" content="Aragon Court" />
-            <meta name="twitter:image" content="https://raw.githubusercontent.com/aragonone/website/master/public/twitter-card-icon.png" />
+            <meta name="twitter:image" content="https://raw.githubusercontent.com/aragon/jurors-microsite/master/public/twitter-card-icon.png" />
 
             <meta property="og:title" content="Aragon Court" />
             <meta property="og:description" content="Become a juror for Aragon Court" />
             <meta property="og:url" content="https://court.aragon.org/" />
             <meta property="og:site_name" content="Aragon Court" />
-            <meta property="og:image" content="https://raw.githubusercontent.com/aragonone/website/master/public/twitter-card-icon.png" />
-            <meta property="og:image:secure_url" content="https://raw.githubusercontent.com/aragonone/website/master/public/twitter-card-icon.png" />
+            <meta property="og:image" content="https://raw.githubusercontent.com/aragon/jurors-microsite/master/public/twitter-card-icon.png" />
+            <meta property="og:image:secure_url" content="https://raw.githubusercontent.com/aragon/jurors-microsite/master/public/twitter-card-icon.png" />
             <meta property="og:image:width" content="300" />
             <meta property="og:image:height" content="300" />
 
