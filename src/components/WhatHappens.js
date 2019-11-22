@@ -42,7 +42,7 @@ const WhatHappens = () => (
 
 const WhatHappensSection = styled.section`
   background: #f9fafc;
-  padding: 80px;
+  padding: 80px 15px;
 `
 const Container = styled.div`
   width: 80%;

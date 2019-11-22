@@ -55,23 +55,6 @@ const MenuModal = () => {
   )
 }
 
-const MenuHeader = styled.div`
-  width: 100%;
-  height: 70px;
-  border-bottom: solid 1px #3a3a3a;
-  display: flex;
-  justify-content: flex-end;
-  div {
-    width: 70px;
-    height: 70px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-left: solid 1px #3a3a3a;
-  }
-`
-
-// ${large('width: calc(100% - 400px);')};
 const LinksBox = styled.div`
   width: 100%;
   .links {
@@ -87,33 +70,10 @@ const LinksBox = styled.div`
     color: white !important;
     text-decoration: none !important;
   }
-  h6 {
-    position: absolute;
-    right: 0;
-    transform-origin: 0 50%;
-    text-transform: uppercase;
-    font-size: 1rem;
-    line-height: 1;
-    letter-spacing: 6px;
-    color: white;
-    transform: rotate(-90deg) translate(-50%, calc(100% + 278px));
-  }
 `
-// ${large('display: flex; text-align: center; flex-direction: column;')};
-const ImageBox = styled.div`
-  width: 400px;
-  border-right: solid 1px #3a3a3a;
-  display: none;
 
-  .image-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: calc(100% - 70px);
-  }
-`
 const StyledModal = styled(Modal)`
-  background: black;
+  background: #1c1c1c;
   transition: all 0.25s linear;
   .modal-dialog {
     max-width: 80%;
@@ -122,16 +82,11 @@ const StyledModal = styled(Modal)`
     margin: 100px auto;
   }
   .modal-content {
-    background: black;
-    border: solid 1px #3a3a3a;
-    border-radius: 0;
+    background: #1c1c1c;
     display: flex;
     flex-direction: row;
     align-items: stretch;
 
-    img {
-      max-width: 350px;
-    }
     ul {
       list-style-type: none;
       padding: 60px 0;

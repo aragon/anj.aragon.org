@@ -68,8 +68,8 @@ const Container = styled.div`
   }
   h3 {
     text-align: left;
-    font-family: 'FontSemiBold', sans-serif;
-    font-weight: 600;
+    font-family: 'FontRegular', sans-serif;
+    font-weight: 400;
     font-size: 27px;
     line-height: 38px;
     color: #000;

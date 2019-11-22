@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 import { Link } from 'react-static'
 import { breakpoint } from '@aragon/ui'
+import Carousel from 'react-bootstrap/Carousel'
 import background from './assets/subscribe-background.svg'
 import basics1 from './assets/basics1.svg'
 import basics2 from './assets/basics2.svg'
@@ -9,7 +10,10 @@ import basics3 from './assets/basics3.svg'
 import basics4 from './assets/basics4.svg'
 import basics5 from './assets/basics5.svg'
 import basics6 from './assets/basics6.svg'
+import left from './assets/left.svg'
+import right from './assets/right.svg'
 const medium = css => breakpoint('medium', css)
+const large = css => breakpoint('large', css)
 
 const Basics = () => {
   const [active, setActive] = useState('1')
@@ -107,13 +111,90 @@ const Basics = () => {
           <img className={active == '6' ? 'active' : ''} src={basics6} />
         </Images>
       </Process>
+      <MobileProcess>
+        <Carousel nextIcon={<img src={right} />} prevIcon={<img src={left} />}>
+          <Carousel.Item>
+            <img src={basics1} className="carousel-img" alt="" />
+            <div className="carousel-content">
+              <h4>1- DISPUTE IS RAISED</h4>
+              <p>
+                A company has two members, Bob and Alice. Bob submits a proposal
+                to transfer company funds into his personal wallet. Alice
+                disagrees and raises a dispute against the proposal in Aragon
+                Court.
+              </p>
+            </div>
+          </Carousel.Item>
+          <Carousel.Item>
+            <img src={basics2} className="carousel-img" alt="" />
+            <div className="carousel-content">
+              <h4>2- JURORS ARE SELECTED</h4>
+              <p>
+                You and two other jurors are drafted to adjudicate Bob and
+                Alice’s dispute, where the chance of being drafted is
+                proportional to the amount of ANJ you have activated.
+              </p>
+            </div>
+          </Carousel.Item>
+          <Carousel.Item>
+            <img src={basics3} className="carousel-img" alt="" />
+            <div className="carousel-content">
+              <h4>3- JURORS REVIEW EVIDENCE</h4>
+              <p>
+                Bob claims the fund transfer is his yearly bonus, citing his
+                good performance. Alice submits their employment agreement and
+                historical payroll records that show Bob's bonus isn't due until
+                next month.
+              </p>
+            </div>
+          </Carousel.Item>
+          <Carousel.Item>
+            <img src={basics4} className="carousel-img" alt="" />
+            <div className="carousel-content">
+              <h4>4- PRELIMINARY RULING</h4>
+              <p>
+                You and one other juror decide to vote in favor of Alice and one
+                votes in favor of Bob. This means Alice has the majority
+                required to win this ruling. All rulings at this stage are
+                preliminary and can be appealed by the loser for additional
+                fees.
+              </p>
+            </div>
+          </Carousel.Item>
+          <Carousel.Item>
+            <img src={basics5} className="carousel-img" alt="" />
+            <div className="carousel-content">
+              <h4>5- DISPUTE IS SETTLED</h4>
+              <p>
+                Bob decides not to appeal the preliminary ruling making the
+                final ruling in favor of Alice. Now all the adjudication rounds
+                in the dispute can be settled and rewards allocated.
+              </p>
+            </div>
+          </Carousel.Item>
+          <Carousel.Item>
+            <img src={basics6} className="carousel-img" alt="" />
+            <div className="carousel-content">
+              <h4>6- EARN REWARDS</h4>
+              <p>
+                Since one of the jurors did not vote in favor of Alice - who won
+                the final ruling - their activated ANJ will be distributed to
+                you and the other juror who voted for Alice as a reward. This
+                reward is in addition to the rewards earned from Subscription
+                and Dispute Fees, all of which will automatically be added to
+                your staked and activated ANJ balance.
+              </p>
+            </div>
+          </Carousel.Item>
+        </Carousel>
+      </MobileProcess>
     </BasicsSection>
   )
 }
 
 const BasicsSection = styled.section`
   background: white;
-  padding: 80px;
+  padding: 80px 15px;
 `
 const Container = styled.div`
   width: 80%;
@@ -175,12 +256,45 @@ const Text = styled.div`
     display: block;
   }
 `
-
 const Process = styled.div`
+  display: none;
   width: 80%;
   margin: auto;
-  display: flex;
-  justify-content: space-between;
+  ${large('display: flex; justify-content: space-between;')};
+`
+const MobileProcess = styled.div`
+  display: block;
+  width: 90%;
+  margin: auto;
+  ${large('display: none;')};
+  .carousel-control-next {
+    justify-content: flex-end;
+  }
+  .carousel-control-prev {
+    justify-content: flex-start;
+  }
+  .carousel-item {
+    margin-left: 7%;
+    width: 85%;
+  }
+  p {
+    font-family: 'FontRegular', sans-serif;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 31px;
+    text-align: center;
+    color: #8a96a0;
+  }
+  h4 {
+    font-family: 'FontRegular', sans-serif;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 24px;
+    margin-top: 30px;
+    line-height: 34px;
+    text-align: center;
+    color: #1c1c1c;
+  }
 `
 
 const Buttons = styled.div`

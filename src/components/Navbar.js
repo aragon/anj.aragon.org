@@ -1,8 +1,11 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Link } from './Router'
+import { breakpoint } from '@aragon/ui'
 import logo from './assets/logo.svg'
 import MenuModal from './MenuModal'
+
+const medium = css => breakpoint('medium', css)
 
 class Navbar extends React.Component {
   render() {
@@ -22,6 +25,9 @@ class Navbar extends React.Component {
           <Button href="/">
             <span>Become a Juror</span>
           </Button>
+          <MenuModalBox>
+            <MenuModal />
+          </MenuModalBox>
         </CourtNavbar>
       </Container>
     )
@@ -34,6 +40,8 @@ const Left = styled.div`
   justify-content: flex-start;
 `
 const LinksBox = styled.div`
+  display: none;
+  ${medium('display: block;')};
   a {
     font-family: 'FontMedium';
     font-weight: 500;
@@ -65,8 +73,12 @@ const CourtNavbar = styled.div`
   align-items: center;
   z-index: 3000;
 `
-
+const MenuModalBox = styled.div`
+  display: block;
+  ${medium('display: none;')};
+`
 const Button = styled.a`
+  display: none;
   background: #262626;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.15);
   border-radius: 6px;
@@ -76,8 +88,7 @@ const Button = styled.a`
   font-weight: 500;
   font-size: 16px;
   line-height: 19px;
-  display: flex;
-  justify-content: center;
+  ${medium('display: flex; justify-content: center;')};
   &:hover {
     background: #323232;
   }
