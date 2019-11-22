@@ -1,103 +1,124 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Link } from 'react-static'
-import background from './assets/about-background.svg'
-import Entry from './Entry'
 import { breakpoint } from '@aragon/ui'
+import about1 from './assets/about1.svg'
+import about2 from './assets/about2.svg'
+
 const medium = css => breakpoint('medium', css)
 
 const About = () => (
-  <AboutSection id="about">
-    <Container>
-      <RoadmapContainer>
-        <Entry entrypoint>
-          <Title>ANJ Pre-Activation Begins</Title>
-          <Subtitle>
-            During this period potential jurors will be able to get the same
-            amount of ANJ per ANT. When disputes begin, ANJ will only be
-            accessible by staking ANT on a bonding curve for a variable market
-            rate.
-          </Subtitle>
-        </Entry>
-        <Entry entrypoint>
-          <Title>First Disputes Begin</Title>
-          <Subtitle>
-            Jurors with at least 100 activated ANJ earn subscription fees as
-            they await being drafted onto juries to adjudicate disputes.
-          </Subtitle>
-        </Entry>
-        <Entry lastpoint />
-      </RoadmapContainer>
-    </Container>
+  <AboutSection>
+    <Section>
+      <Container>
+        <img src={about1} />
+        <div className="right">
+          <h6>January 7th</h6>
+          <h2>Effective dispute resolution</h2>
+          <h4>
+            The Aragon about encompasses a set of courts, which can be used to
+            settle disputes. By using smart contracts, cases can be closed way
+            faster than in traditional courts. Fairness for everyone.
+          </h4>
+        </div>
+      </Container>
+    </Section>
+    <Section>
+      <Container>
+        <Small>
+          <img src={about2} />
+        </Small>
+        <div className="left">
+          <h6>Early February</h6>
+          <h2>Anonymity and trust, together</h2>
+          <h4>
+            Mom probably advised you not to interact with strangers. But thanks
+            to the Aragon about, you can transact with people who are using
+            aliases, or stay anonymous yourself. You can open disputes if
+            someone misbehaves.
+          </h4>
+        </div>
+        <Medium>
+          <img src={about2} />
+        </Medium>
+      </Container>
+    </Section>
   </AboutSection>
 )
 
 const AboutSection = styled.section`
-  padding: 207px 15px 207px 15px;
   background: #f9fafc;
-  background-image: url(${background});
-  background-position: center;
-  background-size: cover;
-  background-repeat: no-repeat;
-  min-height: 700px;
-`
-const Container = styled.div`
-  text-align: center;
-  margin: auto;
-  width: 525px;
-  max-width: 70%;
-  overflow: hidden;
-`
-
-const RoadmapContainer = styled.div`
-  margin-top: 50px;
-  width: 100%;
-  max-width: 870px;
   padding: 0;
-  position: relative;
-  margin: auto;
-  ${medium('padding: 5px 50px;')};
-
-  &:before {
-    content: '';
-    position: absolute;
-    top: 12px;
-    left: 9px;
-    bottom: 20px;
-    width: 2px;
-    background: #ff9780;
-    ${medium('left: 21.5px;')};
-  }
-  &:after {
-    content: '';
-    display: table;
-    clear: both;
-  }
+  text-align: center;
 `
 
-const Title = styled.h1`
-  margin: 0;
-  margin-bottom: 10px;
-  font-family: 'FontMedium';
-  font-weight: 500;
-  font-size: 37px;
-  line-height: 38px;
+const Section = styled.section`
+  width: 80%;
+  margin: auto;
+  padding: 0px 15px 80px 15px;
+`
+
+const Small = styled.div`
+  display: block;
+  ${medium('display: none;')};
+  text-align: center;
+  img {
+    margin: auto;
+  }
+`
+const Medium = styled.div`
+  display: none;
+  ${medium('display: block;')};
+`
+
+const Container = styled.div`
   display: flex;
   align-items: center;
-  color: #1c1c1c;
-  padding-left: 40px;
-`
-
-const Subtitle = styled.h6`
-  max-width: 350px;
-  padding-left: 40px;
-  font-family: 'FontRegular';
-  font-style: normal;
-  font-weight: normal;
-  font-size: 20px;
-  line-height: 31px;
-  color: #8a96a0;
-  margin: 0 0 100px 0;
+  justify-content: space-around;
+  flex-direction: column;
+  ${medium('flex-direction: row;')};
+  padding: 50px 0;
+  img {
+    max-width: 70%;
+    margin-bottom: 30px;
+    ${medium('max-width: 90%; margin-bottom: 0;')};
+  }
+  div {
+    max-width: 480px;
+  }
+  div.right {
+    ${medium('padding-left: 50px;')};
+  }
+  div.left {
+    ${medium('padding-right: 50px;')};
+  }
+  h2 {
+    font-family: 'FontMedium', sans-serif;
+    font-weight: 500;
+    font-size: 38px;
+    line-height: 42px;
+    text-align: left;
+    color: #1c1c1c;
+    ${medium('text-align: left;')};
+  }
+  h4 {
+    font-family: 'FontRegular', sans-serif;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 24px;
+    line-height: 34px;
+    text-align: left;
+    color: #8a96a0;
+    ${medium('text-align: left;')};
+  }
+  h6 {
+    font-family: 'FontRegular', sans-serif;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 20px;
+    line-height: 31px;
+    text-align: left;
+    color: #ff9780;
+  }
 `
 
 export default About
