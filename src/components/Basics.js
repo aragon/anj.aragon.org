@@ -18,7 +18,7 @@ const large = css => breakpoint('large', css)
 const Basics = () => {
   const [active, setActive] = useState('1')
   return (
-    <BasicsSection>
+    <BasicsSection id="support">
       <Container>
         <h3>The basics of being a juror</h3>
         <p>Learn the basic action stages for jurors in Aragon Court</p>

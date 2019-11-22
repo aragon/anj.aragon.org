@@ -32,18 +32,18 @@ const MenuModal = () => {
           <div className="links">
             <ul>
               <li>
-                <a href={'/#team'} onClick={() => setModal(false)}>
+                <a href={'./#get-anj'} onClick={() => setModal(false)}>
                   Get ANJ
                 </a>
               </li>
               <li>
-                <a href={'/#about'} onClick={() => setModal(false)}>
+                <a href={'./#about'} onClick={() => setModal(false)}>
                   About
                 </a>
               </li>
 
               <li>
-                <a href={'/#jobs'} onClick={() => setModal(false)}>
+                <a href={'./#support'} onClick={() => setModal(false)}>
                   Support
                 </a>
               </li>

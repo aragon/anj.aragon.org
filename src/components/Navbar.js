@@ -1,6 +1,5 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Link } from './Router'
 import { breakpoint } from '@aragon/ui'
 import logo from './assets/logo.svg'
 import MenuModal from './MenuModal'
@@ -17,12 +16,12 @@ class Navbar extends React.Component {
               <img src={logo} />
             </LogoLink>
             <LinksBox>
-              <Link to={'/'}>Get ANJ</Link>
-              <Link to={'/#about'}>About</Link>
-              <Link to={'/'}>Support</Link>
+              <a href="./#get-anj">Get ANJ</a>
+              <a href="./#about">About</a>
+              <a href="./#support">Support</a>
             </LinksBox>
           </Left>
-          <Button href="/">
+          <Button href="./#get-anj">
             <span>Become a Juror</span>
           </Button>
           <MenuModalBox>

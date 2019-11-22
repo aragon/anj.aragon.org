@@ -1,6 +1,5 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Link } from './Router'
 import { breakpoint } from '@aragon/ui'
 import logo from './assets/logo.svg'
 
@@ -12,14 +11,17 @@ class Footer extends React.Component {
       <Container>
         <CourtFooter>
           <Left>
-            <LogoLink to="/">
+            <LogoLink href="/">
               <img src={logo} />
             </LogoLink>
           </Left>
           <LinksBox>
-            <Link to={'/'}>Get ANJ</Link>
-            <Link to={'/#about'}>About</Link>
-            <Link to={'/'}>Support</Link>
+            <a href="./#get-anj">Get ANJ</a>
+            <a href="./#about">About</a>
+            <a href="./#support">Support</a>
+            <a href="https://aragon.org/network/" target="_blank">
+              Network
+            </a>
           </LinksBox>
         </CourtFooter>
       </Container>

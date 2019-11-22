@@ -8,7 +8,7 @@ const medium = css => breakpoint('medium', css)
 const large = css => breakpoint('large', css)
 
 const GetAnj = () => (
-  <GetAnjSection>
+  <GetAnjSection id="get-anj">
     <Content src={content} />
     <a href="https://blog.aragon.org/announcing-aragon-ui-1-0/" target="_blank">
       <img src={comingSoon} />

@@ -9,7 +9,7 @@ import step3 from './assets/step3.svg'
 const medium = css => breakpoint('medium', css)
 
 const WhatHappens = () => (
-  <WhatHappensSection>
+  <WhatHappensSection id="about">
     <Container>
       <h3>What happens when you become a juror?</h3>
       <p>
@@ -24,17 +24,14 @@ const WhatHappens = () => (
       <div>
         <img src={step1} />
         <h4>Get ANJ with ANT or ETH</h4>
-        <h6>Step 01</h6>
       </div>
       <div>
         <img src={step2} />
         <h4>Stake your ANJ</h4>
-        <h6>Step 02</h6>
       </div>
       <div>
         <img src={step3} />
         <h4>Activate your ANJ</h4>
-        <h6>Step 03</h6>
       </div>
     </StepsContainer>
   </WhatHappensSection>
