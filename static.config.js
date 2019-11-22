@@ -2,6 +2,8 @@ import path from 'path'
 import React from 'react'
 
 export default {
+  siteRoot: process.env.SITE_ROOT || '',
+  basePath: process.env.BASE_PATH || 'jurors-microsite',
   getRoutes: () => [
     {
       path: '/',
