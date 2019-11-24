@@ -10,10 +10,9 @@
     "build": "NODE_PRESERVE_SYMLINKS=1 react-static build",
     "analyze": "react-static build --analyze",
     "serve": "serve dist -p 3000",
-    "deploy": "NODE_ENV=production SITE_ROOT=https://aragon.github.io BASE_PATH=jurors-microsite npm run build && gh-pages -d dist"
+    "deploy": "NODE_ENV=production SITE_ROOT=https://aragon.github.io BASE_PATH=court.aragon.org npm run build && gh-pages -d dist"
   },
   "dependencies": {
-    "@aragon/ui": "1.0.0-alpha.32",
     "@reach/router": "^1.2.1",
     "axios": "^0.19.0",
     "bootstrap": "^4.3.1",

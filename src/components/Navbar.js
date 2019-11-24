@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { breakpoint } from '@aragon/ui'
+import { breakpoint } from '../microsite-logic'
 import logo from './assets/logo.svg'
 import MenuModal from './MenuModal'
 

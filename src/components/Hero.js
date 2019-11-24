@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Link } from 'react-static'
-import { breakpoint } from '@aragon/ui'
+import { breakpoint } from '../microsite-logic'
 import background from './assets/hero-background.svg'
 
 const medium = css => breakpoint('medium', css)

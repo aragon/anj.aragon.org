@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import content from './assets/convert-module.png'
 import comingSoon from './assets/coming-soon.svg'
 
-import { breakpoint } from '@aragon/ui'
+import { breakpoint } from '../microsite-logic'
 const medium = css => breakpoint('medium', css)
 const large = css => breakpoint('large', css)
 

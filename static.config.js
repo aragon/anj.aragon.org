@@ -1,7 +1,5 @@
 import path from 'path'
 import React from 'react'
-import CopyWebpackPlugin from 'copy-webpack-plugin'
-import ExtractTextPlugin from 'extract-text-webpack-plugin'
 
 const REACT_STATIC_PATHS = {
   src: 'src',
@@ -9,11 +7,11 @@ const REACT_STATIC_PATHS = {
   devDist: 'dist',
   public: 'public',
 }
-const ARAGON_UI_ASSETS = path.dirname(require.resolve('@aragon/ui'))
+
 
 export default {
   siteRoot: process.env.SITE_ROOT || '',
-  basePath: process.env.BASE_PATH || 'jurors-microsite',
+  basePath: process.env.BASE_PATH || 'court.aragon.org',
   getRoutes: () => [
     {
       path: '/',
@@ -32,41 +30,7 @@ export default {
     require.resolve('react-static-plugin-reach-router'),
     require.resolve('react-static-plugin-sitemap'),
   ],
-  webpack: (conf, { defaultLoaders }) => {
-    conf.resolve = Object.assign({}, conf.resolve || {}, {
-      // Needed when @aragon/ui is linked (development)
-      modules: ((conf.resolve && conf.resolve.modules) || []).concat([
-        path.join(__dirname, 'node_modules'),
-        path.join(__dirname, REACT_STATIC_PATHS.dist),
-      ]),
-    })
-
-    // Copy the Aragon UI assets to dist/aragon-ui. CopyWebpackPlugin is aware
-    // of webpack-dev-server so there is no need to add this directory to the
-    // devServer configuration.
-    conf.plugins = (conf.plugins || []).concat([
-      new CopyWebpackPlugin([
-        {
-          from: ARAGON_UI_ASSETS,
-          to: path.resolve(
-            path.join(__dirname, REACT_STATIC_PATHS.dist, 'aragon-ui')
-          ),
-        },
-      ]),
-    ])
-
-    const fileLoader = defaultLoaders.fileLoader
-    fileLoader.query.name = 'static/[hash:8]-[name].[ext]'
-    conf.module.rules = [
-      {
-        oneOf: [defaultLoaders.jsLoader, defaultLoaders.cssLoader, fileLoader],
-      },
-    ]
-    conf.plugins.push(new ExtractTextPlugin('app.css'))
-
-    return conf
-  },
-  renderToHtml: (render, Comp, meta) => {
+  beforeRenderToHtml: (render, Comp, meta) => {
     const sheet = new ServerStyleSheet()
     const html = render(sheet.collectStyles(<Comp />))
     meta.styleTags = sheet.getStyleElement()

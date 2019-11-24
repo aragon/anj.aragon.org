@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import { Link } from 'react-static'
-import { breakpoint } from '@aragon/ui'
+import { breakpoint } from '../microsite-logic'
 import Carousel from 'react-bootstrap/Carousel'
 import background from './assets/subscribe-background.svg'
 import basics1 from './assets/basics1.svg'

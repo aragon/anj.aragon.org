@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { breakpoint } from '@aragon/ui'
+import { breakpoint } from '../microsite-logic'
 import about1 from './assets/about1.svg'
 import about2 from './assets/about2.svg'
 

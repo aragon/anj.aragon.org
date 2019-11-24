@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { theme, breakpoint } from '@aragon/ui'
+import { breakpoint } from '../microsite-logic'
 
 const medium = css => breakpoint('medium', css)
 const large = css => breakpoint('large', css)

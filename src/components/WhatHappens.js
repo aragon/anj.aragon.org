@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Link } from 'react-static'
-import { breakpoint } from '@aragon/ui'
+import { breakpoint } from '../microsite-logic'
 import background from './assets/subscribe-background.svg'
 import step1 from './assets/step1.svg'
 import step2 from './assets/step2.svg'
