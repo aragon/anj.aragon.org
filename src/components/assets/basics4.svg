@@ -2,6 +2,15 @@
 <g filter="url(#filter0_d)">
 <rect x="17" y="14" width="748" height="511" rx="6" fill="white"/>
 </g>
+<mask id="mask0" mask-type="alpha" maskUnits="userSpaceOnUse" x="17" y="14" width="748" height="511">
+<rect x="17" y="14" width="748" height="511" rx="6" fill="white"/>
+</mask>
+<g mask="url(#mask0)">
+<circle opacity="0.5" cx="391.5" cy="269.5" r="223.216" stroke="#FFA776" stroke-width="1.5"/>
+<circle opacity="0.3" cx="391.5" cy="269.5" r="255.045" stroke="#FFA776" stroke-width="1.5"/>
+<circle opacity="0.15" cx="391.5" cy="269.5" r="286.098" stroke="#FFA776" stroke-width="1.5"/>
+<circle opacity="0.1" cx="391.5" cy="269.5" r="317.75" stroke="#FFA776" stroke-width="1.5"/>
+</g>
 <circle cx="391" cy="270" r="39" fill="#FFA776"/>
 <rect x="398.108" y="274.748" width="10.4486" height="8.40782" transform="rotate(-45.5209 398.108 274.748)" fill="#F9FAFC"/>
 <rect x="394.536" y="271.455" width="10.4486" height="2.88173" transform="rotate(-45.5209 394.536 271.455)" fill="#F9FAFC"/>

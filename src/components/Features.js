@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Link } from 'react-static'
+import Fade from 'react-reveal/Fade'
 import { breakpoint } from '../microsite-logic'
 import background from './assets/subscribe-background.svg'
 import feature1 from './assets/features1.svg'
@@ -11,30 +12,36 @@ const medium = css => breakpoint('medium', css)
 const Features = () => (
   <FeaturesSection>
     <Container>
-      <div>
-        <img src={feature1} />
-        <h3>Earn income online</h3>
-        <p>
-          Earn juror rewards from anywhere with an internet connection by
-          successfully adjudicating disputes
-        </p>
-      </div>
-      <div>
-        <img src={feature2} />
-        <h3>Flexible scheduling</h3>
-        <p>
-          You decide when to make yourself available to rule on court cases or
-          take a break and go offline
-        </p>
-      </div>
-      <div>
-        <img src={feature3} />
-        <h3>Meaningful work</h3>
-        <p>
-          Help people around the world access justice with more convenience and
-          lower costs than traditional courts
-        </p>
-      </div>
+      <Fade bottom duration={1200} delay={300}>
+        <div>
+          <img src={feature1} />
+          <h3>Earn income online</h3>
+          <p>
+            Earn juror rewards from anywhere with an internet connection by
+            successfully adjudicating disputes
+          </p>
+        </div>
+      </Fade>
+      <Fade bottom duration={1200} delay={600}>
+        <div>
+          <img src={feature2} />
+          <h3>Flexible scheduling</h3>
+          <p>
+            You decide when to make yourself available to rule on court cases or
+            take a break and go offline
+          </p>
+        </div>
+      </Fade>
+      <Fade bottom duration={1200} delay={900}>
+        <div>
+          <img src={feature3} />
+          <h3>Meaningful work</h3>
+          <p>
+            Help people around the world access justice with more convenience
+            and lower costs than traditional courts
+          </p>
+        </div>
+      </Fade>
     </Container>
   </FeaturesSection>
 )

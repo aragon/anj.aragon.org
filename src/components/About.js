@@ -47,12 +47,13 @@ const AboutSection = styled.section`
   background: #f9fafc;
   padding: 0;
   text-align: center;
+  padding: 50px 15px 110px 15px;
 `
 
 const Section = styled.section`
   width: 80%;
   margin: auto;
-  padding: 0px 15px 110px 15px;
+  padding-bottom: 100px;
 `
 
 const Small = styled.div`
@@ -74,7 +75,7 @@ const Container = styled.div`
   justify-content: space-around;
   flex-direction: column;
   ${medium('flex-direction: row;')};
-  padding: 50px 0;
+  padding: 0;
   img {
     max-width: 70%;
     margin-bottom: 30px;

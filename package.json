@@ -20,6 +20,7 @@
     "react": "^16.9.0",
     "react-bootstrap": "^1.0.0-beta.16",
     "react-dom": "^16.9.0",
+    "react-reveal": "^1.2.2",
     "react-spring": "^8.0.27",
     "react-static": "^7.2.0",
     "react-static-plugin-reach-router": "^7.2.0",
@@ -29,15 +30,15 @@
   },
   "devDependencies": {
     "babel-eslint": "^10.0.2",
-    "eslint": "^6.1.0",
     "copy-webpack-plugin": "^4.2.1",
-    "extract-text-webpack-plugin": "^3.0.2",
+    "eslint": "^6.1.0",
     "eslint-config-react-app": "^5.0.1",
     "eslint-config-react-tools": "^1.1.7",
     "eslint-plugin-flowtype": "^4.2.0",
     "eslint-plugin-import": "^2.18.2",
     "eslint-plugin-jsx-a11y": "^6.2.3",
     "eslint-plugin-react": "^7.14.3",
+    "extract-text-webpack-plugin": "^3.0.2",
     "serve": "^11.1.0"
   }
 }

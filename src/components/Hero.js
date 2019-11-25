@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Link } from 'react-static'
+import Fade from 'react-reveal/Fade'
 import { breakpoint } from '../microsite-logic'
 import background from './assets/hero-background.svg'
 
@@ -10,21 +11,25 @@ const large = css => breakpoint('large', css)
 const Hero = () => (
   <HeroSection>
     <TextContainer>
-      <h1>
-        Become a Juror <span className="mobile">for</span>{' '}
-      </h1>
-      <div>
+      <Fade bottom duration={1200} delay={300}>
         <h1>
-          <span className="medium">for</span>{' '}
-          <span className="pink">Aragon Court</span>
+          Become a Juror <span className="mobile">for</span>{' '}
         </h1>
-      </div>
-      <h2>
-        Aragon Court handles subjective disputes that require the judgment of
-        human jurors. These jurors stake a token called ANJ which allows them to
-        be drafted into juries and earn fees for successfully adjudicating
-        disputes.
-      </h2>
+        <div>
+          <h1>
+            <span className="medium">for</span>{' '}
+            <span className="pink">Aragon Court</span>
+          </h1>
+        </div>
+      </Fade>
+      <Fade bottom duration={1200} delay={600}>
+        <h2>
+          Aragon Court handles subjective disputes that require the judgment of
+          human jurors. These jurors stake a token called ANJ which allows them
+          to be drafted into juries and earn fees for successfully adjudicating
+          disputes.
+        </h2>
+      </Fade>
     </TextContainer>
   </HeroSection>
 )

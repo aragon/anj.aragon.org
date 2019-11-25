@@ -48,7 +48,7 @@ const Basics = () => {
               className={active == '4' ? 'active' : ''}
               onClick={() => setActive('4')}
             >
-              4- RULING (COMMIT / REVEAL)
+              4- PRELIMINARY RULING
             </div>
             <div
               className={active == '5' ? 'active' : ''}

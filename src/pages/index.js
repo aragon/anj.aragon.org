@@ -16,9 +16,9 @@ export default () => (
     <Features />
     <WhatHappens />
     <About />
-    <BecomeAJuror />
-    <Basics />
     <Subscribe />
+    <Basics />
+    <BecomeAJuror />
     <Footer />
   </div>
 )

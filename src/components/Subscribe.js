@@ -7,10 +7,10 @@ const Subscribe = () => (
   <SubscribeSection>
     <Container>
       <div>
-        <h3> Want to learn more about Aragon Court?</h3>
+        <h3>Want to learn more about Aragon Court?</h3>
         <p>Sign up for the Aragon Court newsletter to stay updated</p>
         <form
-          action="https://one.us15.list-manage.com/subscribe/post?u=a590aa3843a54b079d48e6e18&amp;id=e81a44c4bd"
+          action="https://aragon.us15.list-manage.com/subscribe/post?u=a590aa3843a54b079d48e6e18&amp;id=9c51454655"
           method="post"
           name="mc-embedded-subscribe-form"
           target="_blank"
@@ -77,6 +77,7 @@ const SubscribeSection = styled.section`
     max-width: calc(80vw - 160px);
     padding: 12px 20px 5px 20px;
     background: #ffffff;
+    background-color: #ffffff;
     border-radius: 8px 0 0 8px;
     border: solid white;
     outline: none;
