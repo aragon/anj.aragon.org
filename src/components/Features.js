@@ -15,24 +15,24 @@ const Features = () => (
         <img src={feature1} />
         <h3>Earn income online</h3>
         <p>
-          Want to earn an online income? Jurors can earn rewards from anywhere
-          with an internet connection.
+          Earn juror rewards from anywhere with an internet connection by
+          successfully adjudicating disputes
         </p>
       </div>
       <div>
         <img src={feature2} />
         <h3>Flexible scheduling</h3>
         <p>
-          Have lots of free time? Busy schedule? <br />
-          Serve on as many or few juries as your time allows.
+          You decide when to make yourself available to rule on court cases or
+          take a break and go offline
         </p>
       </div>
       <div>
         <img src={feature3} />
         <h3>Meaningful work</h3>
         <p>
-          Like helping others? Save people the hassle of going to court in real
-          life by resolving their disputes over the internet.
+          Help people around the world access justice with more convenience and
+          lower costs than traditional courts
         </p>
       </div>
     </Container>

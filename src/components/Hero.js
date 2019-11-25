@@ -20,7 +20,7 @@ const Hero = () => (
         </h1>
       </div>
       <h2>
-        Aragon Court handles subjective disputes that require the judgement of
+        Aragon Court handles subjective disputes that require the judgment of
         human jurors. These jurors stake a token called ANJ which allows them to
         be drafted into juries and earn fees for successfully adjudicating
         disputes.

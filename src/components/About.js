@@ -13,11 +13,11 @@ const About = () => (
         <img src={about1} />
         <div className="right">
           <h6>January 7th</h6>
-          <h2>Effective dispute resolution</h2>
+          <h2>ANJ pre-activation begins</h2>
           <h4>
-            The Aragon about encompasses a set of courts, which can be used to
-            settle disputes. By using smart contracts, cases can be closed way
-            faster than in traditional courts. Fairness for everyone.
+            During this period, all potential jurors will be able to get the
+            same amount of ANJ per ANT. When the court opens for disputes, ANJ
+            will only be available at a variable market rate.
           </h4>
         </div>
       </Container>
@@ -29,12 +29,10 @@ const About = () => (
         </Small>
         <div className="left">
           <h6>Early February</h6>
-          <h2>Anonymity and trust, together</h2>
+          <h2>First disputes begin</h2>
           <h4>
-            Mom probably advised you not to interact with strangers. But thanks
-            to the Aragon about, you can transact with people who are using
-            aliases, or stay anonymous yourself. You can open disputes if
-            someone misbehaves.
+            Jurors with at least 100 activated ANJ earn subscription fees as
+            they await being drafted onto juries to adjudicate disputes.
           </h4>
         </div>
         <Medium>

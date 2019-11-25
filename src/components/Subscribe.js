@@ -7,8 +7,8 @@ const Subscribe = () => (
   <SubscribeSection>
     <Container>
       <div>
-        <h3>Are you up to date on Aragon Court?</h3>
-        <p>Enter your email address for latest updates on Aragon Court</p>
+        <h3> Want to learn more about Aragon Court?</h3>
+        <p>Sign up for the Aragon Court newsletter to stay updated</p>
         <form
           action="https://one.us15.list-manage.com/subscribe/post?u=a590aa3843a54b079d48e6e18&amp;id=e81a44c4bd"
           method="post"
