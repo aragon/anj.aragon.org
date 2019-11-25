@@ -10,10 +10,13 @@ const large = css => breakpoint('large', css)
 const Hero = () => (
   <HeroSection>
     <TextContainer>
-      <h1>Become a Juror</h1>
+      <h1>
+        Become a Juror <span className="mobile">for</span>{' '}
+      </h1>
       <div className="h1-animated-box">
         <h1>
-          for <span className="pink">Aragon Court</span>
+          <span className="medium">for</span>{' '}
+          <span className="pink">Aragon Court</span>
         </h1>
       </div>
       <h2>
@@ -47,7 +50,7 @@ const TextContainer = styled.div`
   width: 80%;
   margin: auto;
   padding-top: 40px;
-  ${medium('padding-top: 0;')};
+
   h1 {
     font-family: 'FontBold';
     font-weight: bold;
@@ -61,9 +64,8 @@ const TextContainer = styled.div`
     ${large('font-size: 86px;')};
   }
   .h1-animted-box {
-    display: flex;
-    justify-content: flex-start;
   }
+  ${medium('padding-top: 0;')};
   @keyframes shine {
     to {
       background-position: 200% center;
@@ -85,6 +87,8 @@ const TextContainer = styled.div`
     -webkit-text-fill-color: transparent;
 
     animation: shine 4s linear infinite;
+    display: block;
+    ${medium('display: inline;')};
   }
   h2 {
     font-family: 'FontRegular';
@@ -92,10 +96,18 @@ const TextContainer = styled.div`
     font-size: 20px;
     ${medium('font-size: 24px;')};
     line-height: 1.58;
-    display: flex;
-    align-items: left;
+    text-align: left
     color: white;
     max-width: 750px;
+    margin-top: 20px;
+  }
+  span.mobile {
+    display: inline;
+    ${medium('display: none;')};
+  }
+  span.medium {
+    display: none;
+    ${medium('display: inline;')};
   }
 `
 export default Hero
