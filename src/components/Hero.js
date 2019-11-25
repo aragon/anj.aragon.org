@@ -13,7 +13,7 @@ const Hero = () => (
       <h1>
         Become a Juror <span className="mobile">for</span>{' '}
       </h1>
-      <div className="h1-animated-box">
+      <div>
         <h1>
           <span className="medium">for</span>{' '}
           <span className="pink">Aragon Court</span>
@@ -54,7 +54,7 @@ const TextContainer = styled.div`
   h1 {
     font-family: 'FontBold';
     font-weight: bold;
-    font-size: 54px;
+    font-size: 50px;
     line-height: 1;
     margin: 0;
     text-align: left;
@@ -62,8 +62,6 @@ const TextContainer = styled.div`
     color: #ffffff;
     ${medium('font-size: 76px;')};
     ${large('font-size: 86px;')};
-  }
-  .h1-animted-box {
   }
   ${medium('padding-top: 0;')};
   @keyframes shine {
