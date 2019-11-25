@@ -20,8 +20,8 @@ const GetAnjSection = styled.section`
   background: linear-gradient(
     to top,
     #fff 0%,
-    #fff 80%,
-    #1c1c1c 80%,
+    #fff 83.5%,
+    #1c1c1c 83.5%,
     #1c1c1c 100%
   ) !important;
   height: auto;
@@ -45,7 +45,7 @@ const GetAnjSection = styled.section`
 const Content = styled.img`
   margin: 0 auto;
   max-width: 90%;
-  ${medium('max-width: 80%;')};
+  ${medium('max-width: calc(80% + 30px);')};
 `
 
 export default GetAnj

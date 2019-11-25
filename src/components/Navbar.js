@@ -97,7 +97,9 @@ const Button = styled.a`
     }
   }
   span {
-    color: rgba(1, 191, 227);
+    color: #ff9a84;
+  }
+  span:hover {
     background: linear-gradient(
       to right,
       #ff7c7c 20%,

@@ -54,7 +54,7 @@ const AboutSection = styled.section`
 const Section = styled.section`
   width: 80%;
   margin: auto;
-  padding: 0px 15px 80px 15px;
+  padding: 0px 15px 110px 15px;
 `
 
 const Small = styled.div`

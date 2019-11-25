@@ -39,7 +39,7 @@ const WhatHappens = () => (
 
 const WhatHappensSection = styled.section`
   background: #f9fafc;
-  padding: 80px 15px;
+  padding: 100px 15px 85px;
 `
 const Container = styled.div`
   width: 80%;
@@ -50,10 +50,10 @@ const Container = styled.div`
     font-family: 'FontRegular';
     font-size: 24px;
     line-height: 34px;
-    display: flex;
-    align-items: center;
     text-align: center;
     color: #8a96a0;
+    max-width: 800px;
+    margin: auto;
   }
   h3 {
     font-family: 'FontMedium', sans-serif;

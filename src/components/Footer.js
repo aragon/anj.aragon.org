@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { breakpoint } from '../microsite-logic'
-import logo from './assets/logo.svg'
+import logo from './assets/footer-logo.svg'
 
 const medium = css => breakpoint('medium', css)
 

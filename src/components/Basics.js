@@ -194,7 +194,8 @@ const Basics = () => {
 
 const BasicsSection = styled.section`
   background: white;
-  padding: 80px 15px;
+  padding: 100px 15px 50px;
+  ${large('min-height: 996px;')};
 `
 const Container = styled.div`
   width: 80%;

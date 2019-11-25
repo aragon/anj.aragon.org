@@ -41,7 +41,7 @@ const Features = () => (
 
 const FeaturesSection = styled.section`
   background: white;
-  padding: 50px 0 50px 0;
+  padding: 95px 0 85px 0;
 `
 const Container = styled.div`
   width: 80%;
@@ -73,7 +73,7 @@ const Container = styled.div`
     font-size: 27px;
     line-height: 38px;
     color: #000;
-    margin: 15px 0 15px 0;
+    margin: 25px 0 7px 0;
   }
   ${medium('flex-direction: row;')};
 `

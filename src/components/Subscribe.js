@@ -54,6 +54,10 @@ const Subscribe = () => (
 const SubscribeSection = styled.section`
   padding: 50px 15px 100px 15px;
   z-index: 3;
+  min-height: 463px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background: linear-gradient(
     207.23deg,
     rgba(255, 179, 109) 6.08%,
@@ -71,7 +75,7 @@ const SubscribeSection = styled.section`
     max-height: 54px;
     width: 404px;
     max-width: calc(80vw - 160px);
-    padding: 12px 20px;
+    padding: 12px 20px 5px 20px;
     background: #ffffff;
     border-radius: 8px 0 0 8px;
     border: solid white;
@@ -88,6 +92,7 @@ const SubscribeSection = styled.section`
     justify-content: center;
     cursor: pointer;
     button {
+      padding: 12px 20px 5px 20px;
       background: linear-gradient(
         207.23deg,
         rgba(255, 179, 109) 6.08%,
