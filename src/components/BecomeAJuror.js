@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import background from './assets/become-a-juror-background.svg'
+import background from './assets/become-a-juror-background.png'
 import content from './assets/become-a-juror-content.svg'
 
 import { breakpoint } from '../microsite-logic'

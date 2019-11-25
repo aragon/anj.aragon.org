@@ -23,8 +23,8 @@ const Features = () => (
         <img src={feature2} />
         <h3>Flexible scheduling</h3>
         <p>
-          Have lots of free time? Busy schedule? Serve on as many or few juries
-          as your time allows.
+          Have lots of free time? Busy schedule? <br />
+          Serve on as many or few juries as your time allows.
         </p>
       </div>
       <div>
