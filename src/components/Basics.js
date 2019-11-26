@@ -10,6 +10,12 @@ import basics3 from './assets/basics3.svg'
 import basics4 from './assets/basics4.svg'
 import basics5 from './assets/basics5.svg'
 import basics6 from './assets/basics6.svg'
+import basicsl1 from './assets/basics-l1.svg'
+import basicsl2 from './assets/basics-l2.svg'
+import basicsl3 from './assets/basics-l3.svg'
+import basicsl4 from './assets/basics-l4.svg'
+import basicsl5 from './assets/basics-l5.svg'
+import basicsl6 from './assets/basics-l6.svg'
 import left from './assets/left.svg'
 import right from './assets/right.svg'
 const medium = css => breakpoint('medium', css)
@@ -63,52 +69,14 @@ const Basics = () => {
               6- EARN REWARDS
             </div>
           </Buttons>
-          <Text>
-            <p className={active == '1' ? 'active' : ''} src={basics1}>
-              A company has two members, Bob and Alice. Bob submits a proposal
-              to transfer company funds into his personal wallet. Alice
-              disagrees and raises a dispute against the proposal in Aragon
-              Court.
-            </p>
-            <p className={active == '2' ? 'active' : ''}>
-              You and two other jurors are drafted to adjudicate Bob and Alice’s
-              dispute, where the chance of being drafted is proportional to the
-              amount of ANJ you have activated.
-            </p>
-            <p className={active == '3' ? 'active' : ''}>
-              Bob claims the fund transfer is his yearly bonus, citing his good
-              performance. Alice submits their employment agreement and
-              historical payroll records that show Bob's bonus isn't due until
-              next month.
-            </p>
-            <p className={active == '4' ? 'active' : ''}>
-              You and one other juror decide to vote in favor of Alice and one
-              votes in favor of Bob. This means Alice has the majority required
-              to win this ruling. All rulings at this stage are preliminary and
-              can be appealed by the loser for additional fees.
-            </p>
-            <p className={active == '5' ? 'active' : ''}>
-              Bob decides not to appeal the preliminary ruling making the final
-              ruling in favor of Alice. Now all the adjudication rounds in the
-              dispute can be settled and rewards allocated.
-            </p>
-            <p className={active == '6' ? 'active' : ''}>
-              Since one of the jurors did not vote in favor of Alice - who won
-              the final ruling - their activated ANJ will be distributed to you
-              and the other juror who voted for Alice as a reward. This reward
-              is in addition to the rewards earned from Subscription and Dispute
-              Fees, all of which will automatically be added to your staked and
-              activated ANJ balance.
-            </p>
-          </Text>
         </div>
         <Images>
-          <img className={active == '1' ? 'active' : ''} src={basics1} />
-          <img className={active == '2' ? 'active' : ''} src={basics2} />
-          <img className={active == '3' ? 'active' : ''} src={basics3} />
-          <img className={active == '4' ? 'active' : ''} src={basics4} />
-          <img className={active == '5' ? 'active' : ''} src={basics5} />
-          <img className={active == '6' ? 'active' : ''} src={basics6} />
+          <img className={active == '1' ? 'active' : ''} src={basicsl1} />
+          <img className={active == '2' ? 'active' : ''} src={basicsl2} />
+          <img className={active == '3' ? 'active' : ''} src={basicsl3} />
+          <img className={active == '4' ? 'active' : ''} src={basicsl4} />
+          <img className={active == '5' ? 'active' : ''} src={basicsl5} />
+          <img className={active == '6' ? 'active' : ''} src={basicsl6} />
         </Images>
       </Process>
       <MobileProcess>
