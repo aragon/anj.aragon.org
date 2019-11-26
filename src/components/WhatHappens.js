@@ -22,19 +22,19 @@ const WhatHappens = () => (
       </p>
     </Container>
     <StepsContainer>
-      <Fade bottom duration={1200} delay={300}>
+      <Fade bottom duration={1200} distance={'50%'} delay={300}>
         <div>
           <img src={step1} />
           <h4>Get ANJ with ANT</h4>
         </div>
       </Fade>
-      <Fade bottom duration={1200} delay={600}>
+      <Fade bottom duration={1200} distance={'50%'} delay={600}>
         <div>
           <img src={step2} />
           <h4>Stake your ANJ</h4>
         </div>
       </Fade>
-      <Fade bottom duration={1200} delay={900}>
+      <Fade bottom duration={1200} distance={'50%'} delay={900}>
         <div>
           <img src={step3} />
           <h4>Activate your ANJ</h4>

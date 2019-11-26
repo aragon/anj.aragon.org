@@ -12,7 +12,7 @@ const medium = css => breakpoint('medium', css)
 const Features = () => (
   <FeaturesSection>
     <Container>
-      <Fade bottom duration={1200} delay={300}>
+      <Fade bottom duration={1200} delay={300} distance={'50%'}>
         <div>
           <img src={feature1} />
           <h3>Earn income online</h3>
@@ -22,7 +22,7 @@ const Features = () => (
           </p>
         </div>
       </Fade>
-      <Fade bottom duration={1200} delay={600}>
+      <Fade bottom duration={1200} delay={600} distance={'50%'}>
         <div>
           <img src={feature2} />
           <h3>Flexible scheduling</h3>
@@ -32,7 +32,7 @@ const Features = () => (
           </p>
         </div>
       </Fade>
-      <Fade bottom duration={1200} delay={900}>
+      <Fade bottom duration={1200} delay={900} distance={'50%'}>
         <div>
           <img src={feature3} />
           <h3>Meaningful work</h3>
