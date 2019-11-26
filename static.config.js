@@ -11,7 +11,7 @@ const REACT_STATIC_PATHS = {
 
 export default {
   siteRoot: process.env.SITE_ROOT || '',
-  basePath: process.env.BASE_PATH || 'court.aragon.org',
+  basePath: '',
   getRoutes: () => [
     {
       path: '/',

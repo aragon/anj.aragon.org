@@ -10,7 +10,7 @@
     "build": "NODE_PRESERVE_SYMLINKS=1 react-static build",
     "analyze": "react-static build --analyze",
     "serve": "serve dist -p 3000",
-    "deploy": "NODE_ENV=production SITE_ROOT=https://aragon.github.io BASE_PATH=court.aragon.org npm run build && gh-pages -d dist"
+    "deploy": "NODE_ENV=production SITE_ROOT=https://anj.aragon.org/ npm run build && echo 'anj.aragon.org' > dist/CNAME && gh-pages -d dist"
   },
   "dependencies": {
     "@reach/router": "^1.2.1",
