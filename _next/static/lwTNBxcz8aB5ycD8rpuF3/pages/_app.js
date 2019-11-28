@@ -1,0 +1,1 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([[10],{"1TCz":function(n,o,t){"use strict";t.r(o);var e=t("q1tI"),p=t.n(e),c=(t("6+34"),p.a.createElement);o.default=function(n){var o=n.Component,t=n.pageProps;return c(o,t)}},GcxT:function(n,o,t){(window.__NEXT_P=window.__NEXT_P||[]).push(["/_app",function(){return t("1TCz")}])}},[["GcxT",0,1,8]]]);
