@@ -31,6 +31,7 @@ body {
   padding: 0;
   -webkit-font-smoothing: antialiased;
   scroll-behavior: smooth;
+  background: #1c1c1c;
 }
 
 a,
