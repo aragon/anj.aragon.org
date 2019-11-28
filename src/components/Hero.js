@@ -13,7 +13,7 @@ const Hero = () => (
     <TextContainer>
       <Fade bottom duration={1200} delay={300}>
         <h1>
-          Become a Juror <span className="mobile">for</span>{' '}
+          Become a juror <span className="mobile">for</span>{' '}
         </h1>
         <div>
           <h1>
