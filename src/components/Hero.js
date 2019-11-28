@@ -58,7 +58,6 @@ const TextContainer = styled.div`
 
   h1 {
     font-family: 'FontBold';
-    font-weight: bold;
     font-size: 50px;
     line-height: 1;
     margin: 0;
