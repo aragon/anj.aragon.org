@@ -1,1 +1,0 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[4],{"97Is":function(n,t,u){(window.__NEXT_P=window.__NEXT_P||[]).push(["/404",function(){return u("uNx/")}])},"uNx/":function(n,t,u){"use strict";u.r(t);var e=u("q1tI"),o=u.n(e).a.createElement;t.default=function(){return o("div",null,o("h1",null,"404 - Oh no's! We couldn't find that page :("))}}},[["97Is",0,1]]]);
