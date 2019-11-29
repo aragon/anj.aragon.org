@@ -31,7 +31,7 @@ const About = () => (
           <h6>Early February</h6>
           <h2>First disputes begin</h2>
           <h4>
-            Jurors with at least 100 activated ANJ earn subscription fees as
+            Jurors with at least 10,000 activated ANJ earn subscription fees as
             they await being drafted onto juries to adjudicate disputes.
           </h4>
         </div>
