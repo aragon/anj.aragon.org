@@ -13,7 +13,7 @@ const GetAnj = () => (
   <GetAnjSection id="get-anj">
     <Content className="medium" src={content} />
     <Content className="mobile" src={contentMobile} />
-    <a href="https://blog.aragon.org/aragon-court/" target="_blank">
+    <a href="https://blog.aragon.org/aragon-court-is-live-on-mainnet/" target="_blank">
       <img className="medium" src={comingSoon} />
       <img className="mobile" src={comingSoonMobile} />
     </a>
