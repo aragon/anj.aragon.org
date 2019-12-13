@@ -32,3 +32,37 @@ export function useConverterLogic() {
     actions,
   }
 }
+
+export function shortenAddress(address, charsLength = 4) {
+  const prefixLength = 2 // "0x"
+  if (!address) {
+    return ''
+  }
+  if (address.length < charsLength * 2 + prefixLength) {
+    return address
+  }
+  return (
+    address.slice(0, charsLength + prefixLength) +
+    '…' +
+    address.slice(-charsLength)
+  )
+}
+
+export function useAccount() {
+  const account = 'bla'
+  const balance = 15.345
+  const isContract = false
+  const enableWallet = false
+  const walletNetwork = 'Metamask'
+  const walletProviderId = 'Rinkeby'
+
+  return {
+    balance,
+    isContract,
+    address: account,
+    connected: Boolean(account),
+    enable: enableWallet,
+    networkId: walletNetwork,
+    providerInfo: walletProviderId,
+  }
+}
