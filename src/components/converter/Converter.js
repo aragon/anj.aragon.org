@@ -8,7 +8,7 @@ import Success from './Processing'
 const large = css => breakpoint('large', css)
 
 const Converter = () => {
-  const success = false
+  const success = true
   return (
     <OuterSection>
       <ConverterSection>
