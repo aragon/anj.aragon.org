@@ -5,6 +5,7 @@ import AccountModule from './AccountModule'
 import { breakpoint } from '../../microsite-logic'
 
 const large = css => breakpoint('large', css)
+const medium = css => breakpoint('medium', css)
 
 const HeaderSection = () => (
   <Header>
@@ -17,12 +18,12 @@ const HeaderSection = () => (
 
 const Header = styled.div`
   border-bottom: solid 1px #ededed;
-  height: 100px;
+  height: 160px;
   padding: 15px 20px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  ${large('padding: 35px;')};
+  ${medium(
+    'display: flex; align-items: center; justify-content: space-between; height: 100px;'
+  )};
+  ${large('padding: 35px; height: 100px;')};
 
   h1 {
     font-family: 'FontMedium', sans-serif;

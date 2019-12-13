@@ -1,4 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react'
+const ADDRESS_REGEX = /^0x[0-9a-fA-F]{40}$/
 
 function noop() {}
 
@@ -49,12 +50,12 @@ export function shortenAddress(address, charsLength = 4) {
 }
 
 export function useAccount() {
-  const account = 'bla'
+  const account = '0x8401Eb5ff34cc943f096A32EF3d5113FEbE8D4Eb'
   const balance = 15.345
   const isContract = false
   const enableWallet = false
-  const walletNetwork = 'Metamask'
-  const walletProviderId = 'Rinkeby'
+  const walletNetwork = 'rinkeby'
+  const walletProviderId = 'Metamask'
 
   return {
     balance,
@@ -65,4 +66,8 @@ export function useAccount() {
     networkId: walletNetwork,
     providerInfo: walletProviderId,
   }
+}
+
+export function isAddress(address) {
+  return ADDRESS_REGEX.test(address)
 }
