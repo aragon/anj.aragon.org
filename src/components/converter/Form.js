@@ -1,9 +1,12 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
-import question from './assets/question.svg'
 import { OverlayTrigger, Tooltip } from 'react-bootstrap'
 import Token from './Token'
+import question from './assets/question.svg'
 import { useConverterLogic } from './converter-logic'
+import { breakpoint } from '../../microsite-logic'
+
+const large = css => breakpoint('large', css)
 
 function FormSection() {
   let errorMessage = 'Amount is greater than balance held'
@@ -75,12 +78,13 @@ function FormSection() {
 }
 
 const Form = styled.form`
-  padding-right: 30px;
   display: flex;
   min-height: 450px;
   flex-direction: column;
   align-items: baseline;
   justify-content: space-between;
+  margin-top: 130px;
+  ${large('padding-right: 30px; margin-top: 0;')};
 `
 const Label = styled.label`
   font-size: 24px;

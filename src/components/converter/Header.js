@@ -1,6 +1,9 @@
 import React from 'react'
 import styled from 'styled-components'
 import Token from './Token'
+import { breakpoint } from '../../microsite-logic'
+
+const large = css => breakpoint('large', css)
 
 const HeaderSection = () => (
   <Header>
@@ -13,7 +16,9 @@ const HeaderSection = () => (
 const Header = styled.div`
   border-bottom: solid 1px #ededed;
   height: 100px;
-  padding: 35px;
+  padding: 15px 20px;
+  ${large('padding: 35px;')};
+
   h1 {
     font-family: 'FontMedium', sans-serif;
     font-size: 38px;
@@ -22,6 +27,8 @@ const Header = styled.div`
     align-items: flex-start;
     color: #1c1c1c;
     margin: 0;
+    flex-wrap: wrap;
+    max-width: 84%;
   }
 `
 

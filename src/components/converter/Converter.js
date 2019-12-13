@@ -3,9 +3,9 @@ import styled from 'styled-components'
 import { breakpoint } from '../../microsite-logic'
 import Header from './Header'
 import ConverterContent from './ConverterContent'
-import Success from './Success'
+import Success from './Processing'
 
-const medium = css => breakpoint('medium', css)
+const large = css => breakpoint('large', css)
 
 const Converter = () => {
   const success = false
@@ -25,12 +25,14 @@ const ConverterSection = styled.div`
   border-radius: 8px;
   max-width: 1109px;
   min-height: 642px;
+  max-width: 95%;
   p {
     font-family: 'FontRegular', sans-serif;
     font-size: 24px;
     line-height: 38px;
     color: #8a96a0;
   }
+  ${large('max-width: 1109px;')};
 `
 const OuterSection = styled.section`
   background: linear-gradient(
@@ -47,6 +49,7 @@ const OuterSection = styled.section`
   justify-content: center;
   position: relative;
   overflow: hidden;
+  padding-bottom: 30px;
 `
 
 export default Converter

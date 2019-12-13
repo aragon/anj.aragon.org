@@ -6,7 +6,7 @@ import Balance from './Balance'
 import Info from './Info'
 import Countdown from './Countdown'
 
-const medium = css => breakpoint('medium', css)
+const large = css => breakpoint('large', css)
 
 const ConverterContent = () => (
   <Content>
@@ -18,6 +18,9 @@ const ConverterContent = () => (
       <Info />
       <Countdown />
     </RightBox>
+    <div className="mobile">
+      <Form />
+    </div>
   </Content>
 )
 
@@ -25,13 +28,23 @@ const Content = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 57px 35px 35px 35px;
+  flex-direction: column;
+  padding: 20px 15px 40px 15px;
   height: 100%;
   .left,
   .right {
     width: 100%;
     text-align: left;
   }
+  .left {
+    display: none;
+    ${large('display: inherit;')};
+  }
+  .mobile {
+    display: inherit;
+    ${large('display: none;')};
+  }
+  ${large('flex-direction: row; padding: 57px 35px 35px 35px; ')};
 `
 const RightBox = styled.div`
   display: flex;

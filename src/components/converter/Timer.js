@@ -113,6 +113,7 @@ class Timer extends Component {
 const Container = styled.div`
   position: relative;
   display: flex;
+  margin: 0 -10px;
   div {
     padding: 0 10px;
     span {

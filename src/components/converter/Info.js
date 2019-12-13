@@ -18,6 +18,7 @@ const InfoSection = () => (
 )
 
 const Info = styled.div`
+  padding: 30px 0;
   h6.title {
     font-family: 'FontMedium';
     font-style: normal;

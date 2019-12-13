@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import processing from './assets/success.svg'
+import processing from './assets/loader'
 
 const ProcessingSection = () => (
   <Processing>
@@ -22,6 +22,7 @@ const Processing = styled.div`
   text-align: center;
   img {
     margin-bottom: 15px;
+    height: 100px;
   }
   p {
     max-width: 410px;

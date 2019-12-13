@@ -12,6 +12,9 @@ import metamask from './assets/metamask.svg'
 import frame from './assets/frame.svg'
 import portis from './assets/portis.svg'
 import fromatic from './assets/fromatic.svg'
+import { breakpoint } from '../../microsite-logic'
+
+const medium = css => breakpoint('medium', css)
 
 function EnableAccount() {
   const [show, setShow] = useState(false)
@@ -100,6 +103,7 @@ const Button = styled.button`
 `
 const Content = styled.div`
   min-width: 450px;
+  max-width: 90vw;
   p.title {
     font-size: 22px;
     font-family: 'FontRegular', sans-serif;
@@ -108,17 +112,21 @@ const Content = styled.div`
     padding: 20px 20px 12px 20px;
     background: #f9fafc;
     margin: 0;
+    max-width: 90vw;
   }
   div {
     padding: 20px;
     display: flex;
     flex-wrap: wrap;
+    max-width: 90vw;
+    width: 449px;
     button {
       background: #ffffff;
       box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.15);
       border-radius: 4px;
       width: calc(50% - 10px);
-      min-width: 170px;
+      min-width: 137px;
+      ${medium('min-width: 170px;')};
       margin: 5px;
       padding: 20px 20px 13px 20px;
       p {
@@ -140,6 +148,7 @@ const StyledPopover = styled(Popover)`
   background: #ffffff;
   box-shadow: 0px 7px 24px rgba(0, 0, 0, 0.25);
   border: 0 solid transparent;
+  max-width: 90vw;
 
   &.bs-popover-bottom .arrow::after {
     border-bottom-color: #f9fafc;
