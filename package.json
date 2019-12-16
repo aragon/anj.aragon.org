@@ -7,12 +7,16 @@
   "scripts": {
     "stage": "react-static build --staging",
     "start": "NODE_PRESERVE_SYMLINKS=1 react-static start",
+    "start:mainnet": "CHAIN_ID=1 npm start",
+    "start:rinkeby": "CHAIN_ID=4 npm start",
     "build": "NODE_PRESERVE_SYMLINKS=1 react-static build",
     "analyze": "react-static build --analyze",
     "serve": "serve dist -p 3000",
     "deploy": "NODE_ENV=production SITE_ROOT=https://anj.aragon.org/ npm run build && echo 'anj.aragon.org' > dist/CNAME && gh-pages -d dist"
   },
   "dependencies": {
+    "@ethersproject/bignumber": "^5.0.0-beta.135",
+    "@ethersproject/contracts": "^5.0.0-beta.142",
     "@ethersproject/providers": "^5.0.0-beta.146",
     "@reach/router": "^1.2.1",
     "@web3-react/core": "^6.0.0-beta.25",

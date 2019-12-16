@@ -831,6 +831,21 @@
   resolved "https://registry.yarnpkg.com/@emotion/unitless/-/unitless-0.7.4.tgz#a87b4b04e5ae14a88d48ebef15015f6b7d1f5677"
   integrity sha512-kBa+cDHOR9jpRJ+kcGMsysrls0leukrm68DmFQoMIWQcXdr2cZvyvypWuGYT7U+9kAExUE7+T7r6G3C3A6L8MQ==
 
+"@ethersproject/abi@>=5.0.0-beta.137":
+  version "5.0.0-beta.142"
+  resolved "https://registry.yarnpkg.com/@ethersproject/abi/-/abi-5.0.0-beta.142.tgz#cde0ced7daa2fbc98e35a2c31203331907e84a39"
+  integrity sha512-vJ2V9fPNzi+8iutY4sjy6mgogkJtiGsd9hmpa1bjnGW6qnHOEkAV1fzVpvT002LlnjFgqgtzuLBDZob6oU7i8w==
+  dependencies:
+    "@ethersproject/address" ">=5.0.0-beta.128"
+    "@ethersproject/bignumber" ">=5.0.0-beta.130"
+    "@ethersproject/bytes" ">=5.0.0-beta.129"
+    "@ethersproject/constants" ">=5.0.0-beta.128"
+    "@ethersproject/hash" ">=5.0.0-beta.128"
+    "@ethersproject/keccak256" ">=5.0.0-beta.127"
+    "@ethersproject/logger" ">=5.0.0-beta.129"
+    "@ethersproject/properties" ">=5.0.0-beta.131"
+    "@ethersproject/strings" ">=5.0.0-beta.130"
+
 "@ethersproject/abstract-provider@>=5.0.0-beta.131":
   version "5.0.0-beta.135"
   resolved "https://registry.yarnpkg.com/@ethersproject/abstract-provider/-/abstract-provider-5.0.0-beta.135.tgz#34ee22d9b1f031bac7cadc355e82dd618b4f9287"
@@ -897,6 +912,22 @@
   integrity sha512-ioO7Ez8Xatk5z3lVzzEhRjXng1le1sTzfuD3v8gUozrzgLXyl0X81Go1Nadj7qPgo68HziIFcm5kRFp4SdJa0A==
   dependencies:
     "@ethersproject/bignumber" ">=5.0.0-beta.130"
+
+"@ethersproject/contracts@^5.0.0-beta.142":
+  version "5.0.0-beta.142"
+  resolved "https://registry.yarnpkg.com/@ethersproject/contracts/-/contracts-5.0.0-beta.142.tgz#c3d59e1b9b5d363ad7bb40cd9fd417ee58988a79"
+  integrity sha512-OjrDuSjd67QKQt0cW2w1m30Q5ZA7K+RbuXJgbHBRyTNbXU/ptEK0CxRt0eNZnMSqvO5S2sLlIKHRl5e7rNn7wg==
+  dependencies:
+    "@ethersproject/abi" ">=5.0.0-beta.137"
+    "@ethersproject/abstract-provider" ">=5.0.0-beta.131"
+    "@ethersproject/abstract-signer" ">=5.0.0-beta.132"
+    "@ethersproject/address" ">=5.0.0-beta.128"
+    "@ethersproject/bignumber" ">=5.0.0-beta.130"
+    "@ethersproject/bytes" ">=5.0.0-beta.129"
+    "@ethersproject/constants" ">=5.0.0-beta.128"
+    "@ethersproject/logger" ">=5.0.0-beta.129"
+    "@ethersproject/properties" ">=5.0.0-beta.131"
+    "@ethersproject/transactions" ">=5.0.0-beta.128"
 
 "@ethersproject/hash@>=5.0.0-beta.128":
   version "5.0.0-beta.133"
