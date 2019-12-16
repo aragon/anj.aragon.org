@@ -22,6 +22,10 @@
   font-family: 'FontBold';
   src: url('./fonts/HKGrotesk-Bold.ttf') format('opentype');
 }
+@font-face {
+  font-family: 'FontMono';
+  src: url('./fonts/BasierSquare-Regular.otf') format('opentype');
+}
 
 body {
   font-family: 'FontRegular', sans-serif !important;

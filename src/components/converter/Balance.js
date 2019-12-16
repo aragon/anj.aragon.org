@@ -72,7 +72,8 @@ const Balance = () => {
       <p>Your account's active balance</p>
       {account ? (
         <h3>
-          {balanceAnj.toString()} <Token symbol="ANJ" />
+          <span className="mono">{balanceAnj.toString()} </span>
+          <Token symbol="ANJ" />
         </h3>
       ) : (
         <EnableAccount />
@@ -160,13 +161,15 @@ const StyledPopover = styled(Popover)`
 `
 const BalanceSection = styled.div`
   h3 {
-    font-family: Basier Square Mono;
     font-size: 54px;
     line-height: 38px;
     display: flex;
     align-items: flex-start;
     letter-spacing: -3px;
     color: #1c1c1c;
+  }
+  h3 span.mono {
+    font-family: 'FontMono';
   }
 `
 
