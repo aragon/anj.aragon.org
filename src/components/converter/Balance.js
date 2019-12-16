@@ -13,12 +13,14 @@ import frame from './assets/frame.svg'
 import portis from './assets/portis.svg'
 import fortmatic from './assets/fortmatic.svg'
 import { breakpoint } from '../../microsite-logic'
-import { useWeb3, identifyProvider, useTokenBalance } from '../../web3'
+import { useWeb3Connect } from '../../web3-connect'
+import { useTokenBalance } from '../../web3-contract-token'
+import { identifyProvider } from '../../web3-utils'
 
 const medium = css => breakpoint('medium', css)
 
 function EnableAccount() {
-  const { account, activate, deactivate } = useWeb3()
+  const { account, activate, deactivate } = useWeb3Connect()
   const [show, setShow] = useState(false)
   const [target, setTarget] = useState(null)
   const ref = useRef(null)
@@ -65,7 +67,7 @@ function EnableAccount() {
 }
 
 const Balance = () => {
-  const { account } = useWeb3()
+  const { account } = useWeb3Connect()
   const balanceAnj = useTokenBalance('ANJ')
   return (
     <BalanceSection>

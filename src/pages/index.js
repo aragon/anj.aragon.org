@@ -8,10 +8,10 @@ import BecomeAJuror from '../components/BecomeAJuror'
 import Basics from '../components/Basics'
 import Subscribe from '../components/Subscribe'
 import Footer from '../components/Footer'
-import { useWeb3 } from '../web3'
+import { useWeb3Connect } from '../web3-connect'
 
 export default () => {
-  const { account, activate, deactivate } = useWeb3()
+  const { account, activate, deactivate } = useWeb3Connect()
   return (
     <div>
       <div
