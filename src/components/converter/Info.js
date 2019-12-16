@@ -5,9 +5,9 @@ const InfoSection = () => (
   <Info>
     <h6 className="title">Please read</h6>
     <div>
-      <h6>- Minimum 100 ANJ is required to become a juror </h6>
+      <h6>- Minimum 10,000 ANJ is required to become a juror</h6>
       <h6>- The pre-activation period ends in early February </h6>
-      <h6>- 1 ANT = 1 ANJ during pre-activation period only </h6>
+      <h6>- 1 ANT = 100 ANJ during pre-activation period only</h6>
       <h6>- ETH will be converted to ANT which will be converted to ANJ </h6>
       <h6>
         - ANJ will automatically be activated, you can change this later if you
