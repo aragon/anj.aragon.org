@@ -18,7 +18,13 @@ const CHAIN_ID = Number(env('CHAIN_ID'))
 const WEB3_REACT_CONNECTORS = new Map([
   ['injected', new InjectedConnector({ supportedChainIds: [CHAIN_ID] })],
   ['frame', new FrameConnector({ supportedChainIds: [CHAIN_ID] })],
-  ['fortmatic', new FortmaticConnector({ apiKey: '', chainId: [CHAIN_ID] })],
+  [
+    'fortmatic',
+    new FortmaticConnector({
+      apiKey: 'pk_test_50DDF49A7D38FE07',
+      chainId: [CHAIN_ID],
+    }),
+  ],
   [
     'portis',
     new PortisConnector({
