@@ -1,3 +1,4 @@
+import React, { useCallback } from 'react'
 import { Web3Provider as EthersWeb3Provider } from '@ethersproject/providers'
 import { Web3ReactProvider, useWeb3React } from '@web3-react/core'
 import InjectedConnector, {
@@ -10,6 +11,7 @@ import FrameConnector, {
 import FortmaticConnector from '@web3-react/fortmatic-connector'
 import PortisConnector from '@web3-react/portis-connector'
 import env from './environment'
+import { getNetworkName } from './web3-utils'
 
 const CHAIN_ID = env('CHAIN_ID')
 

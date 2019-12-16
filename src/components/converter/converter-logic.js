@@ -1,5 +1,4 @@
 import React, { useCallback, useMemo, useState } from 'react'
-const ADDRESS_REGEX = /^0x[0-9a-fA-F]{40}$/
 
 function noop() {}
 
@@ -18,15 +17,10 @@ export function useConvertTokensAction(onDone = done) {
   )
 }
 
-export function useEnableAccountAction(onDone = noop) {
-  console.log('Enable account')
-}
-
 // Handles the main logic of the app.
 export function useConverterLogic() {
   const actions = {
     convertTokens: useConvertTokensAction(),
-    EnableAccount: useEnableAccountAction(),
   }
 
   return {

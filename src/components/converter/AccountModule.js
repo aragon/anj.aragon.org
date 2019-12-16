@@ -8,7 +8,8 @@ import {
   ButtonToolbar,
 } from 'react-bootstrap'
 import { useWeb3Connect } from '../../web3-connect'
-import { useTokenBalance, shortenAddress } from '../../web3-utils'
+import { useTokenBalance } from '../../web3-contract-token'
+import { shortenAddress } from '../../web3-utils'
 import Token from './Token'
 import EthIdenticon from './EthIdenticon'
 
