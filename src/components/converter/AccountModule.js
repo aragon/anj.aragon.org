@@ -26,6 +26,7 @@ function ConnectedMode() {
   const { account, networkName, web3ReactContext } = useWeb3Connect()
   const balanceAnt = useTokenBalance('ANT')
   const balanceAnj = useTokenBalance('ANJ')
+  const antToUsd = useTokenToUsd('ANT', balanceAnt)
 
   const containerRef = useRef()
 
@@ -43,14 +44,14 @@ function ConnectedMode() {
                 <Token symbol="ANT" />
                 <div>
                   <p>{balanceAnt.toString()}</p>
-                  <h3>$1.200</h3>
+                  <h3>${antToUsd}</h3>
                 </div>
               </Row>
               <Row>
                 <Token symbol="ANJ" />
                 <div>
                   <p>{balanceAnj.toString()}</p>
-                  <h3>$1.200</h3>
+                  <h3 />
                 </div>
               </Row>
             </section>
