@@ -13,20 +13,17 @@ import PortisConnector from '@web3-react/portis-connector'
 import env from './environment'
 import { getNetworkName } from './web3-utils'
 
-const CHAIN_ID = env('CHAIN_ID')
+const CHAIN_ID = Number(env('CHAIN_ID'))
 
 const WEB3_REACT_CONNECTORS = new Map([
-  [
-    'injected',
-    new InjectedConnector({ supportedChainIds: [Number(CHAIN_ID)] }),
-  ],
-  ['frame', new FrameConnector({ supportedChainIds: [Number(CHAIN_ID)] })],
-  ['fortmatic', new FortmaticConnector({ apiKey: '', chainId: CHAIN_ID })],
+  ['injected', new InjectedConnector({ supportedChainIds: [CHAIN_ID] })],
+  ['frame', new FrameConnector({ supportedChainIds: [CHAIN_ID] })],
+  ['fortmatic', new FortmaticConnector({ apiKey: '', chainId: [CHAIN_ID] })],
   [
     'portis',
     new PortisConnector({
-      dAppId: '',
-      networks: [{ chainId: CHAIN_ID }],
+      dAppId: 'fab3d0cb-ef4b-4530-a14f-e6c979a05ced',
+      networks: [CHAIN_ID],
     }),
   ],
 ])
