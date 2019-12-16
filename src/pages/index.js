@@ -1,6 +1,7 @@
 import React from 'react'
 import Hero from '../components/Hero'
 import Converter from '../components/converter/Converter'
+import GetAnj from '../components/GetAnj'
 import Features from '../components/Features'
 import WhatHappens from '../components/WhatHappens'
 import About from '../components/About'
@@ -11,49 +12,10 @@ import Footer from '../components/Footer'
 import { useWeb3Connect } from '../web3-connect'
 
 export default () => {
-  const { account, activate, deactivate } = useWeb3Connect()
   return (
     <div>
-      <div
-        style={{
-          position: 'absolute',
-          top: '0',
-          left: '0',
-          zIndex: '9999',
-        }}
-      >
-        <div
-          style={{
-            background: 'white',
-            padding: '10px',
-          }}
-        >
-          Account: {account}
-        </div>
-        {['injected', 'frame', 'fortmatic', 'portis'].map(connectorName => (
-          <button
-            key={connectorName}
-            onClick={() => activate(connectorName)}
-            style={{
-              background: 'white',
-              transition: 'none',
-            }}
-          >
-            activate {connectorName}
-          </button>
-        ))}
-        <button
-          onClick={deactivate}
-          style={{
-            background: 'white',
-            transition: 'none',
-          }}
-        >
-          deactivate
-        </button>
-      </div>
       <Hero />
-      <Converter />
+      <GetAnj />
       <Features />
       <WhatHappens />
       <About />

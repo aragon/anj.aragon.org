@@ -18,6 +18,7 @@ export default {
       component: 'src/pages/index',
       getData: () => ({ title: '' }),
     },
+    
   ],
   paths: REACT_STATIC_PATHS,
   plugins: [
