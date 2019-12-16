@@ -13,7 +13,8 @@ import frame from './assets/frame.svg'
 import portis from './assets/portis.svg'
 import fortmatic from './assets/fortmatic.svg'
 import { breakpoint } from '../../microsite-logic'
-import { useWeb3, identifyProvider, useTokenBalance } from '../../web3'
+import { useWeb3Connect } from '../../web3-connect'
+import { identifyProvider, useTokenBalance } from '../../web3-utils'
 
 const medium = css => breakpoint('medium', css)
 

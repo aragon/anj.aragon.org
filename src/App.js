@@ -2,7 +2,7 @@ import React from 'react'
 import { Root, Routes, addPrefetchExcludes } from 'react-static'
 import { Link, Router } from 'components/Router'
 import Navbar from 'components/Navbar'
-import { Web3Provider } from './web3'
+import { Web3ConnectProvider } from './web3-connect'
 
 import './app.css'
 
@@ -11,7 +11,7 @@ addPrefetchExcludes(['dynamic'])
 
 function App() {
   return (
-    <Web3Provider>
+    <Web3ConnectProvider>
       <Root>
         <Navbar />
         <div className="content">
@@ -22,7 +22,7 @@ function App() {
           </React.Suspense>
         </div>
       </Root>
-    </Web3Provider>
+    </Web3ConnectProvider>
   )
 }
 
