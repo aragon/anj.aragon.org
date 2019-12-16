@@ -11,6 +11,10 @@ export function balanceFromBigInt(value) {
       const bigIntValue =
         typeof BigInt === 'undefined' ? value.toNumber() : BigInt(value)
 
+      if (bigIntValue < 0) {
+        return '−'
+      }
+
       return (
         Intl.NumberFormat('en-US', {
           style: 'currency',
