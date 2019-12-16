@@ -20,7 +20,7 @@ const WEB3_REACT_CONNECTORS = new Map([
     'injected',
     new InjectedConnector({ supportedChainIds: [Number(CHAIN_ID)] }),
   ],
-  ['frame', new FrameConnector({ supportedChainIds: [CHAIN_ID] })],
+  ['frame', new FrameConnector({ supportedChainIds: [Number(CHAIN_ID)] })],
   ['fortmatic', new FortmaticConnector({ apiKey: '', chainId: CHAIN_ID })],
   [
     'portis',
