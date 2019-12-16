@@ -13,7 +13,7 @@ function FormSection() {
   const disabled = !!errorMessage || !this.canSubmit()
   const [amount, setAmount] = useState('')
   return (
-    <Form onSubmit={useConverterLogic().actions.convertTokens(amount)}>
+    <Form onSubmit={() => useConverterLogic().actions.convertTokens(amount)}>
       <div
         css={`
           margin-bottom: ${3 * 8}px;
@@ -32,7 +32,7 @@ function FormSection() {
             onChange={() => setAmount(event.target.value)}
           />
           <Adornment>
-            <Token title="ant" />
+            <Token symbol="ANT" />
           </Adornment>
         </AdornmentBox>
         <Label>Amount of ANJ you will receive and activate</Label>
@@ -44,7 +44,7 @@ function FormSection() {
             onChange={() => setAmount(event.target.value / 10)}
           />
           <Adornment>
-            <Token title="anj" />
+            <Token symbol="ANJ" />
           </Adornment>
         </AdornmentBox>
         <OverlayTrigger

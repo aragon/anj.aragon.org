@@ -49,24 +49,24 @@ export function shortenAddress(address, charsLength = 4) {
   )
 }
 
-export function useAccount() {
-  const account = '0x8401Eb5ff34cc943f096A32EF3d5113FEbE8D4Eb'
-  const balance = 15.345
-  const isContract = false
-  const enableWallet = false
-  const walletNetwork = 'rinkeby'
-  const walletProviderId = 'Metamask'
+// export function useAccount() {
+//   const account = '0x8401Eb5ff34cc943f096A32EF3d5113FEbE8D4Eb'
+//   const balance = 15.345
+//   const isContract = false
+//   const enableWallet = false
+//   const walletNetwork = 'rinkeby'
+//   const walletProviderId = 'Metamask'
 
-  return {
-    balance,
-    isContract,
-    address: account,
-    connected: Boolean(account),
-    enable: enableWallet,
-    networkId: walletNetwork,
-    providerInfo: walletProviderId,
-  }
-}
+//   return {
+//     balance,
+//     isContract,
+//     address: account,
+//     connected: Boolean(account),
+//     enable: enableWallet,
+//     networkId: walletNetwork,
+//     providerInfo: walletProviderId,
+//   }
+// }
 
 export function isAddress(address) {
   return ADDRESS_REGEX.test(address)

@@ -1,16 +1,16 @@
 import React from 'react'
 import styled from 'styled-components'
 
-const TokenSection = ({ title, badge }) => (
-  <Token className={badge ? 'badge' : undefined}>
+const Token = ({ symbol, badge }) => (
+  <TokenSection className={badge ? 'badge' : undefined}>
     <h2>
-      <img src={require(`./assets/${title}.svg`)} />
-      {title}
+      <img src={require(`./assets/${symbol.toLowerCase()}.svg`)} />
+      {symbol}
     </h2>
-  </Token>
+  </TokenSection>
 )
 
-const Token = styled.div`
+const TokenSection = styled.div`
   padding: 8px 8px 1px 8px;
   position: relative;
   &.badge {
@@ -28,9 +28,8 @@ const Token = styled.div`
     font-size: 22px;
     line-height: 1;
     color: #8a96a0;
-    text-transform: uppercase;
     margin: 0;
   }
 `
 
-export default TokenSection
+export default Token

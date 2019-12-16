@@ -10,7 +10,7 @@ const medium = css => breakpoint('medium', css)
 const HeaderSection = () => (
   <Header>
     <h1>
-      Convert <Token title="ant" badge /> to <Token title="anj" badge />
+      Convert <Token symbol="ANT" badge /> to <Token symbol="ANJ" badge />
     </h1>
     <AccountModule />
   </Header>

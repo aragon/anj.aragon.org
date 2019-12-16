@@ -11,19 +11,19 @@ import enable from './assets/enable.svg'
 import metamask from './assets/metamask.svg'
 import frame from './assets/frame.svg'
 import portis from './assets/portis.svg'
-import fromatic from './assets/fromatic.svg'
+import fortmatic from './assets/fortmatic.svg'
 import { breakpoint } from '../../microsite-logic'
+import { useWeb3, identifyProvider } from '../../web3'
 
 const medium = css => breakpoint('medium', css)
 
 function EnableAccount() {
+  const { account, activate, deactivate } = useWeb3()
   const [show, setShow] = useState(false)
   const [target, setTarget] = useState(null)
   const ref = useRef(null)
 
-  const handleClick = event => {
-    console.log('met')
-  }
+  const isMetamask = identifyProvider(window.ethereum) === 'metamask'
 
   return (
     <OverlayTrigger
@@ -35,20 +35,20 @@ function EnableAccount() {
           <Content>
             <p className="title">Wallet connect</p>
             <div>
-              <button onClick={handleClick}>
-                <img src={metamask} />
-                <p>Metamask</p>
+              <button onClick={() => activate('injected')}>
+                <img src={metamask} alt="" />
+                <p>{isMetamask ? 'Metamask' : 'Wallet'}</p>
               </button>
-              <button>
-                <img src={frame} />
+              <button onClick={() => activate('frame')}>
+                <img src={frame} alt="" />
                 <p>Frame</p>
               </button>
-              <button>
-                <img src={fromatic} />
-                <p>Formatic</p>
+              <button onClick={() => activate('fortmatic')}>
+                <img src={fortmatic} alt="" />
+                <p>Fortmatic</p>
               </button>
-              <button>
-                <img src={portis} />
+              <button onClick={() => activate('portis')}>
+                <img src={portis} alt="" />
                 <p>Portis</p>
               </button>
             </div>
@@ -64,19 +64,19 @@ function EnableAccount() {
   )
 }
 
-const BalanceSection = () => {
-  const enabled = false
+const Balance = () => {
+  const { account } = useWeb3()
   return (
-    <Balance>
+    <BalanceSection>
       <p>Your account's active balance</p>
-      {enabled ? (
+      {account ? (
         <h3>
-          15.030 <Token title="anj" />
+          15.030 <Token symbol="ANJ" />
         </h3>
       ) : (
         <EnableAccount />
       )}
-    </Balance>
+    </BalanceSection>
   )
 }
 
@@ -157,7 +157,7 @@ const StyledPopover = styled(Popover)`
     border-bottom-color: transparent;
   }
 `
-const Balance = styled.div`
+const BalanceSection = styled.div`
   h3 {
     font-family: Basier Square Mono;
     font-size: 54px;
@@ -169,4 +169,4 @@ const Balance = styled.div`
   }
 `
 
-export default BalanceSection
+export default Balance

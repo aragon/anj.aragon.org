@@ -7,20 +7,14 @@ import {
   Popover,
   ButtonToolbar,
 } from 'react-bootstrap'
+import { useWeb3, useTokenBalance } from '../../web3'
 import { shortenAddress } from './converter-logic'
-import { useAccount } from './converter-logic'
 import Token from './Token'
 import EthIdenticon from './EthIdenticon'
 
-function getNetworkName(networkId) {
-  if (networkId === 'main') return 'Mainnet'
-  if (networkId === 'rinkeby') return 'Rinkeby'
-  return networkId
-}
-
 function AccountModule({ compact }) {
-  const { connected } = useAccount()
-  return connected ? <ConnectedMode /> : ''
+  const { account } = useWeb3()
+  return account ? <ConnectedMode /> : ''
 }
 
 AccountModule.propTypes = {
@@ -28,9 +22,11 @@ AccountModule.propTypes = {
 }
 
 function ConnectedMode() {
-  const { address, label, networkId } = useAccount()
+  const { account, networkName, web3ReactContext } = useWeb3()
+  const balanceAnt = useTokenBalance('ANT')
+  const balanceAnj = useTokenBalance('ANJ')
+
   const containerRef = useRef()
-  const networkName = getNetworkName(networkId)
 
   return (
     <Container ref={containerRef}>
@@ -43,16 +39,16 @@ function ConnectedMode() {
             <section>
               <h1>Connected to {networkName}</h1>
               <Row>
-                <Token title="ant" />
+                <Token symbol="ANT" />
                 <div>
-                  <p>3.595,14</p>
+                  <p>{balanceAnt.toString()}</p>
                   <h3>$1.200</h3>
                 </div>
               </Row>
               <Row>
-                <Token title="anj" />
+                <Token symbol="ANJ" />
                 <div>
-                  <p>3.595,14</p>
+                  <p>{balanceAnj.toString()}</p>
                   <h3>$1.200</h3>
                 </div>
               </Row>
@@ -66,9 +62,9 @@ function ConnectedMode() {
               position: relative;
             `}
           >
-            <EthIdenticon address={address} scale={1} radius={1} />
+            <EthIdenticon address={account} scale={1} radius={1} />
           </div>
-          <Address>{shortenAddress(address)}</Address>
+          <Address>{shortenAddress(account)}</Address>
           <svg
             width="16"
             height="16"
