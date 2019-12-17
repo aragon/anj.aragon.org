@@ -14,7 +14,10 @@ import portis from './assets/portis.svg'
 import fortmatic from './assets/fortmatic.svg'
 import { breakpoint } from '../../microsite-logic'
 import { useWeb3Connect } from '../../web3-connect'
-import { useTokenBalance } from '../../web3-contract-token'
+import {
+  useTokenBalance,
+  useJurorRegistryAnjBalance,
+} from '../../web3-contract-token'
 import { identifyProvider } from '../../web3-utils'
 
 const medium = css => breakpoint('medium', css)
@@ -68,13 +71,13 @@ function EnableAccount() {
 
 const Balance = () => {
   const { account } = useWeb3Connect()
-  const balanceAnj = useTokenBalance('ANJ')
+  const anjBalance = useJurorRegistryAnjBalance()
   return (
     <BalanceSection>
       <p>Your account's active balance</p>
       {account ? (
         <h3>
-          <span className="mono">{balanceAnj.toString()} </span>
+          <span className="mono">{anjBalance.toString()} </span>
           <Token symbol="ANJ" />
         </h3>
       ) : (

@@ -6,7 +6,8 @@ import { balanceFromBigInt } from './utils'
 import KNOWN_CONTRACTS_ALL from './known-contracts'
 import env from './environment'
 import balanceOfAbi from './abi/token-balanceof.json'
-import wrapperAbi from './abi/wrapper.json'
+import jurorsRegistryAbi from './abi/jurors-registry.json'
+import approveAndCallAbi from './abi/wrapper.json'
 
 const KNOWN_CONTRACTS = KNOWN_CONTRACTS_ALL.get(env('CHAIN_ID')) || {}
 
@@ -44,6 +45,47 @@ export function useTokenBalance(symbol) {
   return balance
 }
 
+export function useJurorRegistryAnjBalance() {
+  const { account, ethersProvider } = useWeb3Connect()
+  const [balance, setBalance] = useState(balanceFromBigInt(-1))
+
+  const tokenAddress = KNOWN_CONTRACTS['TOKEN_ANJ']
+  const jurorsRegistryAddress = KNOWN_CONTRACTS['JURORS_REGISTRY']
+
+  useEffect(
+    () => {
+      if (!account || !ethersProvider || !tokenAddress) {
+        setBalance(balanceFromBigInt(-1))
+        return
+      }
+
+      const tokenContract = new EthersContract(
+        tokenAddress,
+        balanceOfAbi,
+        ethersProvider
+      )
+
+      const jurorsRegistryContract = new EthersContract(
+        jurorsRegistryAddress,
+        jurorsRegistryAbi,
+        ethersProvider
+      )
+
+      Promise.all([
+        jurorsRegistryContract.balanceOf(account),
+        tokenContract.decimals(),
+      ]).then(([balances, decimals]) => {
+        setBalance(
+          balanceFromBigInt(balances[0].div(BigNumber.from(10).pow(decimals)))
+        )
+      })
+    },
+    [account, ethersProvider, tokenAddress]
+  )
+
+  return balance
+}
+
 // Convert ANT to ANJ action
 export function useConvertAntToAnj(onDone = done) {
   const { ethersProvider } = useWeb3Connect()
@@ -56,7 +98,7 @@ export function useConvertAntToAnj(onDone = done) {
       const wrapperAddress = KNOWN_CONTRACTS['WRAPPER']
       const antContract = new EthersContract(
         antAddress,
-        wrapperAbi,
+        approveAndCallAbi,
         ethersProvider.getSigner()
       )
       let overrides = {
