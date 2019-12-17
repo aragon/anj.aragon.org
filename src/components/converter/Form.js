@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { OverlayTrigger, Tooltip } from 'react-bootstrap'
 import Token from './Token'
 import question from './assets/question.svg'
-import { useConverterLogic } from './converter-logic'
+import { useConvertLogic } from '../../web3-contract-token'
 import { breakpoint } from '../../microsite-logic'
 
 const large = css => breakpoint('large', css)
@@ -12,8 +12,14 @@ function FormSection() {
   let errorMessage = 'Amount is greater than balance held'
   const disabled = !!errorMessage || !this.canSubmit()
   const [amount, setAmount] = useState('')
+  const convertLogic = useConvertLogic()
   return (
-    <Form onSubmit={() => useConverterLogic().actions.convertTokens(amount)}>
+    <Form
+      onSubmit={event => {
+        event.preventDefault()
+        convertLogic.actions.convertAntToAnj(amount)
+      }}
+    >
       <div
         css={`
           margin-bottom: ${3 * 8}px;
@@ -49,7 +55,7 @@ function FormSection() {
         </AdornmentBox>
         <OverlayTrigger
           placement="right"
-          delay={{ show: 250, hide: 400 }}
+          delay={{ hide: 400 }}
           overlay={function renderTooltip(props) {
             return (
               <Tooltip {...props}>

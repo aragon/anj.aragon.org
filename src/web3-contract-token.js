@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { Contract as EthersContract } from '@ethersproject/contracts'
 import { BigNumber } from '@ethersproject/bignumber'
 import { useWeb3Connect } from './web3-connect'
@@ -6,6 +6,7 @@ import { balanceFromBigInt } from './utils'
 import KNOWN_CONTRACTS_ALL from './known-contracts'
 import env from './environment'
 import balanceOfAbi from './abi/token-balanceof.json'
+import wrapperAbi from './abi/wrapper.json'
 
 const KNOWN_CONTRACTS = KNOWN_CONTRACTS_ALL.get(env('CHAIN_ID')) || {}
 
@@ -43,9 +44,38 @@ export function useTokenBalance(symbol) {
   return balance
 }
 
-export function useConvertAntToAnj(amount) {
-  const a = useWeb3Connect()
-  return function convert() {}
+// Convert ANT to ANJ action
+export function useConvertAntToAnj(onDone = done) {
+  const { ethersProvider } = useWeb3Connect()
+  return useCallback(
+    async amount => {
+      if (!ethersProvider) {
+        return
+      }
+      const wrapperAddress = KNOWN_CONTRACTS['WRAPPER']
+      const wrapperContract = new EthersContract(
+        wrapperAddress,
+        wrapperAbi,
+        ethersProvider.getSigner()
+      )
+      wrapperContract.approveAndCall(wrapperAddress, amount).then(onDone)
+    },
+    [onDone, ethersProvider]
+  )
+}
+
+function done() {
+  console.log('done')
+}
+
+export function useConvertLogic() {
+  const actions = {
+    convertAntToAnj: useConvertAntToAnj(),
+  }
+
+  return {
+    actions,
+  }
 }
 
 export function useTokenToUsd(token, balance) {
