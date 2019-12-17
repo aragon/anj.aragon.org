@@ -52,13 +52,19 @@ export function useConvertAntToAnj(onDone = done) {
       if (!ethersProvider) {
         return
       }
+      const antAddress = KNOWN_CONTRACTS['TOKEN_ANT']
       const wrapperAddress = KNOWN_CONTRACTS['WRAPPER']
-      const wrapperContract = new EthersContract(
-        wrapperAddress,
+      const antContract = new EthersContract(
+        antAddress,
         wrapperAbi,
         ethersProvider.getSigner()
       )
-      wrapperContract.approveAndCall(wrapperAddress, amount).then(onDone)
+      let overrides = {
+        gasLimit: 7500000,
+      }
+      antContract
+        .approveAndCall(wrapperAddress, amount, '0x00', overrides)
+        .then(onDone)
     },
     [onDone, ethersProvider]
   )
