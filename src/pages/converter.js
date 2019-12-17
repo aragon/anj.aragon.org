@@ -16,10 +16,11 @@ export default () => {
     <div>
       <div
         style={{
-          position: 'absolute',
+          position: 'fixed',
           top: '0',
           left: '0',
           zIndex: '9999',
+          border: '2px solid #333',
         }}
       >
         <div

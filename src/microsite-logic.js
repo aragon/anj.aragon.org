@@ -14,3 +14,5 @@ export const breakpoint = (name, styles) => css`
     ${styles};
   }
 `
+
+export const GU = 8

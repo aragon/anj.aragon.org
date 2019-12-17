@@ -1,28 +1,122 @@
-import React, { useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import styled from 'styled-components'
 import { OverlayTrigger, Tooltip } from 'react-bootstrap'
+import { BigNumber } from '@ethersproject/bignumber'
 import Token from './Token'
 import question from './assets/question.svg'
-import { useConvertLogic } from '../../web3-contract-token'
-import { breakpoint } from '../../microsite-logic'
+
+import { useTokenDecimals, useConvertAntToAnj } from '../../web3-contract-token'
+import { fromTokenInteger, toTokenInteger } from '../../web3-utils'
+import { breakpoint, GU } from '../../microsite-logic'
 
 const large = css => breakpoint('large', css)
 
+const ANJ_BY_ANT = 100
+
+function convertInputValue(value, fromDecimals, toDecimals, convert) {
+  value = value.trim()
+
+  if (!value || fromDecimals === -1 || toDecimals === -1) {
+    return ['', '']
+  }
+
+  const fromAmount = BigNumber.from(toTokenInteger(value || '0', fromDecimals))
+  const toAmount = convert(fromAmount)
+
+  const toInputValue = value ? fromTokenInteger(toAmount, toDecimals) : ''
+
+  return {
+    fromInputValue: value,
+    toInputValue,
+    fromAmount,
+    toAmount,
+  }
+}
+
+function useConvertInputs() {
+  const [inputValueAnj, setInputValueAnj] = useState('')
+  const [inputValueAnt, setInputValueAnt] = useState('')
+  const [amountAnj, setAmountAnj] = useState(BigNumber.from(0))
+  const [amountAnt, setAmountAnt] = useState(BigNumber.from(0))
+
+  const antDecimals = useTokenDecimals('ANT')
+  const anjDecimals = useTokenDecimals('ANJ')
+
+  const handleAntChange = useCallback(
+    event => {
+      if (antDecimals === -1 || anjDecimals === -1) {
+        return
+      }
+
+      const converted = convertInputValue(
+        event.target.value,
+        antDecimals,
+        anjDecimals,
+        amount => amount.mul(ANJ_BY_ANT)
+      )
+
+      setInputValueAnt(converted.fromInputValue)
+      setInputValueAnj(converted.toInputValue)
+      setAmountAnt(converted.fromAmount)
+      setAmountAnj(converted.toAmount)
+    },
+    [antDecimals, anjDecimals]
+  )
+
+  const handleAnjChange = useCallback(
+    event => {
+      if (antDecimals === -1 || anjDecimals === -1) {
+        return
+      }
+
+      const converted = convertInputValue(
+        event.target.value,
+        anjDecimals,
+        antDecimals,
+        amount => amount.div(ANJ_BY_ANT)
+      )
+
+      setInputValueAnj(converted.fromInputValue)
+      setInputValueAnt(converted.toInputValue)
+      setAmountAnj(converted.fromAmount)
+      setAmountAnt(converted.toAmount)
+    },
+    [antDecimals, anjDecimals]
+  )
+
+  return {
+    amountAnj,
+    amountAnt,
+    handleAnjChange,
+    handleAntChange,
+    inputValueAnj,
+    inputValueAnt,
+  }
+}
+
 function FormSection() {
-  let errorMessage = 'Amount is greater than balance held'
-  const disabled = !!errorMessage || !this.canSubmit()
-  const [amount, setAmount] = useState('')
-  const convertLogic = useConvertLogic()
+  const {
+    amountAnj,
+    amountAnt,
+    handleAnjChange,
+    handleAntChange,
+    inputValueAnj,
+    inputValueAnt,
+  } = useConvertInputs()
+
+  // let errorMessage = 'Amount is greater than balance held'
+  // const disabled = Boolean(errorMessage)
+
+  const convertAntToAnj = useConvertAntToAnj()
+  //
+  // on submit
+  // convertAntToAnj(amount)
+
   return (
-    <Form
-      onSubmit={event => {
-        event.preventDefault()
-        convertLogic.actions.convertAntToAnj(amount)
-      }}
-    >
+    <Form onSubmit={() => actions.convertTokens(amount)}>
       <div
         css={`
-          margin-bottom: ${3 * 8}px;
+          margin-bottom: ${3 * GU}px;
         `}
       >
         <Label>
@@ -33,9 +127,8 @@ function FormSection() {
         <AdornmentBox>
           <Input
             type="number"
-            value={amount}
-            min={100}
-            onChange={() => setAmount(event.target.value)}
+            value={inputValueAnt}
+            onChange={handleAntChange}
           />
           <Adornment>
             <Token symbol="ANT" />
@@ -45,9 +138,8 @@ function FormSection() {
         <AdornmentBox>
           <Input
             type="number"
-            value={amount ? amount * 10 : ''}
-            min={1000}
-            onChange={() => setAmount(event.target.value / 10)}
+            value={inputValueAnj}
+            onChange={handleAnjChange}
           />
           <Adornment>
             <Token symbol="ANJ" />
@@ -76,7 +168,7 @@ function FormSection() {
         <Input />
       </div>
 
-      <Button disabled={!amount || amount <= 0} type="submit">
+      <Button disabled={true} type="submit">
         Become a Juror
       </Button>
     </Form>
@@ -122,6 +214,7 @@ const Input = styled.input`
   &::-webkit-outer-spin-button {
     -webkit-appearance: none;
   }
+  -moz-appearance: textfield;
   &:focus {
     outline: none;
     border-color: #08bee5;
