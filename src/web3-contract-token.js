@@ -1,12 +1,9 @@
 import { useEffect, useState, useCallback } from 'react'
-import { Contract as EthersContract } from '@ethersproject/contracts'
 import { BigNumber } from '@ethersproject/bignumber'
 import { getKnownContract } from './known-contracts'
 import { balanceFromBigInt } from './utils'
 import { useWeb3Connect } from './web3-connect'
 import { useKnownContract } from './web3-contract'
-
-import approveAndCallAbi from './abi/wrapper.json'
 
 export function useTokenDecimals(symbol) {
   const [decimals, setDecimals] = useState(-1)
@@ -92,12 +89,12 @@ export function useConvertAntToAnj() {
   const [wrapperAddress] = getKnownContract('WRAPPER')
 
   return useCallback(
-    async amount => {
+    async antAmount => {
       if (!antContract || !wrapperAddress) {
         return false
       }
 
-      return antContract.approveAndCall(wrapperAddress, amount, '0x00', {
+      return antContract.approveAndCall(wrapperAddress, antAmount, '0x00', {
         gasLimit: 7500000,
       })
     },
