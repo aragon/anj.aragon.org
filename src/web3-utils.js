@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { BigNumber } from '@ethersproject/bignumber'
+import { balanceFromBigInt } from './utils'
 
 const ADDRESS_REGEX = /^0x[0-9a-fA-F]{40}$/
 
@@ -78,15 +79,13 @@ export function useTokenToUsd(token, balance) {
         token +
         '&tsyms=USD'
     )
-      .then(response => {
-        return response.json()
-      })
+      .then(res => res.json())
       .then(price => {
         if (parseFloat(balance) > 0) {
           setUsd(
             balanceFromBigInt(
               balance.value
-                .mul(BigNumber.from(parseInt(price.USD * 1000000, 10)))
+                .mul(BigNumber.from(parseInt(price.USD, 10) * 1000000))
                 .div(1000000)
             ).toString()
           )
