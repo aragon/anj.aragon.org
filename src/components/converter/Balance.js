@@ -17,7 +17,7 @@ import { useWeb3Connect } from '../../web3-connect'
 import {
   useTokenBalance,
   useJurorRegistryAnjBalance,
-} from '../../web3-contract-token'
+} from '../../web3-contracts'
 import { identifyProvider } from '../../web3-utils'
 
 const medium = css => breakpoint('medium', css)
