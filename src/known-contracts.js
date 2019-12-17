@@ -1,4 +1,10 @@
-export default new Map([
+import env from './environment'
+
+import tokenAbi from './abi/token.json'
+import jurorsRegistryAbi from './abi/jurors-registry.json'
+import wrapperAbi from './abi/wrapper.json'
+
+const KNOWN_CONTRACTS_BY_ENV = new Map([
   [
     '1',
     {
@@ -18,3 +24,17 @@ export default new Map([
     },
   ],
 ])
+
+const ABIS = new Map([
+  ['TOKEN_ANT', tokenAbi],
+  ['TOKEN_ANJ', tokenAbi],
+  ['WRAPPER', wrapperAbi],
+  ['JURORS_REGISTRY', jurorsRegistryAbi],
+])
+
+export function getKnownContract(name) {
+  const knownContracts = KNOWN_CONTRACTS_BY_ENV.get(env('CHAIN_ID')) || {}
+  return [knownContracts[name] || null, ABIS.get(name) || []]
+}
+
+export default KNOWN_CONTRACTS_BY_ENV
