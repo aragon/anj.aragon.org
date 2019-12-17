@@ -104,16 +104,18 @@ function FormSection() {
     inputValueAnt,
   } = useConvertInputs()
 
+  const convertAntToAnj = useConvertAntToAnj()
+
+  const handleSubmit = event => {
+    event.preventDefault()
+    convertAntToAnj(amountAnt.toString())
+  }
+
   // let errorMessage = 'Amount is greater than balance held'
   // const disabled = Boolean(errorMessage)
 
-  const convertAntToAnj = useConvertAntToAnj()
-  //
-  // on submit
-  // convertAntToAnj(amount)
-
   return (
-    <Form onSubmit={() => actions.convertTokens(amount)}>
+    <Form onSubmit={handleSubmit}>
       <div
         css={`
           margin-bottom: ${3 * GU}px;
@@ -168,9 +170,7 @@ function FormSection() {
         <Input />
       </div>
 
-      <Button disabled={true} type="submit">
-        Become a Juror
-      </Button>
+      <Button type="submit">Become a Juror</Button>
     </Form>
   )
 }
