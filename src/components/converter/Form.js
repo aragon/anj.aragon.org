@@ -120,7 +120,21 @@ function FormSection() {
   }
 
   // const disabled = Boolean(errorMessage)
+  const [placeholder, setPlaceholder] = useState('')
 
+  useEffect(
+    () => {
+      if (balanceAnj && balanceAnj.value.gte(BigNumber.from(String(10000)))) {
+        setPlaceholder('')
+      } else {
+        setPlaceholder('Min. 100 ANT')
+      }
+    },
+    [balanceAnj]
+  )
+
+  console.log(balanceAnj, balanceAnj.value.gte(BigNumber.from(String(10000))))
+  console.log('p', placeholder)
   const [info, setInfo] = useState('')
   const [balanceInfo, setBalanceInfo] = useState(balanceAnt.toString())
   const [validationBalance, setValidationBalance] = useState('')
@@ -144,9 +158,6 @@ function FormSection() {
             ? 'The minimum amount for this is 100. '
             : ''
         )
-      }
-      if (!inputValueAnt) {
-        setInfo('')
       }
     },
     [amountAnt, inputValueAnt, balanceAnj]
@@ -185,6 +196,7 @@ function FormSection() {
               type="number"
               value={inputValueAnt}
               onChange={handleAntChange}
+              placeholder={placeholder}
             />
             <Adornment>
               <Token symbol="ANT" />
