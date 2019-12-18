@@ -2,6 +2,7 @@ import env from './environment'
 
 import tokenAbi from './abi/token.json'
 import jurorsRegistryAbi from './abi/jurors-registry.json'
+import wrapperAbi from './abi/wrapper.json'
 
 const KNOWN_CONTRACTS_BY_ENV = new Map([
   [
@@ -28,6 +29,7 @@ const ABIS = new Map([
   ['TOKEN_ANT', tokenAbi],
   ['TOKEN_ANJ', tokenAbi],
   ['JURORS_REGISTRY', jurorsRegistryAbi],
+  ['WRAPPER', wrapperAbi],
 ])
 
 export function getKnownContract(name) {

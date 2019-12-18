@@ -3,19 +3,21 @@ import styled from 'styled-components'
 import error from './assets/error.svg'
 import repeat from './assets/repeat.svg'
 
-const ErrorSection = () => (
-  <Error>
-    <div>
-      <img src={error} />
-      <p className="red">Something went wrong</p>
-      <p>Some error has occurred at the time of the transaction.</p>
-      <Button>
-        <img src={repeat} />
-        Repeat transaction
-      </Button>
-    </div>
-  </Error>
-)
+function ErrorSection({ onDone }) {
+  return (
+    <Error>
+      <div>
+        <img src={error} />
+        <p className="red">Something went wrong</p>
+        <p>Some error has occurred at the time of the transaction.</p>
+        <Button onClick={onDone}>
+          <img src={repeat} alt="" />
+          Repeat transaction
+        </Button>
+      </div>
+    </Error>
+  )
+}
 
 const Error = styled.div`
   min-width: 1109px;

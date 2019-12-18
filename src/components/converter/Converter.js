@@ -1,22 +1,49 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import styled from 'styled-components'
 import { breakpoint } from '../../microsite-logic'
 import Header from './Header'
 import ConverterContent from './ConverterContent'
-import Success from './Processing'
+import ErrorScreen from './Error'
+import ProcessingScreen from './Processing'
+import SuccessScreen from './Success'
+import {
+  CONVERTER_STATUSES,
+  ConverterProvider,
+  useConverterStatus,
+} from './converter-status'
 
 const large = css => breakpoint('large', css)
 
-const Converter = () => {
-  const success = false
+function Converter() {
   return (
-    <OuterSection>
-      <ConverterSection>
-        <Header />
-        {success ? <Success amount={5600} /> : <ConverterContent />}
-      </ConverterSection>
-    </OuterSection>
+    <ConverterProvider>
+      <OuterSection>
+        <ConverterSection>
+          <Header />
+          <ConverterIn />
+        </ConverterSection>
+      </OuterSection>
+    </ConverterProvider>
   )
+}
+
+function ConverterIn() {
+  const { status, setStatus } = useConverterStatus()
+
+  const backToForm = useCallback(() => {
+    setStatus(CONVERTER_STATUSES.FORM)
+  }, [setStatus])
+
+  if (status === CONVERTER_STATUSES.SUCCESS) {
+    return <SuccessScreen onDone={backToForm} />
+  }
+  if (status === CONVERTER_STATUSES.ERROR) {
+    return <ErrorScreen onDone={backToForm} />
+  }
+  if (status === CONVERTER_STATUSES.PENDING) {
+    return <ProcessingScreen />
+  }
+  return <ConverterContent />
 }
 
 const ConverterSection = styled.div`

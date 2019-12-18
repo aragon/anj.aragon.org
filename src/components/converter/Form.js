@@ -11,6 +11,7 @@ import {
 } from '../../web3-contracts'
 import { fromTokenInteger, toTokenInteger } from '../../web3-utils'
 import { breakpoint, GU } from '../../microsite-logic'
+import { useConverterStatus, CONVERTER_STATUSES } from './converter-status'
 
 import question from './assets/question.svg'
 
@@ -114,9 +115,17 @@ function FormSection() {
   const balanceAnt = useTokenBalance('ANT')
   const balanceAnj = useJurorRegistryAnjBalance()
 
-  const handleSubmit = event => {
+  const converterStatus = useConverterStatus()
+
+  const handleSubmit = async event => {
     event.preventDefault()
-    convertAntToAnj(amountAnt.toString())
+
+    try {
+      await convertAntToAnj(amountAnt.toString())
+      converterStatus.setStatus(CONVERTER_STATUSES.PENDING)
+    } catch (err) {
+      converterStatus.setStatus(CONVERTER_STATUSES.ERROR)
+    }
   }
 
   // const disabled = Boolean(errorMessage)
@@ -142,7 +151,8 @@ function FormSection() {
     if (
       amountAnt &&
       inputValueAnt &&
-      balanceAnj && balanceAnj.value.lt(BigNumber.from(String(10000)))
+      balanceAnj &&
+      balanceAnj.value.lt(BigNumber.from(String(10000)))
     ) {
       setInfo(
         amountAnt.lt(BigNumber.from(String(Math.pow(10, 18) * 100)))

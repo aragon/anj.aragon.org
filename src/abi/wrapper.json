@@ -1,0 +1,3 @@
+[
+  "event BoughtAndActivated(address from, address collateralToken, uint256 buyAmount, uint256 activatedAmount)"
+]

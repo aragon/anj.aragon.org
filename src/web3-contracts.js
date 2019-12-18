@@ -132,6 +132,7 @@ export function useJurorRegistryAnjBalance() {
   const decimals = useTokenDecimals('ANJ')
   const tokenContract = useKnownContract('TOKEN_ANJ')
   const jurorsRegistryContract = useKnownContract('JURORS_REGISTRY')
+  const wrapperContract = useKnownContract('WRAPPER')
 
   const cancelBalanceUpdate = useRef(null)
 
@@ -170,21 +171,21 @@ export function useJurorRegistryAnjBalance() {
     // Always update the balance if updateBalance() has changed
     updateBalance()
 
-    if (!tokenContract || !account) {
+    if (!wrapperContract || !account) {
       return
     }
 
-    const onTransfer = (from, to, value) => {
-      if (from === account || to === account) {
+    const onBoughtAndActivated = (from, to, value) => {
+      if (from === account) {
         updateBalance()
       }
     }
-    tokenContract.on('Transfer', onTransfer)
+    wrapperContract.on('BoughtAndActivated', onBoughtAndActivated)
 
     return () => {
-      tokenContract.removeListener('Transfer', onTransfer)
+      wrapperContract.removeListener('BoughtAndActivated', onBoughtAndActivated)
     }
-  }, [account, tokenContract, updateBalance])
+  }, [account, wrapperContract, updateBalance])
 
   return balance
 }
