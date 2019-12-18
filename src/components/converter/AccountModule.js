@@ -26,7 +26,12 @@ AccountModule.propTypes = {
 }
 
 function ConnectedMode() {
-  const { account, networkName, web3ReactContext } = useWeb3Connect()
+  const {
+    account,
+    networkName,
+    web3ReactContext,
+    deactivate,
+  } = useWeb3Connect()
   const balanceAnt = useTokenBalance('ANT')
   const balanceAnj = useJurorRegistryAnjBalance()
   const antToUsd = useTokenToUsd('ANT', balanceAnt)
@@ -42,7 +47,10 @@ function ConnectedMode() {
         overlay={
           <StyledPopover>
             <section>
-              <h1>Connected to {networkName}</h1>
+              <div className="header">
+                <button onClick={deactivate}>Deactivate account</button>
+                <h1>Connected to {networkName}</h1>
+              </div>
               <Row>
                 <Token symbol="ANT" />
                 <div>
@@ -105,16 +113,32 @@ const StyledPopover = styled(Popover)`
   &.bs-popover-bottom .arrow::before {
     border-bottom-color: transparent;
   }
-  h1 {
+
+  div.header {
     background: #f9fafc;
-    line-height: 32px;
     padding: 10px 15px;
-    font-size: 13px;
-    font-weight: 600;
-    text-transform: 'uppercase';
-    text-align: right;
-    color: #7fdfa6;
-    margin: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    h1 {
+      line-height: 32px;
+      padding: 0;
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: 'uppercase';
+      text-align: right;
+      color: #7fdfa6;
+      margin: 0;
+    }
+    button {
+      background: transparent;
+      border: solid 0 transparent;
+      cursor: pointer;
+      color: #637381;
+    }
+    button:hover {
+      color: #212b36;
+    }
   }
 `
 const Row = styled.div`
