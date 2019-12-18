@@ -1,28 +1,32 @@
 import React from 'react'
 import styled from 'styled-components'
 import { breakpoint } from '../../microsite-logic'
+import { useWeb3Connect } from '../../web3-connect'
 import Form from './Form'
 import Balance from './Balance'
+import Providers from './Providers'
 import Info from './Info'
 import Countdown from './Countdown'
 
 const large = css => breakpoint('large', css)
 
-const ConverterContent = () => (
-  <Content>
-    <div className="left">
-      <Form />
-    </div>
-    <RightBox>
-      <Balance />
-      <Info />
-      <Countdown />
-    </RightBox>
-    <div className="mobile">
-      <Form />
-    </div>
-  </Content>
-)
+const ConverterContent = () => {
+  const { account } = useWeb3Connect()
+
+  return (
+    <Content>
+      <div className="left">{account ? <Form /> : <Providers />}</div>
+      <RightBox>
+        <Balance />
+        <Info />
+        <Countdown />
+      </RightBox>
+      <div className="mobile">
+        <Form />
+      </div>
+    </Content>
+  )
+}
 
 const Content = styled.div`
   display: flex;
