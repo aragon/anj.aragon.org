@@ -33,28 +33,52 @@ const Providers = () => {
 
   return (
     <Content>
-      <p className="title">Enable your account</p>
+      <Title>Enable your account</Title>
       <div>
-        <button onClick={() => activate('injected')}>
+        <Button onClick={() => activate('injected')}>
           <img src={metamask} alt="" />
           <p>{isMetamask ? 'Metamask' : 'Wallet'}</p>
-        </button>
-        <button onClick={() => activate('frame')}>
+        </Button>
+        <Button onClick={() => activate('frame')}>
           <img src={frame} alt="" />
           <p>Frame</p>
-        </button>
-        <button onClick={() => activate('fortmatic')}>
+        </Button>
+        <Button onClick={() => activate('fortmatic')}>
           <img src={fortmatic} alt="" />
           <p>Fortmatic</p>
-        </button>
-        <button onClick={() => activate('portis')}>
+        </Button>
+        <Button onClick={() => activate('portis')}>
           <img src={portis} alt="" />
           <p>Portis</p>
-        </button>
+        </Button>
       </div>
     </Content>
   )
 }
+
+const Button = styled.button`
+  border: solid 0 transparent;
+  background: #ffffff;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.15);
+  border-radius: 4px;
+  width: 100%;
+  min-width: 137px;
+  ${medium('min-width: 170px;')};
+  margin: 5px;
+  padding: 15px 15px 10px 15px;
+  display: flex;
+  align-items: center;
+  p {
+    font-family: 'FontRegular', sans-serif;
+    color: #1c1c1c;
+    font-size: 20px;
+    line-height: 25px;
+    margin: 0;
+  }
+  img {
+    margin: 0 20px 10px 0;
+  }
+`
 
 const Content = styled.div`
   min-height: 450px;
@@ -65,43 +89,20 @@ const Content = styled.div`
   margin-top: 130px;
   ${large('padding-right: 30px; margin-top: 0;')};
 
-  p.title {
-    font-size: 22px;
-    font-family: 'FontRegular', sans-serif;
-    color: #1c1c1c;
-    line-height: 38px;
-    padding: 20px 0;
-    margin: 0;
-    max-width: 90vw;
-  }
   div {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    button {
-      border: solid 0 transparent;
-      background: #ffffff;
-      box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.15);
-      border-radius: 4px;
-      width: 100%;
-      min-width: 137px;
-      ${medium('min-width: 170px;')};
-      margin: 5px;
-      padding: 15px 15px 10px 15px;
-      display: flex;
-      align-items: center;
-      p {
-        font-family: 'FontRegular', sans-serif;
-        color: #1c1c1c;
-        font-size: 20px;
-        line-height: 25px;
-        margin: 0;
-      }
-      img {
-        margin: 0 20px 10px 0;
-      }
-    }
   }
+`
+const Title = styled.p`
+  font-size: 22px;
+  font-family: 'FontRegular', sans-serif;
+  color: #1c1c1c;
+  line-height: 38px;
+  padding: 20px 0;
+  margin: 0;
+  max-width: 90vw;
 `
 
 export default Providers
