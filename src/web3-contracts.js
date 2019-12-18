@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useRef, useState, useCallback } from 'react'
 import { Contract as EthersContract } from '@ethersproject/contracts'
 import { BigNumber } from '@ethersproject/bignumber'
 import { getKnownContract } from './known-contracts'
@@ -63,12 +63,23 @@ export function useTokenBalance(symbol) {
   const tokenContract = useKnownContract(`TOKEN_${symbol}`)
   const decimals = useTokenDecimals(symbol)
 
-  useEffect(() => {
+  const cancelBalanceUpdate = useRef(null)
+
+  const updateBalance = useCallback(() => {
     let cancelled = false
+
+    if (cancelBalanceUpdate.current) {
+      cancelBalanceUpdate.current()
+      cancelBalanceUpdate.current = null
+    }
 
     if (!account || !tokenContract) {
       setBalance(balanceFromBigInt(-1))
       return
+    }
+
+    cancelBalanceUpdate.current = () => {
+      cancelled = true
     }
 
     tokenContract.balanceOf(account).then(balance => {
@@ -78,9 +89,39 @@ export function useTokenBalance(symbol) {
         )
       }
     })
-
-    return () => (cancelled = true)
   }, [account, tokenContract, decimals])
+
+  useEffect(() => {
+    // Always update the balance if updateBalance() has changed
+    updateBalance()
+
+    if (!tokenContract || !account) {
+      return
+    }
+
+    const onTransfer = (from, to, value) => {
+      console.log('AH!', from, to, value)
+      if (from === account || to === account) {
+        updateBalance()
+      }
+    }
+    tokenContract.on('Transfer', onTransfer)
+
+    // Filter transfers from and to the account
+    // const filters = [
+    //   tokenContract.filters.Transfer(account),
+    //   tokenContract.filters.Transfer(null, account),
+    // ]
+    // filters.forEach(filter => tokenContract.on(filter, onTransfer))
+
+    return () => {
+      tokenContract.removeListener('Transfer', onTransfer)
+
+      // filters.forEach(filter =>
+      //   tokenContract.removeListener(filter, onTransfer)
+      // )
+    }
+  }, [account, tokenContract, updateBalance])
 
   return balance
 }
