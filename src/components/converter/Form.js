@@ -119,10 +119,18 @@ function FormSection() {
     convertAntToAnj(amountAnt.toString())
   }
 
-  // let errorMessage = 'Amount is greater than balance held'
   // const disabled = Boolean(errorMessage)
 
   const [info, setInfo] = useState('')
+  const [balanceInfo, setBalanceInfo] = useState(balanceAnt.toString())
+  const [validationBalance, setValidationBalance] = useState('')
+
+  useEffect(
+    () => {
+      setBalanceInfo(balanceAnt.toString())
+    },
+    [balanceAnt]
+  )
 
   useEffect(
     () => {
@@ -133,20 +141,31 @@ function FormSection() {
       ) {
         setInfo(
           amountAnt.lt(BigNumber.from(String(Math.pow(10, 18) * 100)))
-            ? 'The minimum amount for this is 100.'
+            ? 'The minimum amount for this is 100. '
             : ''
         )
       }
-
-      console.log(
-        'ant',
-        balanceAnt,
-        'anj',
-        balanceAnj,
-        balanceAnj && balanceAnj.value.lt(BigNumber.from(String(10000)))
-      )
+      if (!inputValueAnt) {
+        setInfo('')
+      }
     },
-    [amountAnt]
+    [amountAnt, inputValueAnt, balanceAnj]
+  )
+
+  useEffect(
+    () => {
+      if (
+        amountAnt &&
+        inputValueAnt &&
+        balanceAnt &&
+        balanceAnt.value.lt(BigNumber.from(String(inputValueAnt)))
+      ) {
+        setValidationBalance('Amount is greater than balance held.')
+      } else {
+        setValidationBalance('')
+      }
+    },
+    [amountAnt, inputValueAnt, balanceAnt]
   )
 
   return (
@@ -156,7 +175,7 @@ function FormSection() {
           margin-bottom: ${3 * GU}px;
         `}
       >
-        <InputBox>
+        <div>
           <Label>
             Amount of ANT you want to convert
             <span title="Required">{'\u00a0*'}</span>
@@ -171,8 +190,15 @@ function FormSection() {
               <Token symbol="ANT" />
             </Adornment>
           </AdornmentBox>
-          <Info>{info}</Info>
-        </InputBox>
+          <Info>
+            <span className="black">Balance: {balanceInfo}. </span>
+            <span className="red">{validationBalance} </span>
+          </Info>
+          <Info>
+            {' '}
+            <span className="red">{info} </span>
+          </Info>
+        </div>
         <InputBox>
           <Label>Amount of ANJ you will receive and activate</Label>
           <AdornmentBox>
@@ -236,11 +262,18 @@ const Label = styled.label`
   }
 `
 const Info = styled.div`
-  color: #ff6969;
   margin-top: 3px;
+  height: 19px;
+  .red {
+    color: #ff6969;
+  }
+  .black {
+    color: #212b36;
+  }
 `
+
 const InputBox = styled.div`
-  margin-bottom: 34px;
+  margin-bottom: 20px;
 `
 const Input = styled.input`
   width: 100%;
