@@ -18,7 +18,7 @@ import EthIdenticon from './EthIdenticon'
 
 function AccountModule({ compact }) {
   const { account } = useWeb3Connect()
-  return account ? <ConnectedMode /> : ''
+  return account ? <ConnectedMode /> : null
 }
 
 AccountModule.propTypes = {
@@ -101,7 +101,8 @@ const Container = styled.div`
   height: 40px;
 `
 const StyledPopover = styled(Popover)`
-  background: #ffffff;
+  overflow: hidden;
+  background: #fff;
   box-shadow: 0px 7px 24px rgba(0, 0, 0, 0.25);
   border: 0 solid transparent;
   width: 450px;
@@ -125,14 +126,14 @@ const StyledPopover = styled(Popover)`
       padding: 0;
       font-size: 13px;
       font-weight: 600;
-      text-transform: 'uppercase';
+      text-transform: uppercase;
       text-align: right;
       color: #7fdfa6;
       margin: 0;
     }
     button {
       background: transparent;
-      border: solid 0 transparent;
+      border: 0;
       cursor: pointer;
       color: #637381;
     }
@@ -178,6 +179,7 @@ const ButtonBase = styled.div`
   background: #ffffff;
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.15);
   border-radius: 4px;
+  cursor: pointer;
 `
 
 export default AccountModule

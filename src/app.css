@@ -45,7 +45,7 @@ a:hover,
 a:active {
   outline: none;
   text-decoration: none;
-  transition: all 0.25s ease-in-out;
+  transition: all 150ms ease-in-out;
 }
 
 img {

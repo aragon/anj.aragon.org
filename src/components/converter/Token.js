@@ -1,34 +1,48 @@
 import React from 'react'
 import styled from 'styled-components'
 
-const Token = ({ symbol, badge }) => (
-  <TokenSection className={badge ? 'badge' : undefined}>
-    <h2>
-      <img src={require(`./assets/${symbol.toLowerCase()}.svg`)} />
-      {symbol}
-    </h2>
-  </TokenSection>
-)
+function Token({ symbol, badge }) {
+  return (
+    <TokenSection className={badge ? 'badge' : undefined}>
+      <div>
+        <img src={require(`./assets/${symbol.toLowerCase()}.svg`)} alt="" />
+        <span>{symbol}</span>
+      </div>
+    </TokenSection>
+  )
+}
 
 const TokenSection = styled.div`
-  padding: 8px 8px 1px 8px;
   position: relative;
+  top: -5px;
+  display: flex;
+  align-items: center;
+  height: 38px;
+  padding: 0 8px;
+  cursor: default;
   &.badge {
     margin: 0 15px;
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.15);
     border-radius: 100px;
   }
-  img {
-    padding: 0 6px 0 2px;
-    position: relative;
-    top: -3px;
-  }
-  h2 {
+  > div {
+    display: flex;
+    align-items: center;
     font-family: 'FontRegular', sans-serif;
+    font-weight: 400;
     font-size: 22px;
-    line-height: 1;
     color: #8a96a0;
     margin: 0;
+  }
+  img {
+    flex-shrink: 0;
+    flex-grow: 0;
+    margin: 0 6px 0 2px;
+  }
+  span {
+    position: relative;
+    top: 3px;
+    padding-right: 4px;
   }
 `
 
