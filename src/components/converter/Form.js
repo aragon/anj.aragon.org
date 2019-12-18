@@ -187,10 +187,7 @@ function FormSection() {
         `}
       >
         <div>
-          <Label>
-            Amount of ANT you want to convert
-            <span title="Required">{'\u00a0*'}</span>
-          </Label>
+          <Label>Amount of ANT you want to convert</Label>
           <AdornmentBox>
             <Input
               type="number"
