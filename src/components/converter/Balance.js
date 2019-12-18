@@ -7,67 +7,11 @@ import {
   ButtonToolbar,
 } from 'react-bootstrap'
 import Token from './Token'
-import enable from './assets/enable.svg'
-import metamask from './assets/metamask.svg'
-import frame from './assets/frame.svg'
-import portis from './assets/portis.svg'
-import fortmatic from './assets/fortmatic.svg'
 import { breakpoint } from '../../microsite-logic'
 import { useWeb3Connect } from '../../web3-connect'
-import {
-  useTokenBalance,
-  useJurorRegistryAnjBalance,
-} from '../../web3-contracts'
-import { identifyProvider } from '../../web3-utils'
+import { useJurorRegistryAnjBalance } from '../../web3-contracts'
 
 const medium = css => breakpoint('medium', css)
-
-function EnableAccount() {
-  const { account, activate, deactivate } = useWeb3Connect()
-  const [show, setShow] = useState(false)
-  const [target, setTarget] = useState(null)
-  const ref = useRef(null)
-
-  const isMetamask = identifyProvider(window.ethereum) === 'metamask'
-
-  return (
-    <OverlayTrigger
-      trigger="click"
-      rootClose
-      placement="bottom"
-      overlay={
-        <StyledPopover>
-          <Content>
-            <p className="title">Wallet connect</p>
-            <div>
-              <button onClick={() => activate('injected')}>
-                <img src={metamask} alt="" />
-                <p>{isMetamask ? 'Metamask' : 'Wallet'}</p>
-              </button>
-              <button onClick={() => activate('frame')}>
-                <img src={frame} alt="" />
-                <p>Frame</p>
-              </button>
-              <button onClick={() => activate('fortmatic')}>
-                <img src={fortmatic} alt="" />
-                <p>Fortmatic</p>
-              </button>
-              <button onClick={() => activate('portis')}>
-                <img src={portis} alt="" />
-                <p>Portis</p>
-              </button>
-            </div>
-          </Content>
-        </StyledPopover>
-      }
-    >
-      <Button>
-        <img src={enable} />
-        Enable account
-      </Button>
-    </OverlayTrigger>
-  )
-}
 
 const Balance = () => {
   const { account } = useWeb3Connect()
@@ -75,14 +19,10 @@ const Balance = () => {
   return (
     <BalanceSection>
       <p>Your account's active balance</p>
-      {account ? (
-        <h3>
-          <span className="mono">{anjBalance.toString()} </span>
-          <Token symbol="ANJ" />
-        </h3>
-      ) : (
-        <EnableAccount />
-      )}
+      <h3>
+        <span className="mono">{account ? anjBalance.toString() : '0.00'}</span>{' '}
+        <Token symbol="ANJ" />
+      </h3>
     </BalanceSection>
   )
 }
