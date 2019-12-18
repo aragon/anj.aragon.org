@@ -17,20 +17,22 @@ const HeaderSection = () => (
 )
 
 const Header = styled.div`
-  border-bottom: solid 1px #ededed;
+  display: flex;
+  align-items: center;
   height: 160px;
   padding: 15px 20px;
+  border-bottom: solid 1px #ededed;
   ${medium(
     'display: flex; align-items: center; justify-content: space-between; height: 100px;'
   )};
   ${large('padding: 35px; height: 100px;')};
 
   h1 {
+    display: flex;
+    align-items: center;
     font-family: 'FontMedium', sans-serif;
     font-size: 38px;
     line-height: 1.1;
-    display: flex;
-    align-items: flex-start;
     color: #1c1c1c;
     margin: 0;
     flex-wrap: wrap;

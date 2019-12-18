@@ -19,6 +19,7 @@ import {
   useJurorRegistryAnjBalance,
 } from '../../web3-contracts'
 import { identifyProvider } from '../../web3-utils'
+import { CSS_UNSELECTABLE } from '../../utils'
 
 const medium = css => breakpoint('medium', css)
 
@@ -88,11 +89,7 @@ const Balance = () => {
 }
 
 const Button = styled.button`
-  background: #ffffff;
-  border: 1px solid #c7d1da;
   box-sizing: border-box;
-  box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.05);
-  border-radius: 4px;
   width: 100%;
   height: 52px;
   text-align: center;
@@ -100,12 +97,27 @@ const Button = styled.button`
   line-height: 31px;
   text-align: center;
   color: #1c1c1c;
+  border: 1px solid #c7d1da;
+  border-radius: 4px;
+  box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.05);
+  background: #ffffff;
   cursor: pointer;
+  outline: 0;
+  &::-moz-focus-inner {
+    border: 0;
+  }
+
   img {
     padding-right: 10.5px;
   }
-  &:hover {
+  &:hover,
+  &:focus {
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.1);
+    outline: 0;
+  }
+  &:active {
+    box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.05);
+    outline: 0;
   }
 `
 const Content = styled.div`
@@ -120,6 +132,7 @@ const Content = styled.div`
     background: #f9fafc;
     margin: 0;
     max-width: 90vw;
+    border-radius: 4px 4px 0 0;
   }
   div {
     padding: 20px;
@@ -128,6 +141,7 @@ const Content = styled.div`
     max-width: 90vw;
     width: 449px;
     button {
+      position: relative;
       background: #ffffff;
       box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.15);
       border-radius: 4px;
@@ -136,6 +150,17 @@ const Content = styled.div`
       ${medium('min-width: 170px;')};
       margin: 5px;
       padding: 20px 20px 13px 20px;
+      border: 0;
+      cursor: pointer;
+      outline: 0;
+      ${CSS_UNSELECTABLE};
+      &::-moz-focus-inner {
+        border: 0;
+      }
+      :active {
+        box-shadow: 0;
+        top: 1px;
+      }
       p {
         font-family: 'FontRegular', sans-serif;
         color: #1c1c1c;
