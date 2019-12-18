@@ -100,7 +100,7 @@ const Title = styled.p`
   font-family: 'FontRegular', sans-serif;
   color: #1c1c1c;
   line-height: 38px;
-  padding: 20px 0;
+  padding: 0 0 20px 0;
   margin: 0;
   max-width: 90vw;
 `

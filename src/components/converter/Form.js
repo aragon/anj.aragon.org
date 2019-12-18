@@ -122,48 +122,61 @@ function FormSection() {
   // const disabled = Boolean(errorMessage)
   const [placeholder, setPlaceholder] = useState('')
 
-  useEffect(() => {
-    if (balanceAnj && balanceAnj.value.gte(BigNumber.from(String(10000)))) {
-      setPlaceholder('')
-    } else {
-      setPlaceholder('Min. 100 ANT')
-    }
-  }, [balanceAnj])
+  useEffect(
+    () => {
+      if (balanceAnj && balanceAnj.value.gte(BigNumber.from(String(10000)))) {
+        setPlaceholder('')
+      } else {
+        setPlaceholder('Min. 100 ANT')
+      }
+    },
+    [balanceAnj]
+  )
 
   const [info, setInfo] = useState('')
   const [balanceInfo, setBalanceInfo] = useState(balanceAnt.toString())
   const [validationBalance, setValidationBalance] = useState('')
 
-  useEffect(() => {
-    setBalanceInfo(balanceAnt.toString())
-  }, [balanceAnt])
+  useEffect(
+    () => {
+      setBalanceInfo(balanceAnt.toString())
+    },
+    [balanceAnt]
+  )
 
-  useEffect(() => {
-    if (
-      amountAnt &&
-      inputValueAnt &&
-      balanceAnj && balanceAnj.value.lt(BigNumber.from(String(10000)))
-    ) {
-      setInfo(
-        amountAnt.lt(BigNumber.from(String(Math.pow(10, 18) * 100)))
-          ? 'The minimum amount for this is 100. '
-          : ''
-      )
-    }
-  }, [amountAnt, inputValueAnt, balanceAnj])
+  useEffect(
+    () => {
+      if (
+        amountAnt &&
+        inputValueAnt &&
+        balanceAnj &&
+        balanceAnj.value.lt(BigNumber.from(String(10000)))
+      ) {
+        setInfo(
+          amountAnt.lt(BigNumber.from(String(Math.pow(10, 18) * 100)))
+            ? 'The minimum amount for this is 100. '
+            : ''
+        )
+      }
+    },
+    [amountAnt, inputValueAnt, balanceAnj]
+  )
 
-  useEffect(() => {
-    if (
-      amountAnt &&
-      inputValueAnt &&
-      balanceAnt &&
-      balanceAnt.value.lt(BigNumber.from(String(inputValueAnt)))
-    ) {
-      setValidationBalance('Amount is greater than balance held.')
-    } else {
-      setValidationBalance('')
-    }
-  }, [amountAnt, inputValueAnt, balanceAnt])
+  useEffect(
+    () => {
+      if (
+        amountAnt &&
+        inputValueAnt &&
+        balanceAnt &&
+        balanceAnt.value.lt(BigNumber.from(String(inputValueAnt)))
+      ) {
+        setValidationBalance('Amount is greater than balance held.')
+      } else {
+        setValidationBalance('')
+      }
+    },
+    [amountAnt, inputValueAnt, balanceAnt]
+  )
 
   return (
     <Form onSubmit={handleSubmit}>
@@ -178,6 +191,7 @@ function FormSection() {
             <Input
               type="number"
               value={inputValueAnt}
+              max={balanceAnt ? balanceAnt : undefined}
               onChange={handleAntChange}
               placeholder={placeholder}
             />
@@ -186,7 +200,7 @@ function FormSection() {
             </Adornment>
           </AdornmentBox>
           <Info>
-            <span className="black">Balance: {balanceInfo}. </span>
+            <span className="black">Balance: {balanceInfo} ANT. </span>
             <span className="red">{validationBalance} </span>
           </Info>
           <Info>
@@ -199,6 +213,7 @@ function FormSection() {
           <AdornmentBox>
             <Input
               type="number"
+              min={placeholder ? 10000 : undefined}
               value={inputValueAnj}
               onChange={handleAnjChange}
             />
