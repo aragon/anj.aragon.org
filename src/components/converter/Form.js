@@ -1,11 +1,15 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { BigNumber } from '@ethersproject/bignumber'
 import Token from './Token'
 import question from './assets/question.svg'
-
-import { useTokenDecimals, useConvertAntToAnj } from '../../web3-contract-token'
+import {
+  useTokenDecimals,
+  useConvertAntToAnj,
+  useTokenBalance,
+  useJurorRegistryAnjBalance,
+} from '../../web3-contract-token'
 import { fromTokenInteger, toTokenInteger } from '../../web3-utils'
 import { breakpoint, GU } from '../../microsite-logic'
 
@@ -106,6 +110,9 @@ function FormSection() {
 
   const convertAntToAnj = useConvertAntToAnj()
 
+  const balanceAnt = useTokenBalance('ANT')
+  const balanceAnj = useJurorRegistryAnjBalance()
+
   const handleSubmit = event => {
     event.preventDefault()
     convertAntToAnj(amountAnt.toString())
@@ -114,6 +121,33 @@ function FormSection() {
   // let errorMessage = 'Amount is greater than balance held'
   // const disabled = Boolean(errorMessage)
 
+  const [info, setInfo] = useState('')
+
+  useEffect(
+    () => {
+      if (
+        amountAnt &&
+        inputValueAnt &&
+        (balanceAnj && balanceAnj.value.lt(BigNumber.from(String(10000))))
+      ) {
+        setInfo(
+          amountAnt.lt(BigNumber.from(String(Math.pow(10, 18) * 100)))
+            ? 'The minimum amount for this is 100.'
+            : ''
+        )
+      }
+
+      console.log(
+        'ant',
+        balanceAnt,
+        'anj',
+        balanceAnj,
+        balanceAnj && balanceAnj.value.lt(BigNumber.from(String(10000)))
+      )
+    },
+    [amountAnt]
+  )
+
   return (
     <Form onSubmit={handleSubmit}>
       <div
@@ -121,32 +155,36 @@ function FormSection() {
           margin-bottom: ${3 * GU}px;
         `}
       >
-        <Label>
-          Amount of ANT you want to convert
-          <span title="Required">{'\u00a0*'}</span>
-        </Label>
-
-        <AdornmentBox>
-          <Input
-            type="number"
-            value={inputValueAnt}
-            onChange={handleAntChange}
-          />
-          <Adornment>
-            <Token symbol="ANT" />
-          </Adornment>
-        </AdornmentBox>
-        <Label>Amount of ANJ you will receive and activate</Label>
-        <AdornmentBox>
-          <Input
-            type="number"
-            value={inputValueAnj}
-            onChange={handleAnjChange}
-          />
-          <Adornment>
-            <Token symbol="ANJ" />
-          </Adornment>
-        </AdornmentBox>
+        <InputBox>
+          <Label>
+            Amount of ANT you want to convert
+            <span title="Required">{'\u00a0*'}</span>
+          </Label>
+          <AdornmentBox>
+            <Input
+              type="number"
+              value={inputValueAnt}
+              onChange={handleAntChange}
+            />
+            <Adornment>
+              <Token symbol="ANT" />
+            </Adornment>
+          </AdornmentBox>
+          <Info>{info}</Info>
+        </InputBox>
+        <InputBox>
+          <Label>Amount of ANJ you will receive and activate</Label>
+          <AdornmentBox>
+            <Input
+              type="number"
+              value={inputValueAnj}
+              onChange={handleAnjChange}
+            />
+            <Adornment>
+              <Token symbol="ANJ" />
+            </Adornment>
+          </AdornmentBox>
+        </InputBox>
         <OverlayTrigger
           placement="right"
           delay={{ hide: 400 }}
@@ -196,7 +234,13 @@ const Label = styled.label`
     padding-left: 10px;
   }
 `
-
+const Info = styled.div`
+  color: #ff6969;
+  margin-top: 3px;
+`
+const InputBox = styled.div`
+  margin-bottom: 34px;
+`
 const Input = styled.input`
   width: 100%;
   height: 50px;
@@ -209,7 +253,6 @@ const Input = styled.input`
   font-size: 14px;
   font-weight: 400;
   line-height: 1.5;
-  margin-bottom: 34px;
   &::-webkit-inner-spin-button,
   &::-webkit-outer-spin-button {
     -webkit-appearance: none;
