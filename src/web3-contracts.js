@@ -100,7 +100,6 @@ export function useTokenBalance(symbol) {
     }
 
     const onTransfer = (from, to, value) => {
-      console.log('AH!', from, to, value)
       if (from === account || to === account) {
         updateBalance()
       }
@@ -130,24 +129,62 @@ export function useJurorRegistryAnjBalance() {
   const { account, ethersProvider } = useWeb3Connect()
   const [balance, setBalance] = useState(balanceFromBigInt(-1))
 
+  const decimals = useTokenDecimals('ANJ')
   const tokenContract = useKnownContract('TOKEN_ANJ')
   const jurorsRegistryContract = useKnownContract('JURORS_REGISTRY')
 
-  useEffect(() => {
-    if (!account || !tokenContract || !jurorsRegistryContract) {
+  const cancelBalanceUpdate = useRef(null)
+
+  const updateBalance = useCallback(() => {
+    let cancelled = false
+
+    if (cancelBalanceUpdate.current) {
+      cancelBalanceUpdate.current()
+      cancelBalanceUpdate.current = null
+    }
+
+    if (
+      !account ||
+      !tokenContract ||
+      !jurorsRegistryContract ||
+      decimals === -1
+    ) {
       setBalance(balanceFromBigInt(-1))
       return
     }
 
-    Promise.all([
-      jurorsRegistryContract.balanceOf(account),
-      tokenContract.decimals(),
-    ]).then(([balances, decimals]) => {
-      setBalance(
-        balanceFromBigInt(balances[0].div(BigNumber.from(10).pow(decimals)))
-      )
+    cancelBalanceUpdate.current = () => {
+      cancelled = true
+    }
+
+    jurorsRegistryContract.balanceOf(account).then(([activeBalance]) => {
+      if (!cancelled) {
+        setBalance(
+          balanceFromBigInt(activeBalance.div(BigNumber.from(10).pow(decimals)))
+        )
+      }
     })
-  }, [account, tokenContract, jurorsRegistryContract])
+  }, [account, tokenContract, jurorsRegistryContract, decimals])
+
+  useEffect(() => {
+    // Always update the balance if updateBalance() has changed
+    updateBalance()
+
+    if (!tokenContract || !account) {
+      return
+    }
+
+    const onTransfer = (from, to, value) => {
+      if (from === account || to === account) {
+        updateBalance()
+      }
+    }
+    tokenContract.on('Transfer', onTransfer)
+
+    return () => {
+      tokenContract.removeListener('Transfer', onTransfer)
+    }
+  }, [account, tokenContract, updateBalance])
 
   return balance
 }
