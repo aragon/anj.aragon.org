@@ -244,7 +244,7 @@ function FormSection() {
             <img src={question} />
           </Label>
         </OverlayTrigger>
-        <Input />
+        <Input type="email" />
       </div>
 
       <Button type="submit">Become a Juror</Button>
