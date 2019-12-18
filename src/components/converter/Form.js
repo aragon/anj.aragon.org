@@ -188,6 +188,7 @@ function FormSection() {
             <Input
               type="number"
               value={inputValueAnt}
+              max={balanceAnt ? balanceAnt : undefined}
               onChange={handleAntChange}
               placeholder={placeholder}
             />
@@ -196,7 +197,7 @@ function FormSection() {
             </Adornment>
           </AdornmentBox>
           <Info>
-            <span className="black">Balance: {balanceInfo}. </span>
+            <span className="black">Balance: {balanceInfo} ANT. </span>
             <span className="red">{validationBalance} </span>
           </Info>
           <Info>
@@ -209,6 +210,7 @@ function FormSection() {
           <AdornmentBox>
             <Input
               type="number"
+              min={placeholder ? 10000 : undefined}
               value={inputValueAnj}
               onChange={handleAnjChange}
             />

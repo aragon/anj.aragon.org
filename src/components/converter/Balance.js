@@ -32,7 +32,7 @@ const BalanceSection = styled.div`
     font-size: 54px;
     line-height: 38px;
     display: flex;
-    align-items: flex-start;
+    align-items: baseline;
     letter-spacing: -3px;
     color: #1c1c1c;
   }
