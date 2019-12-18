@@ -3,15 +3,16 @@ import styled from 'styled-components'
 import { OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { BigNumber } from '@ethersproject/bignumber'
 import Token from './Token'
-import question from './assets/question.svg'
 import {
   useTokenDecimals,
   useConvertAntToAnj,
   useTokenBalance,
   useJurorRegistryAnjBalance,
-} from '../../web3-contract-token'
+} from '../../web3-contracts'
 import { fromTokenInteger, toTokenInteger } from '../../web3-utils'
 import { breakpoint, GU } from '../../microsite-logic'
+
+import question from './assets/question.svg'
 
 const large = css => breakpoint('large', css)
 

@@ -11,7 +11,7 @@ import { useWeb3Connect } from '../../web3-connect'
 import {
   useTokenBalance,
   useJurorRegistryAnjBalance,
-} from '../../web3-contract-token'
+} from '../../web3-contracts'
 import { useTokenToUsd, shortenAddress } from '../../web3-utils'
 import Token from './Token'
 import EthIdenticon from './EthIdenticon'
