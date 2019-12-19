@@ -73,25 +73,28 @@ export function fromTokenInteger(value, decimals) {
 // Convert a token into a USD price
 export function useTokenToUsd(token, balance) {
   const [usd, setUsd] = useState('-')
-  useEffect(() => {
-    fetch(
-      'https://min-api.cryptocompare.com/data/price?fsym=' +
-        token +
-        '&tsyms=USD'
-    )
-      .then(res => res.json())
-      .then(price => {
-        if (parseFloat(balance) > 0) {
-          setUsd(
-            balanceFromBigInt(
-              balance.value
-                .mul(BigNumber.from(parseInt(price.USD, 10) * 1000000))
-                .div(1000000)
-            ).toString()
-          )
-        }
-      })
-  }, [balance])
+  useEffect(
+    () => {
+      fetch(
+        'https://min-api.cryptocompare.com/data/price?fsym=' +
+          token +
+          '&tsyms=USD'
+      )
+        .then(res => res.json())
+        .then(price => {
+          if (parseFloat(balance) > 0) {
+            setUsd(
+              balanceFromBigInt(
+                balance.value
+                  .mul(BigNumber.from(parseInt(price.USD * 1000000, 10)))
+                  .div(1000000)
+              ).toString()
+            )
+          }
+        })
+    },
+    [balance]
+  )
 
   return usd
 }
