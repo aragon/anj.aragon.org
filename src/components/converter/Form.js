@@ -222,17 +222,15 @@ function FormSection() {
         <OverlayTrigger
           placement="right"
           delay={{ hide: 400 }}
-          overlay={function renderTooltip(props) {
-            return (
-              <Tooltip {...props}>
-                If you enter your email address, we will notify you directly
-                when the court is live and how you can participate in upcoming
-                court cases. Since there are financial penalties for not
-                participating in cases you are drafted in, we strongly recommend
-                signing up for court notifications via email.
-              </Tooltip>
-            )
-          }}
+          overlay={props => (
+            <Tooltip {...props} show="true">
+              If you enter your email address, we will notify you directly when
+              the court is live and how you can participate in upcoming court
+              cases. Since there are financial penalties for not participating
+              in cases you are drafted in, we strongly recommend signing up for
+              court notifications via email.
+            </Tooltip>
+          )}
         >
           <Label>
             Notify me when the Court is live
