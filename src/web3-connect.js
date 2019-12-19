@@ -1,6 +1,10 @@
 import React, { useCallback } from 'react'
 import { Web3Provider as EthersWeb3Provider } from '@ethersproject/providers'
-import { Web3ReactProvider, useWeb3React } from '@web3-react/core'
+import {
+  UnsupportedChainIdError,
+  Web3ReactProvider,
+  useWeb3React,
+} from '@web3-react/core'
 import {
   InjectedConnector,
   NoEthereumProviderError as InjectedNoEthereumProviderError,
@@ -40,13 +44,25 @@ export function useWeb3Connect() {
   const web3ReactContext = useWeb3React()
 
   const activate = useCallback(
-    type => {
+    async type => {
       const connector = WEB3_REACT_CONNECTORS.get(type)
-
       if (connector) {
-        web3ReactContext.activate(connector, err => {
-          console.error('err', err)
-        })
+        try {
+          await web3ReactContext.activate(connector, null, true)
+        } catch (err) {
+          const log = typeof window !== 'undefined' ? window.alert : console.log
+
+          if (err instanceof UnsupportedChainIdError) {
+            log(
+              `Unsupported chain: please connect to the network called ${getNetworkName(
+                CHAIN_ID
+              )} in your Ethereum Provider.`
+            )
+            return
+          }
+
+          log('Unknown error, please try again.')
+        }
       }
     },
     [web3ReactContext]

@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react'
+import React, { useCallback, useState, useRef } from 'react'
 import styled from 'styled-components'
 import {
   Overlay,
@@ -7,11 +7,6 @@ import {
   ButtonToolbar,
 } from 'react-bootstrap'
 import Token from './Token'
-import enable from './assets/enable.svg'
-import metamask from './assets/metamask.svg'
-import frame from './assets/frame.svg'
-import portis from './assets/portis.svg'
-import fortmatic from './assets/fortmatic.svg'
 import { breakpoint } from '../../microsite-logic'
 import { useWeb3Connect } from '../../web3-connect'
 import {
@@ -19,6 +14,13 @@ import {
   useJurorRegistryAnjBalance,
 } from '../../web3-contracts'
 import { identifyProvider } from '../../web3-utils'
+import ErrorScreen from './Error'
+
+import enable from './assets/enable.svg'
+import metamask from './assets/metamask.svg'
+import frame from './assets/frame.svg'
+import portis from './assets/portis.svg'
+import fortmatic from './assets/fortmatic.svg'
 
 const large = css => breakpoint('large', css)
 const medium = css => breakpoint('medium', css)
