@@ -18,7 +18,7 @@ class Navbar extends React.Component {
             <LinksBox>
               <a href="./#get-anj">Get ANJ</a>
               <a href="./#about">About</a>
-              <a href="./#support">Support</a>
+              <a href="./#how-it-works">How it works</a>
             </LinksBox>
           </Left>
           <Button href="./#get-anj">
