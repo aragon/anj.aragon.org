@@ -21,9 +21,7 @@ const ConverterContent = () => {
         <Info />
         <Countdown />
       </RightBox>
-      <div className="mobile">
-        <Form />
-      </div>
+      <div className="mobile">{account ? <Form /> : <Providers />}</div>
     </Content>
   )
 }

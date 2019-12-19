@@ -18,26 +18,29 @@ const HeaderSection = () => (
 
 const Header = styled.div`
   display: flex;
-  align-items: center;
-  height: 160px;
+  align-items: flex-start;
+  height: 120px;
   padding: 15px 20px;
   border-bottom: solid 1px #ededed;
-  ${medium(
-    'display: flex; align-items: center; justify-content: space-between; height: 100px;'
-  )};
-  ${large('padding: 35px; height: 100px;')};
+  flex-direction: column;
 
   h1 {
     display: flex;
     align-items: center;
     font-weight: 600;
-    font-size: 38px;
+    font-size: 28px;
     line-height: 1.1;
     color: #1c1c1c;
     margin: 0;
     flex-wrap: wrap;
-    max-width: 84%;
+    ${medium('font-size: 38px; max-width: 84%;')};
   }
+  ${medium(
+    'align-items: center; justify-content: space-between; flex-direction: row; height: 100px;'
+  )};
+  ${large(
+    'align-items: center; justify-content: space-between; flex-direction: row; padding: 35px; height: 100px;'
+  )};
 `
 
 export default HeaderSection
