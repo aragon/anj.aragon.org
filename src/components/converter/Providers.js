@@ -23,7 +23,7 @@ import { identifyProvider } from '../../web3-utils'
 const large = css => breakpoint('large', css)
 const medium = css => breakpoint('medium', css)
 
-const Providers = () => {
+function Providers() {
   const { account, activate, deactivate, ethersProvider } = useWeb3Connect()
   const [show, setShow] = useState(false)
   const [target, setTarget] = useState(null)
@@ -38,7 +38,7 @@ const Providers = () => {
       <div>
         <Button onClick={() => activate('injected')}>
           <img src={metamask} alt="" />
-          <p>{isMetamask ? 'Metamask' : 'Wallet'}</p>
+          <p>{isMetamask ? 'Metamask' : 'Ethereum wallet'}</p>
         </Button>
         <Button onClick={() => activate('frame')}>
           <img src={frame} alt="" />
@@ -58,19 +58,34 @@ const Providers = () => {
 }
 
 const Button = styled.button`
-  border: solid 0 transparent;
-  background: #ffffff;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.15);
-  border-radius: 4px;
+  display: flex;
+  align-items: center;
   width: 100%;
   min-width: 137px;
   ${medium('min-width: 170px;')};
   margin: 5px;
   padding: 15px 15px 10px 15px;
-  display: flex;
-  align-items: center;
+  background: #ffffff;
+  outline: 0;
+  border: 0;
+  border-radius: 4px;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  &::-moz-focus-inner {
+    border: 0;
+  }
+  &:hover,
+  &:focus {
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.1);
+    outline: 0;
+  }
+  &:active {
+    box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.05);
+    outline: 0;
+  }
+
   p {
-    font-family: 'FontRegular', sans-serif;
+    font-weight: 400;
     color: #1c1c1c;
     font-size: 20px;
     line-height: 25px;
@@ -98,7 +113,7 @@ const Content = styled.div`
 `
 const Title = styled.p`
   font-size: 22px;
-  font-family: 'FontRegular', sans-serif;
+  font-weight: 400;
   color: #1c1c1c;
   line-height: 38px;
   padding: 0 0 20px 0;

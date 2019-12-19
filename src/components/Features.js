@@ -64,10 +64,9 @@ const Container = styled.div`
   img {
   }
   p {
-    font-weight: normal;
+    font-weight: 400;
     text-align: left;
     margin: 0;
-    font-family: 'FontRegular';
     font-size: 20px;
     line-height: 31px;
     color: #8a96a0;
@@ -75,7 +74,6 @@ const Container = styled.div`
   }
   h3 {
     text-align: left;
-    font-family: 'FontRegular', sans-serif;
     font-weight: 400;
     font-size: 27px;
     line-height: 38px;

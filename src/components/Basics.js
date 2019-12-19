@@ -171,7 +171,7 @@ const Container = styled.div`
   text-align: center;
 
   p {
-    font-family: 'FontRegular';
+    font-weight: 400;
     font-size: 24px;
     line-height: 34px;
     text-align: center;
@@ -179,9 +179,8 @@ const Container = styled.div`
     margin: 0 0 50px 0;
   }
   h3 {
-    font-family: 'FontMedium', sans-serif;
     font-style: normal;
-    font-weight: 500;
+    font-weight: 600;
     font-size: 37px;
     line-height: 1;
     text-align: center;
@@ -208,9 +207,8 @@ const Images = styled.div`
 `
 const Text = styled.div`
   p {
-    font-family: 'FontRegular', sans-serif;
     font-style: normal;
-    font-weight: normal;
+    font-weight: 400;
     font-size: 20px;
     line-height: 27px;
     max-width: 315px;
@@ -247,17 +245,15 @@ const MobileProcess = styled.div`
     width: 85%;
   }
   p {
-    font-family: 'FontRegular', sans-serif;
-    font-weight: 500;
+    font-weight: 400;
     font-size: 18px;
     line-height: 31px;
     text-align: center;
     color: #8a96a0;
   }
   h4 {
-    font-family: 'FontRegular', sans-serif;
     font-style: normal;
-    font-weight: normal;
+    font-weight: 400;
     font-size: 24px;
     margin-top: 30px;
     line-height: 34px;
@@ -270,7 +266,7 @@ const Buttons = styled.div`
   width: 300px;
   padding: 15px 0;
   div {
-    font-family: 'FontRegular', sans-serif;
+    font-weight: 400;
     line-height: 2;
     font-size: 20px;
     color: #8a96a0;

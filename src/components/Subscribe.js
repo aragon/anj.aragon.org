@@ -116,23 +116,21 @@ const SubscribeSection = styled.section`
 const Container = styled.div`
   text-align: center;
   p {
-    font-weight: normal;
+    font-weight: 400;
     text-align: center;
     margin: 0 auto 30px auto;
-    font-family: 'FontRegular';
     color: #ffffff;
     font-size: 24px;
     line-height: 34px;
     max-width: 860px;
   }
   h3 {
-    font-weight: 600;
+    font-weight: 800;
     font-size: 37px;
     line-height: 38px;
     color: #ffffff;
     text-align: center;
     margin: 50px auto 15px;
-    font-family: 'FontSemiBold', sans-serif;
     display: block;
   }
 `

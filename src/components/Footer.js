@@ -38,8 +38,7 @@ const LinksBox = styled.div`
   display: none;
   ${medium('display: block;')};
   a {
-    font-family: 'FontMedium';
-    font-weight: 500;
+    font-weight: 600;
     font-size: 16px;
     line-height: 19px;
     color: #ffffff;

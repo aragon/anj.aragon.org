@@ -20,9 +20,8 @@ const InfoSection = () => (
 const Info = styled.div`
   padding: 30px 0;
   h6.title {
-    font-family: 'FontMedium';
     font-style: normal;
-    font-weight: 500;
+    font-weight: 600;
     font-size: 18px;
     line-height: 23px;
     background: linear-gradient(to right, #ff7c7c 0%, #ffc58f 100%);
@@ -32,7 +31,7 @@ const Info = styled.div`
     -webkit-text-fill-color: transparent;
   }
   h6 {
-    font-family: 'FontRegular';
+    font-weight: 400;
     font-size: 18px;
     line-height: 23px;
     color: #8a96a0;

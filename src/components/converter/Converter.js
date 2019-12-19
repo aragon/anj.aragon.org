@@ -54,7 +54,7 @@ const ConverterSection = styled.div`
   min-height: 642px;
   max-width: 95%;
   p {
-    font-family: 'FontRegular', sans-serif;
+    font-weight: 400;
     font-size: 24px;
     line-height: 38px;
     color: #8a96a0;

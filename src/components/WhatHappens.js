@@ -54,7 +54,7 @@ const Container = styled.div`
   text-align: center;
 
   p {
-    font-family: 'FontRegular';
+    font-weight: 400;
     font-size: 24px;
     line-height: 34px;
     text-align: center;
@@ -63,9 +63,8 @@ const Container = styled.div`
     margin: auto;
   }
   h3 {
-    font-family: 'FontMedium', sans-serif;
     font-style: normal;
-    font-weight: 500;
+    font-weight: 600;
     font-size: 37px;
     line-height: 1;
     text-align: center;
@@ -86,7 +85,6 @@ const StepsContainer = styled.div`
   }
 
   h4 {
-    font-family: 'FontRegular', sans-serif;
     font-weight: 400;
     font-size: 27px;
     line-height: 38px;
@@ -95,7 +93,7 @@ const StepsContainer = styled.div`
     margin: 30px 0 0 0;
   }
   h6 {
-    font-family: 'FontRegular', sans-serif;
+    font-weight: 400;
     font-style: normal;
     font-weight: normal;
     font-size: 20px;

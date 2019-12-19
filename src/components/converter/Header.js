@@ -30,7 +30,7 @@ const Header = styled.div`
   h1 {
     display: flex;
     align-items: center;
-    font-family: 'FontMedium', sans-serif;
+    font-weight: 600;
     font-size: 38px;
     line-height: 1.1;
     color: #1c1c1c;

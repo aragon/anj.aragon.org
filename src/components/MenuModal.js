@@ -88,7 +88,8 @@ const StyledModal = styled(Modal)`
       padding: 60px 0;
     }
     li {
-      font-family: 'FontBold';
+      font-family: 'HKGrotesk';
+      font-weight: 800;
       font-size: 2.92rem;
       line-height: 4.42rem;
     }

@@ -91,8 +91,7 @@ const Container = styled.div`
     ${medium('padding-right: 50px;')};
   }
   h2 {
-    font-family: 'FontMedium', sans-serif;
-    font-weight: 500;
+    font-weight: 600;
     font-size: 38px;
     line-height: 42px;
     text-align: left;
@@ -100,9 +99,8 @@ const Container = styled.div`
     ${medium('text-align: left;')};
   }
   h4 {
-    font-family: 'FontRegular', sans-serif;
     font-style: normal;
-    font-weight: normal;
+    font-weight: 400;
     font-size: 24px;
     line-height: 34px;
     text-align: left;
@@ -110,9 +108,8 @@ const Container = styled.div`
     ${medium('text-align: left;')};
   }
   h6 {
-    font-family: 'FontRegular', sans-serif;
     font-style: normal;
-    font-weight: normal;
+    font-weight: 400;
     font-size: 20px;
     line-height: 31px;
     text-align: left;

@@ -28,7 +28,6 @@ const TokenSection = styled.div`
   > div {
     display: flex;
     align-items: center;
-    font-family: 'FontRegular', sans-serif;
     font-weight: 400;
     font-size: 22px;
     color: #8a96a0;

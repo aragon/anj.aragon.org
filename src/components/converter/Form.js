@@ -321,7 +321,7 @@ const Button = styled.button`
   width: 100%;
   height: 52px;
   font-size: 20px;
-  font-family: 'FontMedium', sans-serif;
+  font-weight: 600;
   cursor: pointer;
   &:disabled,
   &[disabled] {
