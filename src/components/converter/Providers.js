@@ -24,12 +24,13 @@ const large = css => breakpoint('large', css)
 const medium = css => breakpoint('medium', css)
 
 const Providers = () => {
-  const { account, activate, deactivate } = useWeb3Connect()
+  const { account, activate, deactivate, ethersProvider } = useWeb3Connect()
   const [show, setShow] = useState(false)
   const [target, setTarget] = useState(null)
   const ref = useRef(null)
 
-  const isMetamask = identifyProvider(window.ethereum) === 'metamask'
+  const isMetamask =
+    ethersProvider && identifyProvider(ethersProvider.provider) === 'metamask'
 
   return (
     <Content>
