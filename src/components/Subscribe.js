@@ -4,7 +4,7 @@ import { Link } from 'react-static'
 import background from './assets/subscribe-background.svg'
 
 const Subscribe = () => (
-  <SubscribeSection>
+  <SubscribeSection id="subscribe">
     <Container>
       <div>
         <h3>Want to be notified when ANJ activation begings?</h3>

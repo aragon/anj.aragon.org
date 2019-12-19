@@ -15,10 +15,7 @@ const GetAnj = () => (
   <GetAnjSection id="get-anj">
     <Content className="medium" src={content} />
     <Content className="mobile" src={contentMobile} />
-    <a
-      href="https://blog.aragon.org/aragon-court-is-live-on-mainnet/"
-      target="_blank"
-    >
+    <a href="#subscribe">
       <img src={lock} />
       <div>
         <p>Time to unlock </p>
