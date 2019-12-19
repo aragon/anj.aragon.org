@@ -18,11 +18,6 @@ const plugins = [{
         hooks: {}
       },
 {
-        location: "/Library/WebServer/Documents/court-microsite/plugins/court-microsite-plugin",
-        plugins: [],
-        hooks: {}
-      },
-{
         location: "/Library/WebServer/Documents/court-microsite/src",
         plugins: [],
         hooks: {}

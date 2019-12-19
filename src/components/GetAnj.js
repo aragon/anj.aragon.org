@@ -2,8 +2,10 @@ import React from 'react'
 import styled from 'styled-components'
 import content from './assets/convert-module.png'
 import comingSoon from './assets/coming-soon.svg'
+import lock from './assets/lock.svg'
 import contentMobile from './assets/convert-module-mobile.png'
 import comingSoonMobile from './assets/coming-soon-mobile.svg'
+import Countdown from './Countdown'
 
 import { breakpoint } from '../microsite-logic'
 const medium = css => breakpoint('medium', css)
@@ -13,9 +15,15 @@ const GetAnj = () => (
   <GetAnjSection id="get-anj">
     <Content className="medium" src={content} />
     <Content className="mobile" src={contentMobile} />
-    <a href="https://blog.aragon.org/aragon-court-is-live-on-mainnet/" target="_blank">
-      <img className="medium" src={comingSoon} />
-      <img className="mobile" src={comingSoonMobile} />
+    <a
+      href="https://blog.aragon.org/aragon-court-is-live-on-mainnet/"
+      target="_blank"
+    >
+      <img src={lock} />
+      <div>
+        <p>Time to unlock </p>
+        <Countdown date={new Date('January 7, 2020 16:00:00 GMT+0000')} />
+      </div>
     </a>
   </GetAnjSection>
 )
@@ -39,11 +47,35 @@ const GetAnjSection = styled.section`
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 56vw;
-    ${medium('width: 24vw;')};
+    width: 290px;
+    background: #ffffff;
+    border: 2px solid rgba(212, 220, 227, 0.5);
+    box-sizing: border-box;
+    border-radius: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 20px 12px;
+    div {
+      padding-right: 10px;
+      ${medium('padding-right: 28px;')};
+    }
+    p {
+      font-family: 'FontRegular', sans-serif;
+      font-size: 18px;
+      line-height: 1.43;
+      display: flex;
+      align-items: center;
+      color: #8a96a0;
+      margin: 0;
+      ${medium('font-size: 23px;')};
+    }
+    ${medium('width: 350px;')};
   }
   a img {
-    width: 100%;
+    max-width: 106px;
+    padding-right: 10px;
+    ${medium('padding-right: 28px;')};
   }
   .mobile {
     display: inline;
