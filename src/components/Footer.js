@@ -18,7 +18,7 @@ class Footer extends React.Component {
           <LinksBox>
             <a href="./#get-anj">Get ANJ</a>
             <a href="./#about">About</a>
-            <a href="./#support">Support</a>
+            <a href="./#how-it-works">How it works</a>
             <a href="https://aragon.org/network/" target="_blank">
               Network
             </a>

@@ -7,7 +7,7 @@ const Subscribe = () => (
   <SubscribeSection id="subscribe">
     <Container>
       <div>
-        <h3>Want to be notified when ANJ activation begings?</h3>
+        <h3>Want to be notified when ANJ activation begins?</h3>
         <p>Sign up for the Aragon Court newsletter to stay updated</p>
         <form
           action="https://aragon.us15.list-manage.com/subscribe/post?u=a590aa3843a54b079d48e6e18&amp;id=9c51454655"
