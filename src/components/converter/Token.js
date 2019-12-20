@@ -16,13 +16,13 @@ function Token({ symbol, badge }) {
 
 const TokenSection = styled.div`
   position: relative;
-  top: -5px;
   display: flex;
   align-items: center;
   height: 38px;
   padding: 0 8px;
   cursor: default;
   &.badge {
+    top: -5px;
     margin: 0 5px;
     ${medium('margin: 0 15px;')};
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.15);

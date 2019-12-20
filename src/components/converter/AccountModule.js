@@ -141,6 +141,9 @@ const StyledPopover = styled(Popover)`
       color: #212b36;
     }
   }
+  span {
+    top: 0px;
+  }
 `
 const Row = styled.div`
   display: flex;
