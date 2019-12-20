@@ -2,6 +2,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 
 export function noop() {}
 
+// Returns an object representing a balance.
 // `value` is a big int represented as a string.
 export function balanceFromBigInt(value) {
   value = BigNumber.from(value)

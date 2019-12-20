@@ -3,6 +3,7 @@ import { Contract as EthersContract } from '@ethersproject/contracts'
 import { BigNumber } from '@ethersproject/bignumber'
 import { getKnownContract } from './known-contracts'
 import { balanceFromBigInt } from './utils'
+import { fromTokenInteger } from './web3-utils'
 import { useWeb3Connect } from './web3-connect'
 
 const contractsCache = new Map()

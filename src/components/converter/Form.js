@@ -114,6 +114,7 @@ function FormSection() {
 
   const balanceAnt = useTokenBalance('ANT')
   const balanceAnj = useJurorRegistryAnjBalance()
+  const antDecimals = useTokenDecimals('ANT')
 
   const converterStatus = useConverterStatus()
 
@@ -163,17 +164,21 @@ function FormSection() {
   }, [amountAnt, inputValueAnt, balanceAnj])
 
   useEffect(() => {
-    if (
-      amountAnt &&
-      inputValueAnt &&
-      balanceAnt &&
-      balanceAnt.value.lt(BigNumber.from(String(inputValueAnt)))
-    ) {
-      setValidationBalance('Amount is greater than balance held.')
-    } else {
-      setValidationBalance('')
-    }
-  }, [amountAnt, inputValueAnt, balanceAnt])
+    const balanceAntInteger = BigNumber.from(
+      balanceAnt && balanceAnt.value.gte(0)
+        ? toTokenInteger(balanceAnt.value, antDecimals)
+        : 0
+    )
+
+    setValidationBalance(
+      antDecimals !== -1 &&
+        amountAnt &&
+        !amountAnt.eq(-1) &&
+        amountAnt.gt(balanceAntInteger)
+        ? 'Amount is greater than balance held.'
+        : ''
+    )
+  }, [amountAnt, balanceAnt, antDecimals])
 
   return (
     <Form onSubmit={handleSubmit}>
