@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
-import { BigNumber } from '@ethersproject/bignumber'
+import { utils as EthersUtils } from 'ethers'
 import { balanceFromBigInt } from './utils'
+
+const { BigNumber } = EthersUtils
 
 const ADDRESS_REGEX = /^0x[0-9a-fA-F]{40}$/
 
@@ -46,14 +48,12 @@ export function toTokenInteger(value, decimals) {
     throw new Error('Please specify the number of decimals')
   }
 
-  const multiplier = BigNumber.from(10)
-    .pow(decimals)
-    .toString()
+  const multiplier = new BigNumber(10).pow(decimals).toString()
 
   const parts = String(value).split('.')
 
-  const intPart = BigNumber.from(parts[0] || '0').mul(multiplier)
-  const decPart = BigNumber.from(
+  const intPart = new BigNumber(parts[0] || '0').mul(multiplier)
+  const decPart = new BigNumber(
     (parts[1] || '').padEnd(decimals, '0').slice(0, decimals)
   )
 
@@ -88,7 +88,7 @@ export function useTokenToUsd(token, balance) {
           setUsd(
             balanceFromBigInt(
               balance.value
-                .mul(BigNumber.from(parseInt(price.USD * 1000000, 10)))
+                .mul(new BigNumber(parseInt(price.USD * 1000000, 10)))
                 .div(1000000)
             ).toString()
           )

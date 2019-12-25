@@ -1,7 +1,9 @@
 import React, { useEffect, useContext, useState } from 'react'
-import { BigNumber } from '@ethersproject/bignumber'
+import { utils as EthersUtils } from 'ethers'
 import { useKnownContract } from '../../web3-contracts'
 import { useWeb3Connect } from '../../web3-connect'
+
+const { BigNumber } = EthersUtils
 
 export const CONVERTER_STATUSES = {
   FORM: Symbol('STATE_FORM'),
@@ -18,7 +20,7 @@ export function useConverterStatus() {
 
 export function ConverterProvider({ children }) {
   const [status, setStatus] = useState(CONVERTER_STATUSES.FORM)
-  const [lastAnjBought, setLastAnjBought] = useState(BigNumber.from(-1))
+  const [lastAnjBought, setLastAnjBought] = useState(new BigNumber(-1))
 
   const { account } = useWeb3Connect()
   const wrapperContract = useKnownContract('WRAPPER')

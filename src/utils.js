@@ -1,11 +1,13 @@
-import { BigNumber } from '@ethersproject/bignumber'
+import { utils as EthersUtils } from 'ethers'
+
+const { BigNumber } = EthersUtils
 
 export function noop() {}
 
 // Returns an object representing a balance.
 // `value` is a big int represented as a string.
 export function balanceFromBigInt(value) {
-  value = BigNumber.from(value)
+  value = new BigNumber(value)
   return {
     value,
     toString() {

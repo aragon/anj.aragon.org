@@ -19,9 +19,6 @@
     "deploy:rinkeby": "CHAIN_ID=4 npm run deploy"
   },
   "dependencies": {
-    "@ethersproject/bignumber": "^5.0.0-beta.135",
-    "@ethersproject/contracts": "^5.0.0-beta.142",
-    "@ethersproject/providers": "^5.0.0-beta.146",
     "@reach/router": "^1.2.1",
     "@web3-react/core": "^6.0.0-beta.25",
     "@web3-react/fortmatic-connector": "^6.0.0-beta.25",
@@ -30,6 +27,7 @@
     "@web3-react/portis-connector": "^6.0.0-beta.25",
     "axios": "^0.19.0",
     "bootstrap": "^4.3.1",
+    "ethers": "^4.0.41",
     "gh-pages": "^2.1.1",
     "react": "^16.9.0",
     "react-blockies": "^1.4.1",

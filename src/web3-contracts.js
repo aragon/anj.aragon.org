@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
-import { Contract as EthersContract } from '@ethersproject/contracts'
-import { BigNumber } from '@ethersproject/bignumber'
+import { Contract as EthersContract, utils as EthersUtils } from 'ethers'
 import { getKnownContract } from './known-contracts'
 import { balanceFromBigInt } from './utils'
 import { fromTokenInteger } from './web3-utils'
 import { useWeb3Connect } from './web3-connect'
+
+const { BigNumber } = EthersUtils
 
 const contractsCache = new Map()
 
@@ -86,7 +87,7 @@ export function useTokenBalance(symbol) {
     tokenContract.balanceOf(account).then(balance => {
       if (!cancelled) {
         setBalance(
-          balanceFromBigInt(balance.div(BigNumber.from(10).pow(decimals)))
+          balanceFromBigInt(balance.div(new BigNumber(10).pow(decimals)))
         )
       }
     })
@@ -162,7 +163,7 @@ export function useJurorRegistryAnjBalance() {
     jurorsRegistryContract.balanceOf(account).then(([activeBalance]) => {
       if (!cancelled) {
         setBalance(
-          balanceFromBigInt(activeBalance.div(BigNumber.from(10).pow(decimals)))
+          balanceFromBigInt(activeBalance.div(new BigNumber(10).pow(decimals)))
         )
       }
     })

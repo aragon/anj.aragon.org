@@ -1,7 +1,7 @@
 import React, { useCallback, useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { OverlayTrigger, Tooltip } from 'react-bootstrap'
-import { BigNumber } from '@ethersproject/bignumber'
+import { utils as EthersUtils } from 'ethers'
 import Token from './Token'
 import {
   useTokenDecimals,
@@ -15,6 +15,8 @@ import { useConverterStatus, CONVERTER_STATUSES } from './converter-status'
 
 import question from './assets/question.svg'
 
+const { BigNumber } = EthersUtils
+
 const large = css => breakpoint('large', css)
 
 const ANJ_BY_ANT = 100
@@ -26,7 +28,7 @@ function convertInputValue(value, fromDecimals, toDecimals, convert) {
     return ['', '']
   }
 
-  const fromAmount = BigNumber.from(toTokenInteger(value || '0', fromDecimals))
+  const fromAmount = new BigNumber(toTokenInteger(value || '0', fromDecimals))
   const toAmount = convert(fromAmount)
 
   const toInputValue = value ? fromTokenInteger(toAmount, toDecimals) : ''
@@ -42,8 +44,8 @@ function convertInputValue(value, fromDecimals, toDecimals, convert) {
 function useConvertInputs() {
   const [inputValueAnj, setInputValueAnj] = useState('')
   const [inputValueAnt, setInputValueAnt] = useState('')
-  const [amountAnj, setAmountAnj] = useState(BigNumber.from(0))
-  const [amountAnt, setAmountAnt] = useState(BigNumber.from(0))
+  const [amountAnj, setAmountAnj] = useState(new BigNumber(0))
+  const [amountAnt, setAmountAnt] = useState(new BigNumber(0))
 
   const antDecimals = useTokenDecimals('ANT')
   const anjDecimals = useTokenDecimals('ANJ')
@@ -133,7 +135,7 @@ function FormSection() {
   const [placeholder, setPlaceholder] = useState('')
 
   useEffect(() => {
-    if (balanceAnj && balanceAnj.value.gte(BigNumber.from(String(10000)))) {
+    if (balanceAnj && balanceAnj.value.gte(new BigNumber(String(10000)))) {
       setPlaceholder('')
     } else {
       setPlaceholder('Min. 100 ANT')
@@ -153,10 +155,10 @@ function FormSection() {
       amountAnt &&
       inputValueAnt &&
       balanceAnj &&
-      balanceAnj.value.lt(BigNumber.from(String(10000)))
+      balanceAnj.value.lt(new BigNumber(String(10000)))
     ) {
       setInfo(
-        amountAnt.lt(BigNumber.from(String(Math.pow(10, 18) * 100)))
+        amountAnt.lt(new BigNumber(String(Math.pow(10, 18) * 100)))
           ? 'The minimum amount for this is 100. '
           : ''
       )
@@ -164,7 +166,7 @@ function FormSection() {
   }, [amountAnt, inputValueAnt, balanceAnj])
 
   useEffect(() => {
-    const balanceAntInteger = BigNumber.from(
+    const balanceAntInteger = new BigNumber(
       balanceAnt && balanceAnt.value.gte(0)
         ? toTokenInteger(balanceAnt.value, antDecimals)
         : 0
