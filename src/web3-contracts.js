@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
 import { Contract as EthersContract, utils as EthersUtils } from 'ethers'
 import { getKnownContract } from './known-contracts'
-import { balanceFromBigInt } from './utils'
-import { fromTokenInteger } from './web3-utils'
+import { balanceFromBigInt, fromTokenInteger } from './web3-utils'
 import { useWeb3Connect } from './web3-connect'
 
 const { BigNumber } = EthersUtils

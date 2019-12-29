@@ -4,9 +4,8 @@ import {
   useJurorRegistryAnjBalance,
   useTokenDecimals,
 } from '../../web3-contracts'
+import { balanceFromBigInt, fromTokenInteger } from '../../web3-utils'
 import { useConverterStatus } from './converter-status'
-import { balanceFromBigInt } from '../../utils'
-import { fromTokenInteger } from '../../web3-utils'
 
 import successImg from './assets/success.svg'
 

@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react'
 import { utils as EthersUtils } from 'ethers'
-import { balanceFromBigInt } from './utils'
-
-const { BigNumber } = EthersUtils
+import { bigNum } from './utils'
 
 const ADDRESS_REGEX = /^0x[0-9a-fA-F]{40}$/
+const NUM_DIGIT_REGEX = /^\d$/
 
 export function isAddress(address) {
   return ADDRESS_REGEX.test(address)
@@ -48,12 +47,14 @@ export function toTokenInteger(value, decimals) {
     throw new Error('Please specify the number of decimals')
   }
 
-  const multiplier = new BigNumber(10).pow(decimals).toString()
+  const multiplier = bigNum(10)
+    .pow(decimals)
+    .toString()
 
   const parts = String(value).split('.')
 
-  const intPart = new BigNumber(parts[0] || '0').mul(multiplier)
-  const decPart = new BigNumber(
+  const intPart = bigNum(parts[0] || '0').mul(multiplier)
+  const decPart = bigNum(
     (parts[1] || '').padEnd(decimals, '0').slice(0, decimals)
   )
 
@@ -88,7 +89,7 @@ export function useTokenToUsd(token, balance) {
           setUsd(
             balanceFromBigInt(
               balance.value
-                .mul(new BigNumber(parseInt(price.USD * 1000000, 10)))
+                .mul(bigNum(parseInt(price.USD * 1000000, 10)))
                 .div(1000000)
             ).toString()
           )
@@ -97,4 +98,55 @@ export function useTokenToUsd(token, balance) {
   }, [balance])
 
   return usd
+}
+
+// Returns an object representing a balance.
+// `value` is a big int represented as a string.
+export function balanceFromBigInt(value) {
+  value = bigNum(value)
+  return {
+    value,
+    toString() {
+      // BigInt is not really needed since the max amount of ANT or ANJ should
+      // be far below Number.MAX_SAFE_INTEGER, but let’s use it if available.
+      const bigIntValue =
+        typeof BigInt === 'undefined' ? value.toNumber() : BigInt(value)
+
+      if (bigIntValue < 0) {
+        return '−'
+      }
+
+      return (
+        Intl.NumberFormat('en-US', {
+          style: 'currency',
+          currency: 'USD',
+        })
+          .format(bigIntValue)
+
+          // We only want to get the USD-style format, without the symbol.
+          .replace('$', '')
+          .trim()
+      )
+    },
+  }
+}
+
+// Parse a unit set for an input and return it as a BigNumber.
+export function parseInputUnits(value, digits = 18) {
+  value = value.replace(/,/g, '').trim()
+  return EthersUtils.parseUnits(value || '0', digits)
+}
+
+export function formatInputUnits(value, digits = 18, commas = true) {
+  let valueBeforeCommas = EthersUtils.formatUnits(value.toString(), digits)
+
+  // Replace 0 by an empty value
+  if (valueBeforeCommas === '0.0') {
+    return ''
+  }
+
+  // EthersUtils.formatUnits() adds a decimal even when 0, this removes it.
+  valueBeforeCommas = valueBeforeCommas.replace(/\.0$/, '')
+
+  return commas ? EthersUtils.commify(valueBeforeCommas) : valueBeforeCommas
 }

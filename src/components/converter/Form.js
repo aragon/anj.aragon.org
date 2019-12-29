@@ -1,54 +1,75 @@
-import React, { useCallback, useState, useEffect } from 'react'
+import React, { useCallback, useEffect, useLayoutEffect, useState } from 'react'
 import styled from 'styled-components'
 import { OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { utils as EthersUtils } from 'ethers'
-import Token from './Token'
 import {
   useTokenDecimals,
   useConvertAntToAnj,
   useTokenBalance,
   useJurorRegistryAnjBalance,
 } from '../../web3-contracts'
-import { fromTokenInteger, toTokenInteger } from '../../web3-utils'
+import { bigNum } from '../../utils'
 import { breakpoint, GU } from '../../microsite-logic'
+import {
+  formatInputUnits,
+  fromTokenInteger,
+  parseInputUnits,
+  toTokenInteger,
+} from '../../web3-utils'
 import { useConverterStatus, CONVERTER_STATUSES } from './converter-status'
+import Token from './Token'
 
 import question from './assets/question.svg'
-
-const { BigNumber } = EthersUtils
 
 const large = css => breakpoint('large', css)
 
 const ANJ_BY_ANT = 100
 
+// Convert an input value (e.g. ANT) into another one (e.g. ANJ).
 function convertInputValue(value, fromDecimals, toDecimals, convert) {
   value = value.trim()
 
-  if (!value || fromDecimals === -1 || toDecimals === -1) {
-    return ['', '']
+  if (fromDecimals === -1 || toDecimals === -1) {
+    return null
   }
 
-  const fromAmount = new BigNumber(toTokenInteger(value || '0', fromDecimals))
+  // fromAmount and toAmount are the parsed values (BigNumber instances).
+  const fromAmount = parseInputUnits(value)
   const toAmount = convert(fromAmount)
 
-  const toInputValue = value ? fromTokenInteger(toAmount, toDecimals) : ''
+  // fromInputValue and toInputValue are filtered values to be set on inputs (strings).
+  const fromInputValue = value
+  const toInputValue = formatInputUnits(toAmount, toDecimals)
 
-  return {
-    fromInputValue: value,
-    toInputValue,
-    fromAmount,
-    toAmount,
-  }
+  return { fromInputValue, toInputValue, fromAmount, toAmount }
 }
 
+// Convert the two input values as the user types
 function useConvertInputs() {
   const [inputValueAnj, setInputValueAnj] = useState('')
   const [inputValueAnt, setInputValueAnt] = useState('')
-  const [amountAnj, setAmountAnj] = useState(new BigNumber(0))
-  const [amountAnt, setAmountAnt] = useState(new BigNumber(0))
+  const [amountAnj, setAmountAnj] = useState(bigNum(0))
+  const [amountAnt, setAmountAnt] = useState(bigNum(0))
 
   const antDecimals = useTokenDecimals('ANT')
   const anjDecimals = useTokenDecimals('ANJ')
+
+  // Alternate the comma-separated format, based on the fields focus state.
+  const handleAntFocus = useCallback(() => {
+    setInputValueAnt(formatInputUnits(amountAnt, antDecimals, false))
+  }, [amountAnt, antDecimals])
+
+  const handleAntBlur = useCallback(() => {
+    setInputValueAnt(formatInputUnits(amountAnt, antDecimals))
+  }, [amountAnt, antDecimals])
+
+  const handleAnjFocus = useCallback(() => {
+    setInputValueAnj(formatInputUnits(amountAnj, anjDecimals, false))
+  }, [amountAnj, anjDecimals])
+
+  const handleAnjBlur = useCallback(() => {
+    setInputValueAnj(formatInputUnits(amountAnj, anjDecimals))
+  }, [amountAnj, anjDecimals])
 
   const handleAntChange = useCallback(
     event => {
@@ -62,6 +83,10 @@ function useConvertInputs() {
         anjDecimals,
         amount => amount.mul(ANJ_BY_ANT)
       )
+
+      if (converted === null) {
+        return
+      }
 
       setInputValueAnt(converted.fromInputValue)
       setInputValueAnj(converted.toInputValue)
@@ -84,6 +109,10 @@ function useConvertInputs() {
         amount => amount.div(ANJ_BY_ANT)
       )
 
+      if (converted === null) {
+        return
+      }
+
       setInputValueAnj(converted.fromInputValue)
       setInputValueAnt(converted.toInputValue)
       setAmountAnj(converted.fromAmount)
@@ -95,8 +124,12 @@ function useConvertInputs() {
   return {
     amountAnj,
     amountAnt,
+    handleAnjBlur,
     handleAnjChange,
+    handleAnjFocus,
+    handleAntBlur,
     handleAntChange,
+    handleAntFocus,
     inputValueAnj,
     inputValueAnt,
   }
@@ -106,8 +139,12 @@ function FormSection() {
   const {
     amountAnj,
     amountAnt,
+    handleAnjBlur,
     handleAnjChange,
+    handleAnjFocus,
+    handleAntBlur,
     handleAntChange,
+    handleAntFocus,
     inputValueAnj,
     inputValueAnt,
   } = useConvertInputs()
@@ -135,7 +172,7 @@ function FormSection() {
   const [placeholder, setPlaceholder] = useState('')
 
   useEffect(() => {
-    if (balanceAnj && balanceAnj.value.gte(new BigNumber(String(10000)))) {
+    if (balanceAnj && balanceAnj.value.gte(bigNum(String(10000)))) {
       setPlaceholder('')
     } else {
       setPlaceholder('Min. 100 ANT')
@@ -143,44 +180,40 @@ function FormSection() {
   }, [balanceAnj])
 
   const [info, setInfo] = useState('')
-  const [balanceInfo, setBalanceInfo] = useState(balanceAnt.toString())
   const [validationBalance, setValidationBalance] = useState('')
-
-  useEffect(() => {
-    setBalanceInfo(balanceAnt.toString())
-  }, [balanceAnt])
 
   useEffect(() => {
     if (
       amountAnt &&
       inputValueAnt &&
       balanceAnj &&
-      balanceAnj.value.lt(new BigNumber(String(10000)))
+      balanceAnj.value.lt(bigNum(String(10000)))
     ) {
       setInfo(
-        amountAnt.lt(new BigNumber(String(Math.pow(10, 18) * 100)))
+        amountAnt.lt(bigNum(String(Math.pow(10, 18) * 100)))
           ? 'The minimum amount for this is 100. '
           : ''
       )
     }
   }, [amountAnt, inputValueAnt, balanceAnj])
 
-  useEffect(() => {
-    const balanceAntInteger = new BigNumber(
-      balanceAnt && balanceAnt.value.gte(0)
-        ? toTokenInteger(balanceAnt.value, antDecimals)
-        : 0
-    )
+  // TODO: add balance validation again
+  // useEffect(() => {
+  //   const balanceAntInteger = bigNum(
+  //     balanceAnt && balanceAnt.value.gte(0)
+  //       ? toTokenInteger(balanceAnt.value, antDecimals)
+  //       : 0
+  //   )
 
-    setValidationBalance(
-      antDecimals !== -1 &&
-        amountAnt &&
-        !amountAnt.eq(-1) &&
-        amountAnt.gt(balanceAntInteger)
-        ? 'Amount is greater than balance held.'
-        : ''
-    )
-  }, [amountAnt, balanceAnt, antDecimals])
+  //   setValidationBalance(
+  //     antDecimals !== -1 &&
+  //       amountAnt &&
+  //       !amountAnt.eq(-1) &&
+  //       amountAnt.gt(balanceAntInteger)
+  //       ? 'Amount is greater than balance held.'
+  //       : ''
+  //   )
+  // }, [amountAnt, balanceAnt, antDecimals])
 
   return (
     <Form onSubmit={handleSubmit}>
@@ -193,10 +226,10 @@ function FormSection() {
           <Label>Amount of ANT you want to convert</Label>
           <AdornmentBox>
             <Input
-              type="number"
               value={inputValueAnt}
-              max={balanceAnt ? balanceAnt : undefined}
               onChange={handleAntChange}
+              onBlur={handleAntBlur}
+              onFocus={handleAntFocus}
               placeholder={placeholder}
             />
             <Adornment>
@@ -204,7 +237,9 @@ function FormSection() {
             </Adornment>
           </AdornmentBox>
           <Info>
-            <span className="black">Balance: {balanceInfo} ANT. </span>
+            <span className="black">
+              Balance: {balanceAnt.toString()} ANT.{' '}
+            </span>
             <span className="red">{validationBalance} </span>
           </Info>
           <Info>
@@ -216,10 +251,10 @@ function FormSection() {
           <Label>Amount of ANJ you will receive and activate</Label>
           <AdornmentBox>
             <Input
-              type="number"
-              min={placeholder ? 10000 : undefined}
               value={inputValueAnj}
               onChange={handleAnjChange}
+              onBlur={handleAnjBlur}
+              onFocus={handleAnjFocus}
             />
             <Adornment>
               <Token symbol="ANJ" />
@@ -296,7 +331,7 @@ const Input = styled.input`
   color: #212b36;
   border-radius: 4px;
   appearance: none;
-  font-size: 14px;
+  font-size: 18px;
   font-weight: 400;
   line-height: 1.5;
   &::-webkit-inner-spin-button,
