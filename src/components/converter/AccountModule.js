@@ -9,10 +9,15 @@ import {
 } from 'react-bootstrap'
 import { useWeb3Connect } from '../../web3-connect'
 import {
-  useTokenBalance,
   useJurorRegistryAnjBalance,
+  useTokenBalance,
+  useTokenDecimals,
 } from '../../web3-contracts'
-import { useTokenToUsd, shortenAddress } from '../../web3-utils'
+import {
+  formatUnits,
+  shortenAddress,
+  useTokenBalanceToUsd,
+} from '../../web3-utils'
 import Token from './Token'
 import EthIdenticon from './EthIdenticon'
 
@@ -32,9 +37,11 @@ function ConnectedMode() {
     web3ReactContext,
     deactivate,
   } = useWeb3Connect()
-  const balanceAnt = useTokenBalance('ANT')
   const balanceAnj = useJurorRegistryAnjBalance()
-  const antToUsd = useTokenToUsd('ANT', balanceAnt)
+  const balanceAnt = useTokenBalance('ANT')
+  const antDecimals = useTokenDecimals('ANT')
+  const anjDecimals = useTokenDecimals('ANJ')
+  const antToUsd = useTokenBalanceToUsd('ANT', antDecimals, balanceAnt)
 
   const containerRef = useRef()
 
@@ -54,14 +61,16 @@ function ConnectedMode() {
               <Row>
                 <Token symbol="ANT" />
                 <div>
-                  <p>{balanceAnt.toString()}</p>
+                  <p>{formatUnits(balanceAnt, { digits: antDecimals })}</p>
                   <h3>${antToUsd}</h3>
                 </div>
               </Row>
               <Row>
                 <Token symbol="ANJ" />
                 <div>
-                  <p>{balanceAnj.toString()}</p>
+                  <p>
+                    {formatUnits(balanceAnj, { digits: anjDecimals }) || '0'}
+                  </p>
                   <h3 />
                 </div>
               </Row>

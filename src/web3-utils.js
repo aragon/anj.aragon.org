@@ -40,27 +40,6 @@ export function identifyProvider(provider) {
   return 'unknown'
 }
 
-// Converts a token value from its decimal form
-// into its integer form, both as strings.
-export function toTokenInteger(value, decimals) {
-  if (decimals === undefined) {
-    throw new Error('Please specify the number of decimals')
-  }
-
-  const multiplier = bigNum(10)
-    .pow(decimals)
-    .toString()
-
-  const parts = String(value).split('.')
-
-  const intPart = bigNum(parts[0] || '0').mul(multiplier)
-  const decPart = bigNum(
-    (parts[1] || '').padEnd(decimals, '0').slice(0, decimals)
-  )
-
-  return intPart.add(decPart).toString()
-}
-
 // Converts a token value from its integer form
 // into its decimal form, both as strings.
 export function fromTokenInteger(value, decimals) {
@@ -74,70 +53,74 @@ export function fromTokenInteger(value, decimals) {
   return (value.slice(0, -decimals) || '0') + (decPart ? `.${decPart}` : '')
 }
 
-// Convert a token into a USD price
-export function useTokenToUsd(token, balance) {
+/**
+ * Convert a token into a USD price
+ *
+ * @param {String} symbol The symbol of the token to convert from.
+ * @param {Number} decimals The amount of decimals for the token.
+ * @param {BigNumber} balance The balance to convert into USD.
+ */
+export function useTokenBalanceToUsd(symbol, decimals, balance) {
   const [usd, setUsd] = useState('-')
   useEffect(() => {
+    let cancelled = false
+
     fetch(
-      'https://min-api.cryptocompare.com/data/price?fsym=' +
-        token +
-        '&tsyms=USD'
+      `https://min-api.cryptocompare.com/data/price?fsym=${symbol}&tsyms=USD`
     )
       .then(res => res.json())
       .then(price => {
-        if (parseFloat(balance) > 0) {
-          setUsd(
-            balanceFromBigInt(
-              balance.value
-                .mul(bigNum(parseInt(price.USD * 1000000, 10)))
-                .div(1000000)
-            ).toString()
-          )
+        if (cancelled || !balance || !(parseFloat(price.USD) > 0)) {
+          return
         }
+
+        const usdDigits = 2
+        const precision = 6
+
+        const usdBalance = balance
+          .mul(bigNum(parseInt(price.USD * 10 ** (precision + usdDigits), 10)))
+          .div(10 ** precision)
+          .div(bigNum(10).pow(decimals))
+
+        setUsd(formatUnits(usdBalance, { digits: usdDigits }))
       })
-  }, [balance])
+
+    return () => {
+      cancelled = true
+    }
+  }, [balance, decimals])
 
   return usd
 }
 
-// Returns an object representing a balance.
-// `value` is a big int represented as a string.
-export function balanceFromBigInt(value) {
-  value = bigNum(value)
-  return {
-    value,
-    toString() {
-      // BigInt is not really needed since the max amount of ANT or ANJ should
-      // be far below Number.MAX_SAFE_INTEGER, but let’s use it if available.
-      const bigIntValue =
-        typeof BigInt === 'undefined' ? value.toNumber() : BigInt(value)
-
-      if (bigIntValue < 0) {
-        return '−'
-      }
-
-      return (
-        Intl.NumberFormat('en-US', {
-          style: 'currency',
-          currency: 'USD',
-        })
-          .format(bigIntValue)
-
-          // We only want to get the USD-style format, without the symbol.
-          .replace('$', '')
-          .trim()
-      )
-    },
+/**
+ * Parse a unit set for an input and return it as a BigNumber.
+ *
+ * @param {String} value Value to parse into an amount of units.
+ * @param {Number} options.digits Amount of digits on the token.
+ * @return {BigNumber}
+ */
+export function parseUnits(value, { digits = 18 } = {}) {
+  value = value.replace(/,/g, '').trim()
+  try {
+    return EthersUtils.parseUnits(value || '0', digits)
+  } catch (err) {
+    return bigNum(-1)
   }
 }
 
-// Parse a unit set for an input and return it as a BigNumber.
-export function parseInputUnits(value, digits = 18) {
-  value = value.replace(/,/g, '').trim()
-  return EthersUtils.parseUnits(value || '0', digits)
-}
+/**
+ * Format an amount of units to be displayed.
+ *
+ * @param {BigNumber} value Amount of units to format.
+ * @param {Number} options.digits Amount of digits on the token.
+ * @param {Boolean} options.commas Use comma-separated groups.
+ */
+export function formatUnits(value, { digits = 18, commas = true } = {}) {
+  if (value.lt(0) || digits < 0) {
+    return ''
+  }
 
-export function formatInputUnits(value, digits = 18, commas = true) {
   let valueBeforeCommas = EthersUtils.formatUnits(value.toString(), digits)
 
   // Replace 0 by an empty value

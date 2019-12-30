@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useLayoutEffect, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { utils as EthersUtils } from 'ethers'
@@ -10,12 +10,7 @@ import {
 } from '../../web3-contracts'
 import { bigNum } from '../../utils'
 import { breakpoint, GU } from '../../microsite-logic'
-import {
-  formatInputUnits,
-  fromTokenInteger,
-  parseInputUnits,
-  toTokenInteger,
-} from '../../web3-utils'
+import { formatUnits, parseUnits } from '../../web3-utils'
 import { useConverterStatus, CONVERTER_STATUSES } from './converter-status'
 import Token from './Token'
 
@@ -24,6 +19,9 @@ import question from './assets/question.svg'
 const large = css => breakpoint('large', css)
 
 const ANJ_BY_ANT = 100
+const ANJ_MIN_REQUIRED = bigNum(10)
+  .pow(18)
+  .mul(10000)
 
 // Convert an input value (e.g. ANT) into another one (e.g. ANJ).
 function convertInputValue(value, fromDecimals, toDecimals, convert) {
@@ -34,12 +32,16 @@ function convertInputValue(value, fromDecimals, toDecimals, convert) {
   }
 
   // fromAmount and toAmount are the parsed values (BigNumber instances).
-  const fromAmount = parseInputUnits(value)
+  const fromAmount = parseUnits(value)
+  if (fromAmount.lt(0)) {
+    return null
+  }
+
   const toAmount = convert(fromAmount)
 
   // fromInputValue and toInputValue are filtered values to be set on inputs (strings).
   const fromInputValue = value
-  const toInputValue = formatInputUnits(toAmount, toDecimals)
+  const toInputValue = formatUnits(toAmount, { digits: toDecimals })
 
   return { fromInputValue, toInputValue, fromAmount, toAmount }
 }
@@ -54,22 +56,29 @@ function useConvertInputs() {
   const antDecimals = useTokenDecimals('ANT')
   const anjDecimals = useTokenDecimals('ANJ')
 
+  const [editingAnj, setEditingAnj] = useState(false)
+  const [editingAnt, setEditingAnt] = useState(false)
+
   // Alternate the comma-separated format, based on the fields focus state.
-  const handleAntFocus = useCallback(() => {
-    setInputValueAnt(formatInputUnits(amountAnt, antDecimals, false))
-  }, [amountAnt, antDecimals])
+  const setEditModeAnt = useCallback(
+    editMode => {
+      setEditingAnt(editMode)
+      setInputValueAnt(
+        formatUnits(amountAnt, { digits: antDecimals, commas: !editMode })
+      )
+    },
+    [amountAnt, antDecimals]
+  )
 
-  const handleAntBlur = useCallback(() => {
-    setInputValueAnt(formatInputUnits(amountAnt, antDecimals))
-  }, [amountAnt, antDecimals])
-
-  const handleAnjFocus = useCallback(() => {
-    setInputValueAnj(formatInputUnits(amountAnj, anjDecimals, false))
-  }, [amountAnj, anjDecimals])
-
-  const handleAnjBlur = useCallback(() => {
-    setInputValueAnj(formatInputUnits(amountAnj, anjDecimals))
-  }, [amountAnj, anjDecimals])
+  const setEditModeAnj = useCallback(
+    editMode => {
+      setEditingAnj(editMode)
+      setInputValueAnj(
+        formatUnits(amountAnj, { digits: anjDecimals, commas: !editMode })
+      )
+    },
+    [amountAnj, anjDecimals]
+  )
 
   const handleAntChange = useCallback(
     event => {
@@ -124,12 +133,12 @@ function useConvertInputs() {
   return {
     amountAnj,
     amountAnt,
-    handleAnjBlur,
+    setEditModeAnj,
+    setEditModeAnt,
+    editingAnj,
+    editingAnt,
     handleAnjChange,
-    handleAnjFocus,
-    handleAntBlur,
     handleAntChange,
-    handleAntFocus,
     inputValueAnj,
     inputValueAnt,
   }
@@ -139,12 +148,12 @@ function FormSection() {
   const {
     amountAnj,
     amountAnt,
-    handleAnjBlur,
+    setEditModeAnj,
+    setEditModeAnt,
+    editingAnj,
+    editingAnt,
     handleAnjChange,
-    handleAnjFocus,
-    handleAntBlur,
     handleAntChange,
-    handleAntFocus,
     inputValueAnj,
     inputValueAnt,
   } = useConvertInputs()
@@ -168,52 +177,41 @@ function FormSection() {
     }
   }
 
-  // const disabled = Boolean(errorMessage)
   const [placeholder, setPlaceholder] = useState('')
 
   useEffect(() => {
-    if (balanceAnj && balanceAnj.value.gte(bigNum(String(10000)))) {
+    if (balanceAnj && balanceAnj.gte(bigNum(String(10000)))) {
       setPlaceholder('')
     } else {
       setPlaceholder('Min. 100 ANT')
     }
   }, [balanceAnj])
 
-  const [info, setInfo] = useState('')
-  const [validationBalance, setValidationBalance] = useState('')
+  const antError = useMemo(() => {
+    // if (editingAnj || editingAnt) {
+    //   return null
+    // }
 
-  useEffect(() => {
     if (
       amountAnt &&
       inputValueAnt &&
       balanceAnj &&
-      balanceAnj.value.lt(bigNum(String(10000)))
+      balanceAnj.lt(ANJ_MIN_REQUIRED) &&
+      amountAnj.lt(ANJ_MIN_REQUIRED)
     ) {
-      setInfo(
-        amountAnt.lt(bigNum(String(Math.pow(10, 18) * 100)))
-          ? 'The minimum amount for this is 100. '
-          : ''
-      )
+      return 'The minimum amount of ANT is 100.'
     }
-  }, [amountAnt, inputValueAnt, balanceAnj])
 
-  // TODO: add balance validation again
-  // useEffect(() => {
-  //   const balanceAntInteger = bigNum(
-  //     balanceAnt && balanceAnt.value.gte(0)
-  //       ? toTokenInteger(balanceAnt.value, antDecimals)
-  //       : 0
-  //   )
+    if (amountAnt && amountAnt.gte(0) && amountAnt.gt(balanceAnt)) {
+      return 'Amount is greater than balance held.'
+    }
 
-  //   setValidationBalance(
-  //     antDecimals !== -1 &&
-  //       amountAnt &&
-  //       !amountAnt.eq(-1) &&
-  //       amountAnt.gt(balanceAntInteger)
-  //       ? 'Amount is greater than balance held.'
-  //       : ''
-  //   )
-  // }, [amountAnt, balanceAnt, antDecimals])
+    return null
+  }, [amountAnt, inputValueAnt, balanceAnj, balanceAnt, editingAnj, editingAnt])
+
+  const disabled = Boolean(
+    !inputValueAnt.trim() || !inputValueAnj.trim() || antError
+  )
 
   return (
     <Form onSubmit={handleSubmit}>
@@ -228,8 +226,8 @@ function FormSection() {
             <Input
               value={inputValueAnt}
               onChange={handleAntChange}
-              onBlur={handleAntBlur}
-              onFocus={handleAntFocus}
+              onBlur={() => setEditModeAnt(false)}
+              onFocus={() => setEditModeAnt(true)}
               placeholder={placeholder}
             />
             <Adornment>
@@ -237,14 +235,10 @@ function FormSection() {
             </Adornment>
           </AdornmentBox>
           <Info>
-            <span className="black">
-              Balance: {balanceAnt.toString()} ANT.{' '}
+            <span>
+              Balance: {formatUnits(balanceAnt, { digits: antDecimals })} ANT.{' '}
             </span>
-            <span className="red">{validationBalance} </span>
-          </Info>
-          <Info>
-            {' '}
-            <span className="red">{info} </span>
+            {antError && <span className="error">{antError} </span>}
           </Info>
         </div>
         <InputBox>
@@ -253,8 +247,8 @@ function FormSection() {
             <Input
               value={inputValueAnj}
               onChange={handleAnjChange}
-              onBlur={handleAnjBlur}
-              onFocus={handleAnjFocus}
+              onBlur={() => setEditModeAnj(false)}
+              onFocus={() => setEditModeAnj(true)}
             />
             <Adornment>
               <Token symbol="ANJ" />
@@ -282,7 +276,9 @@ function FormSection() {
         <Input type="email" />
       </div>
 
-      <Button type="submit">Become a Juror</Button>
+      <Button type="submit" disabled={disabled}>
+        Become a Juror
+      </Button>
     </Form>
   )
 }
@@ -300,6 +296,7 @@ const Label = styled.label`
   font-size: 24px;
   line-height: 38px;
   color: #8a96a0;
+  margin-bottom: 6px;
 
   span {
     color: #08bee5;
@@ -310,12 +307,10 @@ const Label = styled.label`
 `
 const Info = styled.div`
   margin-top: 3px;
-  height: 19px;
-  .red {
+  margin-bottom: 12px;
+  color: #212b36;
+  .error {
     color: #ff6969;
-  }
-  .black {
-    color: #212b36;
   }
 `
 
@@ -325,15 +320,14 @@ const InputBox = styled.div`
 const Input = styled.input`
   width: 100%;
   height: 50px;
-  padding: 0 12px;
+  padding: 6px 12px 0;
   background: #ffffff;
   border: 1px solid #dde4e9;
   color: #212b36;
   border-radius: 4px;
   appearance: none;
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 400;
-  line-height: 1.5;
   &::-webkit-inner-spin-button,
   &::-webkit-outer-spin-button {
     -webkit-appearance: none;

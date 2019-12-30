@@ -10,9 +10,8 @@ import Countdown from './Countdown'
 
 const large = css => breakpoint('large', css)
 
-const ConverterContent = () => {
+function ConverterContent() {
   const { account } = useWeb3Connect()
-
   return (
     <Content>
       <div className="left">{account ? <Form /> : <Providers />}</div>

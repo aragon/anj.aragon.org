@@ -1,8 +1,8 @@
 import { utils as EthersUtils } from 'ethers'
-import { formatInputUnits, parseInputUnits } from './web3-utils'
+import { formatUnits, parseUnits } from './web3-utils'
 import { bigNum } from './utils'
 
-test('formatInputUnits() formats the provided value', () => {
+test('formatUnits() formats the provided value', () => {
   const values = [
     ['1000000000000000000', '1'],
     ['12000000000000000000', '12'],
@@ -15,11 +15,11 @@ test('formatInputUnits() formats the provided value', () => {
     ['123000000000000000000', '123'],
   ]
   values.forEach(([input, output]) => {
-    expect(formatInputUnits(bigNum(input))).toBe(output)
+    expect(formatUnits(bigNum(input), { digits: 18 })).toBe(output)
   })
 })
 
-test('parseInputUnits() creates a BigNumber from the provided value', () => {
+test('parseUnits() creates a BigNumber from the provided value', () => {
   const values = [
     ['1', '1000000000000000000'],
     ['12', '12000000000000000000'],
@@ -39,7 +39,7 @@ test('parseInputUnits() creates a BigNumber from the provided value', () => {
     ['123.0', '12300000000000000', 14],
   ]
   values.forEach(([input, output, digits = 18]) => {
-    expect(parseInputUnits(input, digits).toString()).toBe(
+    expect(parseUnits(input, { digits }).toString()).toBe(
       bigNum(output).toString()
     )
   })

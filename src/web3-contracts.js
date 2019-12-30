@@ -1,10 +1,9 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
 import { Contract as EthersContract, utils as EthersUtils } from 'ethers'
 import { getKnownContract } from './known-contracts'
-import { balanceFromBigInt, fromTokenInteger } from './web3-utils'
+import { fromTokenInteger } from './web3-utils'
 import { useWeb3Connect } from './web3-connect'
-
-const { BigNumber } = EthersUtils
+import { bigNum } from './utils'
 
 const contractsCache = new Map()
 
@@ -60,9 +59,8 @@ export function useTokenDecimals(symbol) {
 
 export function useTokenBalance(symbol) {
   const { account, ethersProvider } = useWeb3Connect()
-  const [balance, setBalance] = useState(balanceFromBigInt(-1))
+  const [balance, setBalance] = useState(bigNum(-1))
   const tokenContract = useKnownContract(`TOKEN_${symbol}`)
-  const decimals = useTokenDecimals(symbol)
 
   const cancelBalanceUpdate = useRef(null)
 
@@ -75,7 +73,7 @@ export function useTokenBalance(symbol) {
     }
 
     if (!account || !tokenContract) {
-      setBalance(balanceFromBigInt(-1))
+      setBalance(bigNum(-1))
       return
     }
 
@@ -85,12 +83,10 @@ export function useTokenBalance(symbol) {
 
     tokenContract.balanceOf(account).then(balance => {
       if (!cancelled) {
-        setBalance(
-          balanceFromBigInt(balance.div(new BigNumber(10).pow(decimals)))
-        )
+        setBalance(balance)
       }
     })
-  }, [account, tokenContract, decimals])
+  }, [account, tokenContract])
 
   useEffect(() => {
     // Always update the balance if updateBalance() has changed
@@ -128,9 +124,8 @@ export function useTokenBalance(symbol) {
 
 export function useJurorRegistryAnjBalance() {
   const { account, ethersProvider } = useWeb3Connect()
-  const [balance, setBalance] = useState(balanceFromBigInt(-1))
+  const [balance, setBalance] = useState(bigNum(-1))
 
-  const decimals = useTokenDecimals('ANJ')
   const tokenContract = useKnownContract('TOKEN_ANJ')
   const jurorsRegistryContract = useKnownContract('JURORS_REGISTRY')
   const wrapperContract = useKnownContract('WRAPPER')
@@ -145,13 +140,8 @@ export function useJurorRegistryAnjBalance() {
       cancelBalanceUpdate.current = null
     }
 
-    if (
-      !account ||
-      !tokenContract ||
-      !jurorsRegistryContract ||
-      decimals === -1
-    ) {
-      setBalance(balanceFromBigInt(-1))
+    if (!account || !tokenContract || !jurorsRegistryContract) {
+      setBalance(bigNum(-1))
       return
     }
 
@@ -161,12 +151,10 @@ export function useJurorRegistryAnjBalance() {
 
     jurorsRegistryContract.balanceOf(account).then(([activeBalance]) => {
       if (!cancelled) {
-        setBalance(
-          balanceFromBigInt(activeBalance.div(new BigNumber(10).pow(decimals)))
-        )
+        setBalance(activeBalance)
       }
     })
-  }, [account, tokenContract, jurorsRegistryContract, decimals])
+  }, [account, tokenContract, jurorsRegistryContract])
 
   useEffect(() => {
     // Always update the balance if updateBalance() has changed
