@@ -84,7 +84,7 @@ function ConnectedMode() {
               position: relative;
             `}
           >
-            <EthIdenticon address={account} scale={1} radius={1} />
+            <EthIdenticon address={account} scale={1} radius={4} />
           </div>
           <Address>{shortenAddress(account)}</Address>
           <svg
