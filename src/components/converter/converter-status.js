@@ -6,6 +6,7 @@ import { bigNum } from '../../utils'
 
 export const CONVERTER_STATUSES = {
   FORM: Symbol('STATE_FORM'),
+  SIGNING: Symbol('STATE_SIGNING'),
   PENDING: Symbol('STATE_PENDING'),
   ERROR: Symbol('STATE_ERROR'),
   SUCCESS: Symbol('STATE_SUCCESS'),

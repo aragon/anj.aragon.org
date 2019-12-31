@@ -2,17 +2,28 @@ import React from 'react'
 import styled from 'styled-components'
 import processing from './assets/loader'
 
-const ProcessingSection = () => (
-  <Processing>
-    <div>
-      <img src={processing} />
-      <p className="black">Processing your transaction</p>
-      <p>Your transaction is being processed, please be patient</p>
-    </div>
-  </Processing>
-)
+function Processing({ signing }) {
+  return (
+    <ProcessingIn>
+      <div>
+        <img src={processing} />
+        {signing ? (
+          <>
+            <p className="black">Please sign the transaction</p>
+            <p>Sign the transaction in your provider so it can get processed.</p>
+          </>
+        ) : (
+          <>
+            <p className="black">Processing your transaction</p>
+            <p>Your transaction is being processed, please be patient.</p>
+          </>
+        )}
+      </div>
+    </ProcessingIn>
+  )
+}
 
-const Processing = styled.div`
+const ProcessingIn = styled.div`
   min-width: 1109px;
   height: 530px;
   display: flex;
@@ -53,4 +64,4 @@ const Button = styled.button`
   }
 `
 
-export default ProcessingSection
+export default Processing

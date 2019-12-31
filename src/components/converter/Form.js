@@ -170,8 +170,11 @@ function FormSection() {
     event.preventDefault()
 
     try {
-      await convertAntToAnj(amountAnt.toString())
+      converterStatus.setStatus(CONVERTER_STATUSES.SIGNING)
+      const tx = await convertAntToAnj(amountAnt.toString())
       converterStatus.setStatus(CONVERTER_STATUSES.PENDING)
+      await tx.wait(1)
+      converterStatus.setStatus(CONVERTER_STATUSES.SUCCESS)
     } catch (err) {
       converterStatus.setStatus(CONVERTER_STATUSES.ERROR)
     }
@@ -188,10 +191,6 @@ function FormSection() {
   }, [balanceAnj])
 
   const antError = useMemo(() => {
-    // if (editingAnj || editingAnt) {
-    //   return null
-    // }
-
     if (
       amountAnt &&
       inputValueAnt &&
@@ -210,7 +209,10 @@ function FormSection() {
   }, [amountAnt, inputValueAnt, balanceAnj, balanceAnt, editingAnj, editingAnt])
 
   const disabled = Boolean(
-    !inputValueAnt.trim() || !inputValueAnj.trim() || antError
+    !inputValueAnt.trim() ||
+      !inputValueAnj.trim() ||
+      antError ||
+      converterStatus.status !== CONVERTER_STATUSES.FORM
   )
 
   return (
