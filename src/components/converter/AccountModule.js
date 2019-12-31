@@ -1,12 +1,7 @@
 import React, { useRef } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import {
-  Overlay,
-  OverlayTrigger,
-  Popover,
-  ButtonToolbar,
-} from 'react-bootstrap'
+import { OverlayTrigger, Popover } from 'react-bootstrap'
 import { useWeb3Connect } from '../../web3-connect'
 import {
   useJurorRegistryAnjBalance,
@@ -31,12 +26,7 @@ AccountModule.propTypes = {
 }
 
 function ConnectedMode() {
-  const {
-    account,
-    networkName,
-    web3ReactContext,
-    deactivate,
-  } = useWeb3Connect()
+  const { account, networkName, deactivate } = useWeb3Connect()
   const balanceAnj = useJurorRegistryAnjBalance()
   const balanceAnt = useTokenBalance('ANT')
   const antDecimals = useTokenDecimals('ANT')
@@ -62,7 +52,7 @@ function ConnectedMode() {
                 <Token symbol="ANT" />
                 <div>
                   <p>{formatUnits(balanceAnt, { digits: antDecimals })}</p>
-                  <h3>${antToUsd}</h3>
+                  <p>${antToUsd}</p>
                 </div>
               </Row>
               <Row>
@@ -71,7 +61,6 @@ function ConnectedMode() {
                   <p>
                     {formatUnits(balanceAnj, { digits: anjDecimals }) || '0'}
                   </p>
-                  <h3 />
                 </div>
               </Row>
             </section>
@@ -168,10 +157,11 @@ const Row = styled.div`
     color: #1c1c1c;
     margin: 0;
   }
-  h3 {
+  p + p {
     margin: 0;
     font-size: 12px;
     color: #8a95a0;
+    font-weight: 400;
   }
 `
 

@@ -7,12 +7,12 @@ import {
 } from '@web3-react/core'
 import {
   InjectedConnector,
-  NoEthereumProviderError as InjectedNoEthereumProviderError,
-  UserRejectedRequestError as InjectedUserRejectedRequestError,
+  // NoEthereumProviderError as InjectedNoEthereumProviderError,
+  // UserRejectedRequestError as InjectedUserRejectedRequestError,
 } from '@web3-react/injected-connector'
 import {
   FrameConnector,
-  UserRejectedRequestError as FrameUserRejectedRequestError,
+  // UserRejectedRequestError as FrameUserRejectedRequestError,
 } from '@web3-react/frame-connector'
 import { FortmaticConnector } from '@web3-react/fortmatic-connector'
 import { PortisConnector } from '@web3-react/portis-connector'

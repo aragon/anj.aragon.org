@@ -1,10 +1,7 @@
-import React, { PropTypes, Component } from 'react'
+import React from 'react'
 import styled from 'styled-components'
-import { breakpoint } from '../../microsite-logic'
 
-const medium = css => breakpoint('medium', css)
-
-class Timer extends Component {
+class Timer extends React.Component {
   constructor(props) {
     super(props)
 

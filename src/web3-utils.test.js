@@ -1,4 +1,3 @@
-import { utils as EthersUtils } from 'ethers'
 import { formatUnits, parseUnits } from './web3-utils'
 import { bigNum } from './utils'
 

@@ -1,21 +1,12 @@
-import React, { useState, useRef } from 'react'
+import React from 'react'
 import styled from 'styled-components'
-import {
-  Overlay,
-  OverlayTrigger,
-  Popover,
-  ButtonToolbar,
-} from 'react-bootstrap'
 import Token from './Token'
-import { breakpoint } from '../../microsite-logic'
 import { useWeb3Connect } from '../../web3-connect'
 import { formatUnits } from '../../web3-utils'
 import {
   useJurorRegistryAnjBalance,
   useTokenDecimals,
 } from '../../web3-contracts'
-
-const medium = css => breakpoint('medium', css)
 
 function Balance() {
   const { account } = useWeb3Connect()

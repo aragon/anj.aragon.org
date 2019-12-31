@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
-import { Contract as EthersContract, utils as EthersUtils } from 'ethers'
+import { Contract as EthersContract } from 'ethers'
 import { getKnownContract } from './known-contracts'
-import { fromTokenInteger } from './web3-utils'
 import { useWeb3Connect } from './web3-connect'
 import { bigNum } from './utils'
 
@@ -58,7 +57,7 @@ export function useTokenDecimals(symbol) {
 }
 
 export function useTokenBalance(symbol) {
-  const { account, ethersProvider } = useWeb3Connect()
+  const { account } = useWeb3Connect()
   const [balance, setBalance] = useState(bigNum(-1))
   const tokenContract = useKnownContract(`TOKEN_${symbol}`)
 
@@ -123,7 +122,7 @@ export function useTokenBalance(symbol) {
 }
 
 export function useJurorRegistryAnjBalance() {
-  const { account, ethersProvider } = useWeb3Connect()
+  const { account } = useWeb3Connect()
   const [balance, setBalance] = useState(bigNum(-1))
 
   const tokenContract = useKnownContract('TOKEN_ANJ')
@@ -181,8 +180,6 @@ export function useJurorRegistryAnjBalance() {
 
 // Convert ANT to ANJ action
 export function useConvertAntToAnj() {
-  const { ethersProvider } = useWeb3Connect()
-
   const antContract = useKnownContract('TOKEN_ANT')
   const [wrapperAddress] = getKnownContract('WRAPPER')
 

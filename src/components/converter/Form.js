@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { OverlayTrigger, Tooltip } from 'react-bootstrap'
-import { utils as EthersUtils } from 'ethers'
 import {
   useTokenDecimals,
   useConvertAntToAnj,
@@ -56,13 +55,9 @@ function useConvertInputs() {
   const antDecimals = useTokenDecimals('ANT')
   const anjDecimals = useTokenDecimals('ANJ')
 
-  const [editingAnj, setEditingAnj] = useState(false)
-  const [editingAnt, setEditingAnt] = useState(false)
-
   // Alternate the comma-separated format, based on the fields focus state.
   const setEditModeAnt = useCallback(
     editMode => {
-      setEditingAnt(editMode)
       setInputValueAnt(
         formatUnits(amountAnt, { digits: antDecimals, commas: !editMode })
       )
@@ -72,7 +67,6 @@ function useConvertInputs() {
 
   const setEditModeAnj = useCallback(
     editMode => {
-      setEditingAnj(editMode)
       setInputValueAnj(
         formatUnits(amountAnj, { digits: anjDecimals, commas: !editMode })
       )
@@ -135,8 +129,6 @@ function useConvertInputs() {
     amountAnt,
     setEditModeAnj,
     setEditModeAnt,
-    editingAnj,
-    editingAnt,
     handleAnjChange,
     handleAntChange,
     inputValueAnj,
@@ -150,8 +142,6 @@ function FormSection() {
     amountAnt,
     setEditModeAnj,
     setEditModeAnt,
-    editingAnj,
-    editingAnt,
     handleAnjChange,
     handleAntChange,
     inputValueAnj,
@@ -206,7 +196,7 @@ function FormSection() {
     }
 
     return null
-  }, [amountAnt, inputValueAnt, balanceAnj, balanceAnt, editingAnj, editingAnt])
+  }, [amountAnt, inputValueAnt, balanceAnj, amountAnj, balanceAnt])
 
   const disabled = Boolean(
     !inputValueAnt.trim() ||
@@ -272,7 +262,7 @@ function FormSection() {
         >
           <Label>
             Notify me when the Court is live
-            <img src={question} />
+            <img src={question} alt="" />
           </Label>
         </OverlayTrigger>
         <Input type="email" />

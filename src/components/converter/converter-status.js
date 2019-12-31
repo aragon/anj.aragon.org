@@ -1,5 +1,4 @@
 import React, { useEffect, useContext, useState } from 'react'
-import { utils as EthersUtils } from 'ethers'
 import { useKnownContract } from '../../web3-contracts'
 import { useWeb3Connect } from '../../web3-connect'
 import { bigNum } from '../../utils'

@@ -1,9 +1,7 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
-import { Link } from 'react-static'
 import { breakpoint } from '../microsite-logic'
 import Carousel from 'react-bootstrap/Carousel'
-import background from './assets/subscribe-background.svg'
 import basics1 from './assets/basics1.svg'
 import basics2 from './assets/basics2.svg'
 import basics3 from './assets/basics3.svg'
@@ -18,11 +16,11 @@ import basicsl5 from './assets/basics-l5.svg'
 import basicsl6 from './assets/basics-l6.svg'
 import left from './assets/left.svg'
 import right from './assets/right.svg'
-const medium = css => breakpoint('medium', css)
+
 const large = css => breakpoint('large', css)
 
 const Basics = () => {
-  const [active, setActive] = useState('1')
+  const [active, setActive] = useState(1)
   return (
     <BasicsSection id="how-it-works">
       <Container>
@@ -33,54 +31,57 @@ const Basics = () => {
         <div>
           <Buttons>
             <div
-              className={active == '1' ? 'active' : ''}
-              onClick={() => setActive('1')}
+              className={active === 1 ? 'active' : ''}
+              onClick={() => setActive(1)}
             >
               1- DISPUTE IS RAISED
             </div>
             <div
-              className={active == '2' ? 'active' : ''}
-              onClick={() => setActive('2')}
+              className={active === 2 ? 'active' : ''}
+              onClick={() => setActive(2)}
             >
               2- JURORS ARE SELECTED
             </div>
             <div
-              className={active == '3' ? 'active' : ''}
-              onClick={() => setActive('3')}
+              className={active === 3 ? 'active' : ''}
+              onClick={() => setActive(3)}
             >
               3- JURORS REVIEW EVIDENCE
             </div>
             <div
-              className={active == '4' ? 'active' : ''}
-              onClick={() => setActive('4')}
+              className={active === 4 ? 'active' : ''}
+              onClick={() => setActive(4)}
             >
               4- PRELIMINARY RULING
             </div>
             <div
-              className={active == '5' ? 'active' : ''}
-              onClick={() => setActive('5')}
+              className={active === 5 ? 'active' : ''}
+              onClick={() => setActive(5)}
             >
               5- DISPUTE IS SETTLED
             </div>
             <div
-              className={active == '6' ? 'active' : ''}
-              onClick={() => setActive('6')}
+              className={active === 6 ? 'active' : ''}
+              onClick={() => setActive(6)}
             >
               6- EARN REWARDS
             </div>
           </Buttons>
         </div>
         <Images>
-          <img className={active == '1' ? 'active' : ''} src={basicsl1} />
-          <img className={active == '2' ? 'active' : ''} src={basicsl2} />
-          <img className={active == '3' ? 'active' : ''} src={basicsl3} />
-          <img className={active == '4' ? 'active' : ''} src={basicsl4} />
-          <img className={active == '5' ? 'active' : ''} src={basicsl5} />
-          <img className={active == '6' ? 'active' : ''} src={basicsl6} />
+          <img className={active === 1 ? 'active' : ''} src={basicsl1} alt="" />
+          <img className={active === 2 ? 'active' : ''} src={basicsl2} alt="" />
+          <img className={active === 3 ? 'active' : ''} src={basicsl3} alt="" />
+          <img className={active === 4 ? 'active' : ''} src={basicsl4} alt="" />
+          <img className={active === 5 ? 'active' : ''} src={basicsl5} alt="" />
+          <img className={active === 6 ? 'active' : ''} src={basicsl6} alt="" />
         </Images>
       </Process>
       <MobileProcess>
-        <Carousel nextIcon={<img src={right} />} prevIcon={<img src={left} />}>
+        <Carousel
+          nextIcon={<img src={right} alt="" />}
+          prevIcon={<img src={left} alt="" />}
+        >
           <Carousel.Item>
             <img src={basics1} className="carousel-img" alt="" />
             <div className="carousel-content">
@@ -203,24 +204,6 @@ const Images = styled.div`
 
   img.active {
     opacity: 1;
-  }
-`
-const Text = styled.div`
-  p {
-    font-style: normal;
-    font-weight: 400;
-    font-size: 20px;
-    line-height: 27px;
-    max-width: 315px;
-    padding: 30px 0 0 15px;
-    color: #1c1c1c;
-    opacity: 0;
-    transition: opacity 0.25s ease-in-out;
-    display: none;
-  }
-  p.active {
-    opacity: 1;
-    display: block;
   }
 `
 const Process = styled.div`

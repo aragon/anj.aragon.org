@@ -1,10 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
-import {
-  useJurorRegistryAnjBalance,
-  useTokenDecimals,
-} from '../../web3-contracts'
-import { fromTokenInteger } from '../../web3-utils'
+import { useTokenDecimals } from '../../web3-contracts'
+import { formatUnits } from '../../web3-utils'
 import { useConverterStatus } from './converter-status'
 
 import successImg from './assets/success.svg'
@@ -15,7 +12,7 @@ function SuccessSection({ onDone }) {
   return (
     <Success>
       <div>
-        <img src={successImg} />
+        <img src={successImg} alt="" />
         <p className="green">The transaction has been successful</p>
         <p>
           Welcome juror. You have successfully activated the total amount of

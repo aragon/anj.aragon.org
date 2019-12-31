@@ -3,7 +3,6 @@ import { utils as EthersUtils } from 'ethers'
 import { bigNum } from './utils'
 
 const ADDRESS_REGEX = /^0x[0-9a-fA-F]{40}$/
-const NUM_DIGIT_REGEX = /^\d$/
 
 export function isAddress(address) {
   return ADDRESS_REGEX.test(address)
@@ -88,7 +87,7 @@ export function useTokenBalanceToUsd(symbol, decimals, balance) {
     return () => {
       cancelled = true
     }
-  }, [balance, decimals])
+  }, [balance, decimals, symbol])
 
   return usd
 }

@@ -12,14 +12,18 @@ class Footer extends React.Component {
         <CourtFooter>
           <Left>
             <LogoLink href="/">
-              <img src={logo} />
+              <img src={logo} alt="" />
             </LogoLink>
           </Left>
           <LinksBox>
             <a href="./#get-anj">Get ANJ</a>
             <a href="./#about">About</a>
             <a href="./#how-it-works">How it works</a>
-            <a href="https://aragon.org/network/" target="_blank">
+            <a
+              href="https://aragon.org/network/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               Network
             </a>
           </LinksBox>
