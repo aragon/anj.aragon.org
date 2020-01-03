@@ -274,7 +274,11 @@ function FormSection() {
             <img src={question} alt="" />
           </Label>
         </OverlayTrigger>
-        <Input type="email" onChange={() => setEmail(event.target.value)} />
+        <Input
+          type="email"
+          required
+          onChange={() => setEmail(event.target.value)}
+        />
       </div>
 
       <Button type="submit" disabled={disabled}>
