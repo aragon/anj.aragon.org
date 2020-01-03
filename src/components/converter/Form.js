@@ -6,6 +6,7 @@ import Token from './Token'
 import {
   useTokenDecimals,
   useConvertAntToAnj,
+  usePostEmail,
   useTokenBalance,
   useJurorRegistryAnjBalance,
 } from '../../web3-contracts'
@@ -111,15 +112,23 @@ function FormSection() {
   } = useConvertInputs()
 
   const convertAntToAnj = useConvertAntToAnj()
+  const postEmail = usePostEmail()
 
   const balanceAnt = useTokenBalance('ANT')
   const balanceAnj = useJurorRegistryAnjBalance()
   const antDecimals = useTokenDecimals('ANT')
 
   const converterStatus = useConverterStatus()
+  const [email, setEmail] = useState('')
 
   const handleSubmit = async event => {
     event.preventDefault()
+
+    try {
+      await postEmail(email)
+    } catch (err) {
+      console.log(err)
+    }
 
     try {
       await convertAntToAnj(amountAnt.toString())
@@ -242,7 +251,7 @@ function FormSection() {
             <img src={question} />
           </Label>
         </OverlayTrigger>
-        <Input type="email" />
+        <Input type="email" onChange={() => setEmail(event.target.value)} />
       </div>
 
       <Button type="submit">Become a Juror</Button>
