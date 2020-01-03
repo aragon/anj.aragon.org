@@ -10,7 +10,7 @@ const About = () => (
   <AboutSection>
     <Section>
       <Container>
-        <img src={about1} />
+        <img src={about1} alt="" />
         <div className="right">
           <h6>January 7th</h6>
           <h2>ANJ pre-activation begins</h2>
@@ -25,7 +25,7 @@ const About = () => (
     <Section>
       <Container>
         <Small>
-          <img src={about2} />
+          <img src={about2} alt="" />
         </Small>
         <div className="left">
           <h6>Early February</h6>
@@ -36,7 +36,7 @@ const About = () => (
           </h4>
         </div>
         <Medium>
-          <img src={about2} />
+          <img src={about2} alt="" />
         </Medium>
       </Container>
     </Section>

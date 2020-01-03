@@ -1,12 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
-import {
-  useJurorRegistryAnjBalance,
-  useTokenDecimals,
-} from '../../web3-contracts'
+import { useTokenDecimals } from '../../web3-contracts'
+import { formatUnits } from '../../web3-utils'
 import { useConverterStatus } from './converter-status'
-import { balanceFromBigInt } from '../../utils'
-import { fromTokenInteger } from '../../web3-utils'
 
 import successImg from './assets/success.svg'
 
@@ -16,14 +12,12 @@ function SuccessSection({ onDone }) {
   return (
     <Success>
       <div>
-        <img src={successImg} />
+        <img src={successImg} alt="" />
         <p className="green">The transaction has been successful</p>
         <p>
           Welcome juror. You have successfully activated the total amount of
-          {decimals !== -1 && !lastAnjBought.eq(-1)
-            ? ` ${balanceFromBigInt(
-                fromTokenInteger(lastAnjBought.toString(), decimals)
-              ).toString()} ANJ`
+          {decimals > -1 && lastAnjBought.gte(0)
+            ? ` ${formatUnits(lastAnjBought, { digits: decimals })} ANJ`
             : `− ANJ`}
         </p>
         <Button onClick={onDone}>Continue</Button>

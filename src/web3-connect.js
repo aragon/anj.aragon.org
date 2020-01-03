@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react'
-import { Web3Provider as EthersWeb3Provider } from '@ethersproject/providers'
+import { providers as EthersProviders } from 'ethers'
 import {
   UnsupportedChainIdError,
   Web3ReactProvider,
@@ -7,17 +7,19 @@ import {
 } from '@web3-react/core'
 import {
   InjectedConnector,
-  NoEthereumProviderError as InjectedNoEthereumProviderError,
-  UserRejectedRequestError as InjectedUserRejectedRequestError,
+  // NoEthereumProviderError as InjectedNoEthereumProviderError,
+  // UserRejectedRequestError as InjectedUserRejectedRequestError,
 } from '@web3-react/injected-connector'
 import {
   FrameConnector,
-  UserRejectedRequestError as FrameUserRejectedRequestError,
+  // UserRejectedRequestError as FrameUserRejectedRequestError,
 } from '@web3-react/frame-connector'
 import { FortmaticConnector } from '@web3-react/fortmatic-connector'
 import { PortisConnector } from '@web3-react/portis-connector'
 import env from './environment'
 import { getNetworkName } from './web3-utils'
+
+const { Web3Provider: EthersWeb3Provider } = EthersProviders
 
 const CHAIN_ID = Number(env('CHAIN_ID'))
 

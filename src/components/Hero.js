@@ -1,6 +1,5 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Link } from 'react-static'
 import Fade from 'react-reveal/Fade'
 import { breakpoint } from '../microsite-logic'
 import background from './assets/hero-background.svg'

@@ -1,22 +1,9 @@
-import React, { useCallback, useState, useRef } from 'react'
+import React from 'react'
 import styled from 'styled-components'
-import {
-  Overlay,
-  OverlayTrigger,
-  Popover,
-  ButtonToolbar,
-} from 'react-bootstrap'
-import Token from './Token'
 import { breakpoint } from '../../microsite-logic'
 import { useWeb3Connect } from '../../web3-connect'
-import {
-  useTokenBalance,
-  useJurorRegistryAnjBalance,
-} from '../../web3-contracts'
 import { identifyProvider } from '../../web3-utils'
-import ErrorScreen from './Error'
 
-import enable from './assets/enable.svg'
 import metamask from './assets/metamask.svg'
 import frame from './assets/frame.svg'
 import portis from './assets/portis.svg'
@@ -26,10 +13,7 @@ const large = css => breakpoint('large', css)
 const medium = css => breakpoint('medium', css)
 
 function Providers() {
-  const { account, activate, deactivate, ethersProvider } = useWeb3Connect()
-  const [show, setShow] = useState(false)
-  const [target, setTarget] = useState(null)
-  const ref = useRef(null)
+  const { activate, ethersProvider } = useWeb3Connect()
 
   const isMetamask =
     ethersProvider && identifyProvider(ethersProvider.provider) === 'metamask'

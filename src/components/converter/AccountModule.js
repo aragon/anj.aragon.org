@@ -1,18 +1,18 @@
 import React, { useRef } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import {
-  Overlay,
-  OverlayTrigger,
-  Popover,
-  ButtonToolbar,
-} from 'react-bootstrap'
+import { OverlayTrigger, Popover } from 'react-bootstrap'
 import { useWeb3Connect } from '../../web3-connect'
 import {
-  useTokenBalance,
   useJurorRegistryAnjBalance,
+  useTokenBalance,
+  useTokenDecimals,
 } from '../../web3-contracts'
-import { useTokenToUsd, shortenAddress } from '../../web3-utils'
+import {
+  formatUnits,
+  shortenAddress,
+  useTokenBalanceToUsd,
+} from '../../web3-utils'
 import Token from './Token'
 import EthIdenticon from './EthIdenticon'
 
@@ -26,15 +26,12 @@ AccountModule.propTypes = {
 }
 
 function ConnectedMode() {
-  const {
-    account,
-    networkName,
-    web3ReactContext,
-    deactivate,
-  } = useWeb3Connect()
-  const balanceAnt = useTokenBalance('ANT')
+  const { account, networkName, deactivate } = useWeb3Connect()
   const balanceAnj = useJurorRegistryAnjBalance()
-  const antToUsd = useTokenToUsd('ANT', balanceAnt)
+  const balanceAnt = useTokenBalance('ANT')
+  const antDecimals = useTokenDecimals('ANT')
+  const anjDecimals = useTokenDecimals('ANJ')
+  const antToUsd = useTokenBalanceToUsd('ANT', antDecimals, balanceAnt)
 
   const containerRef = useRef()
 
@@ -54,15 +51,16 @@ function ConnectedMode() {
               <Row>
                 <Token symbol="ANT" />
                 <div>
-                  <p>{balanceAnt.toString()}</p>
-                  <h3>${antToUsd}</h3>
+                  <p>{formatUnits(balanceAnt, { digits: antDecimals })}</p>
+                  <p>${antToUsd}</p>
                 </div>
               </Row>
               <Row>
                 <Token symbol="ANJ" />
                 <div>
-                  <p>{balanceAnj.toString()}</p>
-                  <h3 />
+                  <p>
+                    {formatUnits(balanceAnj, { digits: anjDecimals }) || '0'}
+                  </p>
                 </div>
               </Row>
             </section>
@@ -75,7 +73,7 @@ function ConnectedMode() {
               position: relative;
             `}
           >
-            <EthIdenticon address={account} scale={1} radius={1} />
+            <EthIdenticon address={account} scale={1} radius={4} />
           </div>
           <Address>{shortenAddress(account)}</Address>
           <svg
@@ -159,10 +157,11 @@ const Row = styled.div`
     color: #1c1c1c;
     margin: 0;
   }
-  h3 {
+  p + p {
     margin: 0;
     font-size: 12px;
     color: #8a95a0;
+    font-weight: 400;
   }
 `
 

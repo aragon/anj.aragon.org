@@ -40,8 +40,11 @@ function ConverterIn() {
   if (status === CONVERTER_STATUSES.ERROR) {
     return <ErrorScreen onDone={backToForm} />
   }
-  if (status === CONVERTER_STATUSES.PENDING) {
-    return <ProcessingScreen />
+  if (
+    status === CONVERTER_STATUSES.PENDING ||
+    status === CONVERTER_STATUSES.SIGNING
+  ) {
+    return <ProcessingScreen signing={status === CONVERTER_STATUSES.SIGNING} />
   }
   return <ConverterContent />
 }

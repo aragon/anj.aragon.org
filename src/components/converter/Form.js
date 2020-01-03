@@ -1,8 +1,6 @@
-import React, { useCallback, useState, useEffect } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { OverlayTrigger, Tooltip } from 'react-bootstrap'
-import { BigNumber } from '@ethersproject/bignumber'
-import Token from './Token'
 import {
   useTokenDecimals,
   useConvertAntToAnj,
@@ -10,44 +8,72 @@ import {
   useTokenBalance,
   useJurorRegistryAnjBalance,
 } from '../../web3-contracts'
-import { fromTokenInteger, toTokenInteger } from '../../web3-utils'
+import { bigNum } from '../../utils'
 import { breakpoint, GU } from '../../microsite-logic'
+import { formatUnits, parseUnits } from '../../web3-utils'
 import { useConverterStatus, CONVERTER_STATUSES } from './converter-status'
+import Token from './Token'
 
 import question from './assets/question.svg'
 
 const large = css => breakpoint('large', css)
 
 const ANJ_BY_ANT = 100
+const ANJ_MIN_REQUIRED = bigNum(10)
+  .pow(18)
+  .mul(10000)
 
+// Convert an input value (e.g. ANT) into another one (e.g. ANJ).
 function convertInputValue(value, fromDecimals, toDecimals, convert) {
   value = value.trim()
 
-  if (!value || fromDecimals === -1 || toDecimals === -1) {
-    return ['', '']
+  if (fromDecimals === -1 || toDecimals === -1) {
+    return null
   }
 
-  const fromAmount = BigNumber.from(toTokenInteger(value || '0', fromDecimals))
+  // fromAmount and toAmount are the parsed values (BigNumber instances).
+  const fromAmount = parseUnits(value)
+  if (fromAmount.lt(0)) {
+    return null
+  }
+
   const toAmount = convert(fromAmount)
 
-  const toInputValue = value ? fromTokenInteger(toAmount, toDecimals) : ''
+  // fromInputValue and toInputValue are filtered values to be set on inputs (strings).
+  const fromInputValue = value
+  const toInputValue = formatUnits(toAmount, { digits: toDecimals })
 
-  return {
-    fromInputValue: value,
-    toInputValue,
-    fromAmount,
-    toAmount,
-  }
+  return { fromInputValue, toInputValue, fromAmount, toAmount }
 }
 
+// Convert the two input values as the user types
 function useConvertInputs() {
   const [inputValueAnj, setInputValueAnj] = useState('')
   const [inputValueAnt, setInputValueAnt] = useState('')
-  const [amountAnj, setAmountAnj] = useState(BigNumber.from(0))
-  const [amountAnt, setAmountAnt] = useState(BigNumber.from(0))
+  const [amountAnj, setAmountAnj] = useState(bigNum(0))
+  const [amountAnt, setAmountAnt] = useState(bigNum(0))
 
   const antDecimals = useTokenDecimals('ANT')
   const anjDecimals = useTokenDecimals('ANJ')
+
+  // Alternate the comma-separated format, based on the fields focus state.
+  const setEditModeAnt = useCallback(
+    editMode => {
+      setInputValueAnt(
+        formatUnits(amountAnt, { digits: antDecimals, commas: !editMode })
+      )
+    },
+    [amountAnt, antDecimals]
+  )
+
+  const setEditModeAnj = useCallback(
+    editMode => {
+      setInputValueAnj(
+        formatUnits(amountAnj, { digits: anjDecimals, commas: !editMode })
+      )
+    },
+    [amountAnj, anjDecimals]
+  )
 
   const handleAntChange = useCallback(
     event => {
@@ -61,6 +87,10 @@ function useConvertInputs() {
         anjDecimals,
         amount => amount.mul(ANJ_BY_ANT)
       )
+
+      if (converted === null) {
+        return
+      }
 
       setInputValueAnt(converted.fromInputValue)
       setInputValueAnj(converted.toInputValue)
@@ -83,6 +113,10 @@ function useConvertInputs() {
         amount => amount.div(ANJ_BY_ANT)
       )
 
+      if (converted === null) {
+        return
+      }
+
       setInputValueAnj(converted.fromInputValue)
       setInputValueAnt(converted.toInputValue)
       setAmountAnj(converted.fromAmount)
@@ -94,6 +128,8 @@ function useConvertInputs() {
   return {
     amountAnj,
     amountAnt,
+    setEditModeAnj,
+    setEditModeAnt,
     handleAnjChange,
     handleAntChange,
     inputValueAnj,
@@ -105,6 +141,8 @@ function FormSection() {
   const {
     amountAnj,
     amountAnt,
+    setEditModeAnj,
+    setEditModeAnt,
     handleAnjChange,
     handleAntChange,
     inputValueAnj,
@@ -141,56 +179,40 @@ function FormSection() {
     }
   }
 
-  // const disabled = Boolean(errorMessage)
   const [placeholder, setPlaceholder] = useState('')
 
   useEffect(() => {
-    if (balanceAnj && balanceAnj.value.gte(BigNumber.from(String(10000)))) {
+    if (balanceAnj && balanceAnj.gte(bigNum(String(10000)))) {
       setPlaceholder('')
     } else {
       setPlaceholder('Min. 100 ANT')
     }
   }, [balanceAnj])
 
-  const [info, setInfo] = useState('')
-  const [balanceInfo, setBalanceInfo] = useState(balanceAnt.toString())
-  const [validationBalance, setValidationBalance] = useState('')
-
-  useEffect(() => {
-    setBalanceInfo(balanceAnt.toString())
-  }, [balanceAnt])
-
-  useEffect(() => {
+  const antError = useMemo(() => {
     if (
       amountAnt &&
       inputValueAnt &&
       balanceAnj &&
-      balanceAnj.value.lt(BigNumber.from(String(10000)))
+      balanceAnj.lt(ANJ_MIN_REQUIRED) &&
+      amountAnj.lt(ANJ_MIN_REQUIRED)
     ) {
-      setInfo(
-        amountAnt.lt(BigNumber.from(String(Math.pow(10, 18) * 100)))
-          ? 'The minimum amount for this is 100. '
-          : ''
-      )
+      return 'The minimum amount of ANT is 100.'
     }
-  }, [amountAnt, inputValueAnt, balanceAnj])
 
-  useEffect(() => {
-    const balanceAntInteger = BigNumber.from(
-      balanceAnt && balanceAnt.value.gte(0)
-        ? toTokenInteger(balanceAnt.value, antDecimals)
-        : 0
-    )
+    if (amountAnt && amountAnt.gte(0) && amountAnt.gt(balanceAnt)) {
+      return 'Amount is greater than balance held.'
+    }
 
-    setValidationBalance(
-      antDecimals !== -1 &&
-        amountAnt &&
-        !amountAnt.eq(-1) &&
-        amountAnt.gt(balanceAntInteger)
-        ? 'Amount is greater than balance held.'
-        : ''
-    )
-  }, [amountAnt, balanceAnt, antDecimals])
+    return null
+  }, [amountAnt, inputValueAnt, balanceAnj, amountAnj, balanceAnt])
+
+  const disabled = Boolean(
+    !inputValueAnt.trim() ||
+      !inputValueAnj.trim() ||
+      antError ||
+      converterStatus.status !== CONVERTER_STATUSES.FORM
+  )
 
   return (
     <Form onSubmit={handleSubmit}>
@@ -203,10 +225,10 @@ function FormSection() {
           <Label>Amount of ANT you want to convert</Label>
           <AdornmentBox>
             <Input
-              type="number"
               value={inputValueAnt}
-              max={balanceAnt ? balanceAnt : undefined}
               onChange={handleAntChange}
+              onBlur={() => setEditModeAnt(false)}
+              onFocus={() => setEditModeAnt(true)}
               placeholder={placeholder}
             />
             <Adornment>
@@ -214,22 +236,20 @@ function FormSection() {
             </Adornment>
           </AdornmentBox>
           <Info>
-            <span className="black">Balance: {balanceInfo} ANT. </span>
-            <span className="red">{validationBalance} </span>
-          </Info>
-          <Info>
-            {' '}
-            <span className="red">{info} </span>
+            <span>
+              Balance: {formatUnits(balanceAnt, { digits: antDecimals })} ANT.{' '}
+            </span>
+            {antError && <span className="error">{antError} </span>}
           </Info>
         </div>
         <InputBox>
           <Label>Amount of ANJ you will receive and activate</Label>
           <AdornmentBox>
             <Input
-              type="number"
-              min={placeholder ? 10000 : undefined}
               value={inputValueAnj}
               onChange={handleAnjChange}
+              onBlur={() => setEditModeAnj(false)}
+              onFocus={() => setEditModeAnj(true)}
             />
             <Adornment>
               <Token symbol="ANJ" />
@@ -251,13 +271,15 @@ function FormSection() {
         >
           <Label>
             Notify me when the Court is live
-            <img src={question} />
+            <img src={question} alt="" />
           </Label>
         </OverlayTrigger>
         <Input type="email" onChange={() => setEmail(event.target.value)} />
       </div>
 
-      <Button type="submit">Become a Juror</Button>
+      <Button type="submit" disabled={disabled}>
+        Become a Juror
+      </Button>
     </Form>
   )
 }
@@ -275,6 +297,7 @@ const Label = styled.label`
   font-size: 24px;
   line-height: 38px;
   color: #8a96a0;
+  margin-bottom: 6px;
 
   span {
     color: #08bee5;
@@ -285,12 +308,10 @@ const Label = styled.label`
 `
 const Info = styled.div`
   margin-top: 3px;
-  height: 19px;
-  .red {
+  margin-bottom: 12px;
+  color: #212b36;
+  .error {
     color: #ff6969;
-  }
-  .black {
-    color: #212b36;
   }
 `
 
@@ -300,15 +321,14 @@ const InputBox = styled.div`
 const Input = styled.input`
   width: 100%;
   height: 50px;
-  padding: 0 12px;
+  padding: 6px 12px 0;
   background: #ffffff;
   border: 1px solid #dde4e9;
   color: #212b36;
   border-radius: 4px;
   appearance: none;
-  font-size: 14px;
+  font-size: 20px;
   font-weight: 400;
-  line-height: 1.5;
   &::-webkit-inner-spin-button,
   &::-webkit-outer-spin-button {
     -webkit-appearance: none;

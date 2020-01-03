@@ -1,9 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Link } from 'react-static'
 import Fade from 'react-reveal/Fade'
 import { breakpoint } from '../microsite-logic'
-import background from './assets/subscribe-background.svg'
 import feature1 from './assets/features1.svg'
 import feature2 from './assets/features2.svg'
 import feature3 from './assets/features3.svg'
@@ -14,7 +12,7 @@ const Features = () => (
     <Container>
       <Fade bottom duration={1200} delay={300} distance={'50%'}>
         <div>
-          <img src={feature1} />
+          <img src={feature1} alt="" />
           <h3>Earn income online</h3>
           <p>
             Earn juror rewards from anywhere with an internet connection by
@@ -24,7 +22,7 @@ const Features = () => (
       </Fade>
       <Fade bottom duration={1200} delay={600} distance={'50%'}>
         <div>
-          <img src={feature2} />
+          <img src={feature2} alt="" />
           <h3>Flexible scheduling</h3>
           <p>
             You decide when to make yourself available to rule on court cases or
@@ -34,7 +32,7 @@ const Features = () => (
       </Fade>
       <Fade bottom duration={1200} delay={900} distance={'50%'}>
         <div>
-          <img src={feature3} />
+          <img src={feature3} alt="" />
           <h3>Meaningful work</h3>
           <p>
             Help people around the world access justice with more convenience
@@ -60,8 +58,6 @@ const Container = styled.div`
   div {
     padding: 15px;
     text-align: left;
-  }
-  img {
   }
   p {
     font-weight: 400;

@@ -13,7 +13,7 @@ class Navbar extends React.Component {
         <CourtNavbar>
           <Left>
             <LogoLink to="/">
-              <img src={logo} />
+              <img src={logo} alt="" />
             </LogoLink>
             <LinksBox>
               <a href="./#get-anj">Get ANJ</a>
