@@ -131,8 +131,11 @@ function FormSection() {
     }
 
     try {
-      await convertAntToAnj(amountAnt.toString())
+      converterStatus.setStatus(CONVERTER_STATUSES.SIGNING)
+      const tx = await convertAntToAnj(amountAnt.toString())
       converterStatus.setStatus(CONVERTER_STATUSES.PENDING)
+      await tx.wait(1)
+      converterStatus.setStatus(CONVERTER_STATUSES.SUCCESS)
     } catch (err) {
       converterStatus.setStatus(CONVERTER_STATUSES.ERROR)
     }
