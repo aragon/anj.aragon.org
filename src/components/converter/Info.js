@@ -16,9 +16,9 @@ function Info() {
         </li>
         <li>
           By clicking on “Become a juror”, you are accepting the{' '}
-          <Anchor href="https://aragon.one/court-terms.md">court terms</Anchor>,
+          <Anchor href="https://anj.aragon.org/legal/court-general.pdf">court terms</Anchor>,
           the{' '}
-          <Anchor href="https://aragon.one/juror-terms.md">juror terms</Anchor>{' '}
+          <Anchor href="https://anj.aragon.org/legal/court-jurors.pdf">juror terms</Anchor>{' '}
           and the{' '}
           <Anchor href="https://aragon.one/email-collection.md">
             email collection policy
