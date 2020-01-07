@@ -1,9 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Link } from 'react-static'
 import Fade from 'react-reveal/Fade'
 import { breakpoint } from '../microsite-logic'
-import background from './assets/subscribe-background.svg'
 import step1 from './assets/step1.svg'
 import step2 from './assets/step2.svg'
 import step3 from './assets/step3.svg'
@@ -24,19 +22,19 @@ const WhatHappens = () => (
     <StepsContainer>
       <Fade bottom duration={1200} distance={'50%'} delay={300}>
         <div>
-          <img src={step1} />
+          <img src={step1} alt="" />
           <h4>Get ANJ with ANT</h4>
         </div>
       </Fade>
       <Fade bottom duration={1200} distance={'50%'} delay={600}>
         <div>
-          <img src={step2} />
+          <img src={step2} alt="" />
           <h4>Stake your ANJ</h4>
         </div>
       </Fade>
       <Fade bottom duration={1200} distance={'50%'} delay={900}>
         <div>
-          <img src={step3} />
+          <img src={step3} alt="" />
           <h4>Activate your ANJ</h4>
         </div>
       </Fade>
@@ -54,7 +52,7 @@ const Container = styled.div`
   text-align: center;
 
   p {
-    font-family: 'FontRegular';
+    font-weight: 400;
     font-size: 24px;
     line-height: 34px;
     text-align: center;
@@ -63,9 +61,8 @@ const Container = styled.div`
     margin: auto;
   }
   h3 {
-    font-family: 'FontMedium', sans-serif;
     font-style: normal;
-    font-weight: 500;
+    font-weight: 600;
     font-size: 37px;
     line-height: 1;
     text-align: center;
@@ -86,7 +83,6 @@ const StepsContainer = styled.div`
   }
 
   h4 {
-    font-family: 'FontRegular', sans-serif;
     font-weight: 400;
     font-size: 27px;
     line-height: 38px;
@@ -95,7 +91,7 @@ const StepsContainer = styled.div`
     margin: 30px 0 0 0;
   }
   h6 {
-    font-family: 'FontRegular', sans-serif;
+    font-weight: 400;
     font-style: normal;
     font-weight: normal;
     font-size: 20px;

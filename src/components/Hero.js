@@ -1,6 +1,5 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Link } from 'react-static'
 import Fade from 'react-reveal/Fade'
 import { breakpoint } from '../microsite-logic'
 import background from './assets/hero-background.svg'
@@ -57,7 +56,8 @@ const TextContainer = styled.div`
   padding-top: 40px;
 
   h1 {
-    font-family: 'FontBold';
+    font-family: 'HKGrotesk';
+    font-weight: 800;
     font-size: 50px;
     line-height: 1;
     margin: 0;
@@ -93,8 +93,7 @@ const TextContainer = styled.div`
     ${medium('display: inline;')};
   }
   h2 {
-    font-family: 'FontRegular';
-    font-weight: 500;
+    font-weight: 400;
     font-size: 20px;
     ${medium('font-size: 24px;')};
     line-height: 1.58;

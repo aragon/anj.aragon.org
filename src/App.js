@@ -1,8 +1,8 @@
 import React from 'react'
 import { Root, Routes, addPrefetchExcludes } from 'react-static'
-//
-import { Link, Router } from 'components/Router'
+import { Router } from 'components/Router'
 import Navbar from 'components/Navbar'
+import { Web3ConnectProvider } from './web3-connect'
 
 import './app.css'
 
@@ -11,16 +11,18 @@ addPrefetchExcludes(['dynamic'])
 
 function App() {
   return (
-    <Root>
-      <Navbar />
-      <div className="content">
-        <React.Suspense fallback={<em>Loading...</em>}>
-          <Router>
-            <Routes path="*" />
-          </Router>
-        </React.Suspense>
-      </div>
-    </Root>
+    <Web3ConnectProvider>
+      <Root>
+        <Navbar />
+        <div className="content">
+          <React.Suspense fallback={<em>Loading...</em>}>
+            <Router>
+              <Routes path="*" />
+            </Router>
+          </React.Suspense>
+        </div>
+      </Root>
+    </Web3ConnectProvider>
   )
 }
 

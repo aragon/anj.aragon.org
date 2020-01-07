@@ -9,16 +9,18 @@ import Basics from '../components/Basics'
 import Subscribe from '../components/Subscribe'
 import Footer from '../components/Footer'
 
-export default () => (
-  <div>
-    <Hero />
-    <GetAnj />
-    <Features />
-    <WhatHappens />
-    <About />
-    <Subscribe />
-    <Basics />
-    <BecomeAJuror />
-    <Footer />
-  </div>
-)
+export default () => {
+  return (
+    <div>
+      <Hero />
+      <GetAnj />
+      <Features />
+      <WhatHappens />
+      <About />
+      <Subscribe />
+      <Basics />
+      <BecomeAJuror />
+      <Footer />
+    </div>
+  )
+}

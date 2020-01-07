@@ -3,7 +3,6 @@ import styled from 'styled-components'
 import { breakpoint } from '../microsite-logic'
 
 const medium = css => breakpoint('medium', css)
-const large = css => breakpoint('large', css)
 
 const Entry = ({ children, entrypoint, lastpoint }) => (
   <EntryBox>

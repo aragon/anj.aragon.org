@@ -13,7 +13,7 @@ class Navbar extends React.Component {
         <CourtNavbar>
           <Left>
             <LogoLink to="/">
-              <img src={logo} />
+              <img src={logo} alt="" />
             </LogoLink>
             <LinksBox>
               <a href="./#get-anj">Get ANJ</a>
@@ -42,8 +42,7 @@ const LinksBox = styled.div`
   display: none;
   ${medium('display: block;')};
   a {
-    font-family: 'FontMedium';
-    font-weight: 500;
+    font-weight: 600;
     font-size: 16px;
     line-height: 19px;
     color: #ffffff;
@@ -81,10 +80,9 @@ const Button = styled.a`
   background: #262626;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.15);
   border-radius: 6px;
-  font-family: 'FontMedium';
   padding: 7px 16px 4px 16px;
   line-height: 1;
-  font-weight: 500;
+  font-weight: 600;
   font-size: 16px;
   line-height: 19px;
   ${medium('display: flex; justify-content: center;')};

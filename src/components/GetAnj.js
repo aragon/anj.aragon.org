@@ -1,22 +1,19 @@
 import React from 'react'
 import styled from 'styled-components'
 import content from './assets/convert-module.png'
-import comingSoon from './assets/coming-soon.svg'
 import lock from './assets/lock.svg'
 import contentMobile from './assets/convert-module-mobile.png'
-import comingSoonMobile from './assets/coming-soon-mobile.svg'
 import Countdown from './Countdown'
 
 import { breakpoint } from '../microsite-logic'
 const medium = css => breakpoint('medium', css)
-const large = css => breakpoint('large', css)
 
 const GetAnj = () => (
   <GetAnjSection id="get-anj">
     <Content className="medium" src={content} />
     <Content className="mobile" src={contentMobile} />
     <a href="#subscribe">
-      <img src={lock} />
+      <img src={lock} alt="" />
       <div>
         <p>Time to unlock </p>
         <Countdown date={new Date('January 7, 2020 16:00:00 GMT+0000')} />
@@ -67,7 +64,7 @@ const GetAnjSection = styled.section`
       margin: 0;
       ${medium('font-size: 23px;')};
     }
-    ${medium('width: 350px;')};
+    ${medium('width: 365px;')};
   }
   a img {
     max-width: 106px;

@@ -5,11 +5,10 @@ import content from './assets/become-a-juror-content.svg'
 
 import { breakpoint } from '../microsite-logic'
 const medium = css => breakpoint('medium', css)
-const large = css => breakpoint('large', css)
 
 const BecomeAJuror = () => (
   <BecomeAJurorSection>
-    <img src={content} />
+    <img src={content} alt="" />
   </BecomeAJurorSection>
 )
 
