@@ -30,4 +30,5 @@ export const CSS_UNSELECTABLE = `
   user-select: none;
 `
 
-export const ENABLE_CONVERTER_AT = new Date('January 7, 2020 18:00:00 GMT+0000')
+export const ACTIVATION_START = new Date('January 7, 2020 18:00:00 GMT+0000')
+export const ACTIVATION_END = new Date('February 10, 2020 00:00:00 GMT+0000')

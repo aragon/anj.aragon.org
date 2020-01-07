@@ -1,6 +1,5 @@
 import React from 'react'
 import styled from 'styled-components'
-import Anchor from '../Anchor'
 
 function Info() {
   return (
@@ -13,17 +12,6 @@ function Info() {
         <li>ANT will be converted to ANJ.</li>
         <li>
           ANJ will be automatically activated and locked until February 10th.
-        </li>
-        <li>
-          By clicking on “Become a juror”, you are accepting the{' '}
-          <Anchor href="https://anj.aragon.org/legal/court-general.pdf">court terms</Anchor>,
-          the{' '}
-          <Anchor href="https://anj.aragon.org/legal/court-jurors.pdf">juror terms</Anchor>{' '}
-          and the{' '}
-          <Anchor href="https://aragon.one/email-collection.md">
-            email collection policy
-          </Anchor>
-          .
         </li>
       </ul>
     </InfoIn>
