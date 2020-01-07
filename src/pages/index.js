@@ -14,7 +14,7 @@ export default () => {
   return (
     <div>
       <Hero />
-      <Converter />
+      <GetAnj />
       <Features />
       <WhatHappens />
       <About />
