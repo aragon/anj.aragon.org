@@ -33,11 +33,11 @@ const BalanceSection = styled.div`
     line-height: 38px;
     display: flex;
     align-items: baseline;
-    letter-spacing: -3px;
     color: #1c1c1c;
   }
   h3 span.mono {
     font-family: 'FontMono';
+    letter-spacing: -3px;
   }
 `
 
