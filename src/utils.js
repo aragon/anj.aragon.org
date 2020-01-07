@@ -29,3 +29,5 @@ export const CSS_UNSELECTABLE = `
   -ms-user-select: none;
   user-select: none;
 `
+
+export const ENABLE_CONVERTER_AT = new Date('January 7, 2020 18:00:00 GMT+0000')

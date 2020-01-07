@@ -1,11 +1,13 @@
 import React from 'react'
 import styled from 'styled-components'
+import { ENABLE_CONVERTER_AT } from '../utils'
+import { breakpoint } from '../microsite-logic'
+import Countdown from './Countdown'
+
 import content from './assets/convert-module.png'
 import lock from './assets/lock.svg'
 import contentMobile from './assets/convert-module-mobile.png'
-import Countdown from './Countdown'
 
-import { breakpoint } from '../microsite-logic'
 const medium = css => breakpoint('medium', css)
 
 const GetAnj = () => (
@@ -16,7 +18,7 @@ const GetAnj = () => (
       <img src={lock} alt="" />
       <div>
         <p>Time to unlock </p>
-        <Countdown date={new Date('January 7, 2020 18:00:00 GMT+0000')} />
+        <Countdown date={ENABLE_CONVERTER_AT} />
       </div>
     </a>
   </GetAnjSection>
