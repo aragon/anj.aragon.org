@@ -16,7 +16,7 @@ const GetAnj = () => (
       <img src={lock} alt="" />
       <div>
         <p>Time to unlock </p>
-        <Countdown date={new Date('January 7, 2020 16:00:00 GMT+0000')} />
+        <Countdown date={new Date('January 7, 2020 18:00:00 GMT+0000')} />
       </div>
     </a>
   </GetAnjSection>
