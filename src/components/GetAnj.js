@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { ENABLE_CONVERTER_AT } from '../utils'
+import { ACTIVATION_START } from '../utils'
 import { breakpoint } from '../microsite-logic'
 import Countdown from './Countdown'
 
@@ -18,7 +18,7 @@ const GetAnj = () => (
       <img src={lock} alt="" />
       <div>
         <p>Time to unlock </p>
-        <Countdown date={ENABLE_CONVERTER_AT} />
+        <Countdown date={ACTIVATION_START} />
       </div>
     </a>
   </GetAnjSection>

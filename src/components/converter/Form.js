@@ -12,6 +12,7 @@ import { breakpoint, GU } from '../../microsite-logic'
 import { formatUnits, parseUnits } from '../../web3-utils'
 import { useConverterStatus, CONVERTER_STATUSES } from './converter-status'
 import Token from './Token'
+import Anchor from '../Anchor'
 
 import question from './assets/question.svg'
 
@@ -157,6 +158,7 @@ function FormSection() {
 
   const converterStatus = useConverterStatus()
   const [email, setEmail] = useState('')
+  const [acceptTerms, setAcceptTerms] = useState(false)
 
   const handleSubmit = async event => {
     event.preventDefault()
@@ -211,7 +213,8 @@ function FormSection() {
       !inputValueAnj.trim() ||
       antError ||
       converterStatus.status !== CONVERTER_STATUSES.FORM ||
-      !/[^@]+@[^@]+/.test(email)
+      !/[^@]+@[^@]+/.test(email) ||
+      !acceptTerms
   )
 
   return (
@@ -282,6 +285,29 @@ function FormSection() {
         <Input type="email" onChange={event => setEmail(event.target.value)} />
       </div>
 
+      <Conditions>
+        <label>
+          <input
+            type="checkbox"
+            onChange={() => setAcceptTerms(acceptTerms => !acceptTerms)}
+            checked={acceptTerms}
+          />
+          By clicking on “Become a juror”, you are accepting the{' '}
+          <Anchor href="https://anj.aragon.org/legal/court-general.pdf">
+            court terms
+          </Anchor>
+          , the{' '}
+          <Anchor href="https://anj.aragon.org/legal/court-jurors.pdf">
+            juror terms
+          </Anchor>{' '}
+          and the{' '}
+          <Anchor href="https://aragon.one/email-collection.md">
+            email collection policy
+          </Anchor>
+          .
+        </label>
+      </Conditions>
+
       <Button type="submit" disabled={disabled}>
         Become a Juror
       </Button>
@@ -291,13 +317,29 @@ function FormSection() {
 
 const Form = styled.form`
   display: flex;
-  min-height: 450px;
-  flex-direction: column;
   align-items: baseline;
   justify-content: space-between;
+  flex-direction: column;
   margin-top: 130px;
   ${large('padding-right: 30px; margin-top: 0;')};
 `
+
+const Conditions = styled.p`
+  margin: 24px 0;
+
+  label {
+    display: block;
+    font-size: 16px;
+    line-height: 1.3;
+    margin-bottom: 0;
+  }
+
+  input {
+    margin-right: 8px;
+    vertical-align: text-top;
+  }
+`
+
 const Label = styled.label`
   font-size: 24px;
   line-height: 38px;

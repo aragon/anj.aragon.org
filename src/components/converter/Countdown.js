@@ -2,13 +2,14 @@ import React from 'react'
 import styled from 'styled-components'
 import Timer from './Timer'
 import { breakpoint } from '../../microsite-logic'
+import { ACTIVATION_END } from '../../utils'
 
 const medium = css => breakpoint('medium', css)
 
 const CountDownSection = () => (
   <CountDown>
-    <p>Special ANJ pre-activation price ends in</p>
-    <Timer date={new Date('February 10, 2020 00:00:00 GMT+0000')} />
+    <p>Special ANJ pre-activation rate ends in</p>
+    <Timer date={ACTIVATION_END} />
   </CountDown>
 )
 
