@@ -15,7 +15,7 @@ function Info() {
           ANJ will be automatically activated and locked until February 10th.
         </li>
         <li>
-          By clicking on “Become a juror”, you accept to the{' '}
+          By clicking on “Become a juror”, you are accepting the{' '}
           <Anchor href="https://aragon.one/court-terms.md">court terms</Anchor>,
           the{' '}
           <Anchor href="https://aragon.one/juror-terms.md">juror terms</Anchor>{' '}
