@@ -4,11 +4,10 @@ import { OverlayTrigger, Tooltip } from 'react-bootstrap'
 import {
   useTokenDecimals,
   useConvertAntToAnj,
-  usePostEmail,
   useTokenBalance,
   useJurorRegistryAnjBalance,
 } from '../../web3-contracts'
-import { bigNum } from '../../utils'
+import { bigNum, usePostEmail } from '../../utils'
 import { breakpoint, GU } from '../../microsite-logic'
 import { formatUnits, parseUnits } from '../../web3-utils'
 import { useConverterStatus, CONVERTER_STATUSES } from './converter-status'
@@ -165,7 +164,7 @@ function FormSection() {
     try {
       await postEmail(email)
     } catch (err) {
-      console.log(err)
+      console.error(`Error while trying to subscribe ${email}`, err)
     }
 
     try {
@@ -274,11 +273,7 @@ function FormSection() {
             <img src={question} alt="" />
           </Label>
         </OverlayTrigger>
-        <Input
-          type="email"
-          required
-          onChange={() => setEmail(event.target.value)}
-        />
+        <Input type="email" onChange={event => setEmail(event.target.value)} />
       </div>
 
       <Button type="submit" disabled={disabled}>

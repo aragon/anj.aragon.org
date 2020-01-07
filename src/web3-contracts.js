@@ -196,26 +196,3 @@ export function useConvertAntToAnj() {
     [antContract, wrapperAddress]
   )
 }
-
-export function usePostEmail() {
-  const { account } = useWeb3Connect() || ''
-
-  return useCallback(async email => {
-    await fetch('https://court-backend.eth.aragon.network/subscriptions', {
-      method: 'post',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        email: email,
-        address: account,
-      }),
-    })
-      .then(res => res.json())
-      .then(responseJson => {
-        return responseJson
-      })
-      .catch(error => {
-        console.error(error)
-      })
-    return
-  })
-}
