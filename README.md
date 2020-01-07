@@ -5,11 +5,11 @@
 For rinkeby with Portis + Fortmatic:
 
 ```console
-PORTIS_DAPP_ID=<portis_app_id> FORTMATIC_API_KEY=<fortmatic_api_key> yarn deploy:rinkeby
+FORTMATIC_SITE_VERIFICATION=<fortmatic_verification_key> FORTMATIC_API_KEY=<fortmatic_api_key> PORTIS_DAPP_ID=<portis_app_id> yarn deploy:rinkeby
 ```
 
 For mainnet with Portis + Fortmatic:
 
 ```console
-PORTIS_DAPP_ID=<portis_app_id> FORTMATIC_API_KEY=<fortmatic_api_key> yarn deploy:mainnet
+FORTMATIC_SITE_VERIFICATION=<fortmatic_verification_key> FORTMATIC_API_KEY=<fortmatic_api_key> PORTIS_DAPP_ID=<portis_app_id> yarn deploy:mainnet
 ```
