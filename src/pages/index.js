@@ -9,12 +9,14 @@ import GetAnj from '../components/GetAnj'
 import Hero from '../components/Hero'
 import Subscribe from '../components/Subscribe'
 import WhatHappens from '../components/WhatHappens'
+import { ENABLE_CONVERTER_AT } from '../utils'
 
 export default () => {
+  const now = new Date()
   return (
     <div>
       <Hero />
-      <GetAnj />
+      {now > ENABLE_CONVERTER_AT ? <Converter /> : <GetAnj />}
       <Features />
       <WhatHappens />
       <About />
