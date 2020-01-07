@@ -293,11 +293,11 @@ function FormSection() {
             checked={acceptTerms}
           />
           By clicking on “Become a juror”, you are accepting the{' '}
-          <Anchor href="https://anj.aragon.org/legal/court-general.pdf">
+          <Anchor href="https://anj.aragon.org/legal/terms-general.pdf">
             court terms
           </Anchor>
           , the{' '}
-          <Anchor href="https://anj.aragon.org/legal/court-jurors.pdf">
+          <Anchor href="https://anj.aragon.org/legal/terms-jurors.pdf">
             juror terms
           </Anchor>{' '}
           and the{' '}
