@@ -50,6 +50,16 @@ if (env('PORTIS_DAPP_ID')) {
   )
 }
 
+function logError(...messages) {
+  typeof window !== 'undefined' ? window.alert : console.log
+
+  if (typeof window !== 'undefined') {
+    window.alert(messages.join(' '))
+  }
+
+  console.error(...messages)
+}
+
 export function useWeb3Connect() {
   const web3ReactContext = useWeb3React()
 
@@ -60,10 +70,8 @@ export function useWeb3Connect() {
         try {
           await web3ReactContext.activate(connector, null, true)
         } catch (err) {
-          const log = typeof window !== 'undefined' ? window.alert : console.log
-
           if (err instanceof UnsupportedChainIdError) {
-            log(
+            logError(
               `Unsupported chain: please connect to the network called ${getNetworkName(
                 CHAIN_ID
               )} in your Ethereum Provider.`
@@ -71,7 +79,7 @@ export function useWeb3Connect() {
             return
           }
 
-          log('Unknown error, please try again.')
+          logError('An error happened while trying to activate the wallet, please try again.')
         }
       }
     },
