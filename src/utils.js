@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react'
 import { utils as EthersUtils } from 'ethers'
 import { useWeb3Connect } from './web3-connect'
+import env from './environment'
 
 export function noop() {}
 
@@ -12,13 +13,10 @@ export function usePostEmail() {
   const { account } = useWeb3Connect() || ''
   return useCallback(
     async email =>
-      fetch('https://court-backend.eth.aragon.network/subscriptions', {
+      fetch(env('SUBSCRIPTIONS_URL'), {
         method: 'post',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email: email,
-          address: account,
-        }),
+        body: JSON.stringify({ email, address: account }),
       }),
     [account]
   )
