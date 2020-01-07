@@ -236,7 +236,12 @@ function FormSection() {
           </AdornmentBox>
           <Info>
             <span>
-              Balance: {formatUnits(balanceAnt, { digits: antDecimals })} ANT.{' '}
+              Balance:{' '}
+              {formatUnits(balanceAnt, {
+                digits: antDecimals,
+                replaceZeroBy: '0',
+              })}{' '}
+              ANT.{' '}
             </span>
             {antError && <span className="error">{antError} </span>}
           </Info>

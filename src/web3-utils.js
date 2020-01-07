@@ -114,8 +114,12 @@ export function parseUnits(value, { digits = 18 } = {}) {
  * @param {BigNumber} value Amount of units to format.
  * @param {Number} options.digits Amount of digits on the token.
  * @param {Boolean} options.commas Use comma-separated groups.
+ * @param {Boolean} options.replaceZeroBy The string to be returned when value is zero.
  */
-export function formatUnits(value, { digits = 18, commas = true } = {}) {
+export function formatUnits(
+  value,
+  { digits = 18, commas = true, replaceZeroBy = '' } = {}
+) {
   if (value.lt(0) || digits < 0) {
     return ''
   }
@@ -124,7 +128,7 @@ export function formatUnits(value, { digits = 18, commas = true } = {}) {
 
   // Replace 0 by an empty value
   if (valueBeforeCommas === '0.0') {
-    return ''
+    return replaceZeroBy
   }
 
   // EthersUtils.formatUnits() adds a decimal even when 0, this removes it.
