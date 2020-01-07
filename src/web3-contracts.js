@@ -190,7 +190,7 @@ export function useConvertAntToAnj() {
       }
 
       return antContract.approveAndCall(wrapperAddress, antAmount, '0x00', {
-        gasLimit: 7500000,
+        gasLimit: 1000000,
       })
     },
     [antContract, wrapperAddress]

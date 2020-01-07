@@ -210,7 +210,8 @@ function FormSection() {
     !inputValueAnt.trim() ||
       !inputValueAnj.trim() ||
       antError ||
-      converterStatus.status !== CONVERTER_STATUSES.FORM
+      converterStatus.status !== CONVERTER_STATUSES.FORM ||
+      !/[^@]+@[^@]+/.test(email)
   )
 
   return (
