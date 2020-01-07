@@ -11,6 +11,11 @@ export default () => {
       <Converter />
       <Features />
       <WhatHappens />
+      <About />
+      <Subscribe />
+      <Basics />
+      <BecomeAJuror />
+      <Footer />
     </div>
   )
 }
