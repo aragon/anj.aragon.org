@@ -15,10 +15,12 @@ function SuccessSection({ onDone }) {
         <img src={successImg} alt="" />
         <p className="green">The transaction was successful</p>
         <p>
-          Welcome juror. You have successfully activated the total amount of
+          Welcome juror. You have successfully activated
           {decimals > -1 && lastAnjBought.gte(0)
-            ? ` ${formatUnits(lastAnjBought, { digits: decimals })} ANJ`
-            : `− ANJ`}
+            ? ` the total amount of ${formatUnits(lastAnjBought, {
+                digits: decimals,
+              })} ANJ.`
+            : ` the requested ANJ amount.`}
         </p>
         <Button onClick={onDone}>Continue</Button>
       </div>
