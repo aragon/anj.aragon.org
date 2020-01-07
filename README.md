@@ -1,14 +1,14 @@
 ![Aragon Court](./aragon-court.png)
 
-## Build
+## Deploy
 
-Rinkeby with Portis + Fortmatic:
+For rinkeby with Portis + Fortmatic:
 
 ```console
 PORTIS_DAPP_ID=<portis_app_id> FORTMATIC_API_KEY=<fortmatic_api_key> yarn deploy:rinkeby
 ```
 
-Mainnet with Portis + Fortmatic:
+For mainnet with Portis + Fortmatic:
 
 ```console
 PORTIS_DAPP_ID=<portis_app_id> FORTMATIC_API_KEY=<fortmatic_api_key> yarn deploy:mainnet
