@@ -40,7 +40,7 @@ export default {
   },
   Document: class CustomHtml extends React.Component {
     analyticsCode() {
-      if (process.env.NODE_ENV !== 'production') return '';
+      if (process.env.NODE_ENV !== 'production') return ''
       return `
         var _paq = window._paq || [];
         _paq.push(['trackPageView']);
@@ -52,10 +52,12 @@ export default {
           var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
           g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
         })();
-      `;
+      `
     }
     render() {
       const { Html, Head, Body, children, renderMeta } = this.props
+      const fortmaticVerification =
+        process.env.FORTMATIC_SITE_VERIFICATION || null
       return (
         <Html>
           <Head>
@@ -64,6 +66,12 @@ export default {
               name="viewport"
               content="width=device-width, initial-scale=1"
             />
+            {fortmaticVerification && (
+              <meta
+                name="fortmatic-site-verification"
+                content={fortmaticVerification}
+              />
+            )}
             <title>Aragon Court</title>
             <link rel="icon" href="/favicon.png" />
             <link
@@ -110,7 +118,9 @@ export default {
           </Head>
           <Body>
             {children}
-            <script dangerouslySetInnerHTML={{__html: this.analyticsCode()}} />
+            <script
+              dangerouslySetInnerHTML={{ __html: this.analyticsCode() }}
+            />
           </Body>
         </Html>
       )

@@ -13,7 +13,7 @@ const large = css => breakpoint('large', css)
 const medium = css => breakpoint('medium', css)
 
 function Providers() {
-  const { activate, ethersProvider } = useWeb3Connect()
+  const { activate, connectors, ethersProvider } = useWeb3Connect()
 
   const isMetamask =
     ethersProvider && identifyProvider(ethersProvider.provider) === 'metamask'
@@ -30,14 +30,18 @@ function Providers() {
           <img src={frame} alt="" />
           <p>Frame</p>
         </Button>
-        <Button onClick={() => activate('fortmatic')}>
-          <img src={fortmatic} alt="" />
-          <p>Fortmatic</p>
-        </Button>
-        <Button onClick={() => activate('portis')}>
-          <img src={portis} alt="" />
-          <p>Portis</p>
-        </Button>
+        {connectors.has('fortmatic') && (
+          <Button onClick={() => activate('fortmatic')}>
+            <img src={fortmatic} alt="" />
+            <p>Fortmatic</p>
+          </Button>
+        )}
+        {connectors.has('portis') && (
+          <Button onClick={() => activate('portis')}>
+            <img src={portis} alt="" />
+            <p>Portis</p>
+          </Button>
+        )}
       </div>
     </Content>
   )

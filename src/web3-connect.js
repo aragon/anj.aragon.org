@@ -22,25 +22,33 @@ import { getNetworkName } from './web3-utils'
 const { Web3Provider: EthersWeb3Provider } = EthersProviders
 
 const CHAIN_ID = Number(env('CHAIN_ID'))
+const FORTMATIC_API_KEY = env('FORTMATIC_API_KEY')
+const PORTIS_DAPP_ID = env('PORTIS_DAPP_ID')
 
 const WEB3_REACT_CONNECTORS = new Map([
   ['injected', new InjectedConnector({ supportedChainIds: [CHAIN_ID] })],
   ['frame', new FrameConnector({ supportedChainIds: [CHAIN_ID] })],
-  [
+])
+
+if (env('FORTMATIC_API_KEY')) {
+  WEB3_REACT_CONNECTORS.set(
     'fortmatic',
     new FortmaticConnector({
-      apiKey: 'pk_test_50DDF49A7D38FE07',
+      apiKey: env('FORTMATIC_API_KEY'),
       chainId: [CHAIN_ID],
-    }),
-  ],
-  [
+    })
+  )
+}
+
+if (env('PORTIS_DAPP_ID')) {
+  WEB3_REACT_CONNECTORS.set(
     'portis',
     new PortisConnector({
-      dAppId: 'fab3d0cb-ef4b-4530-a14f-e6c979a05ced',
+      dAppId: env('PORTIS_DAPP_ID'),
       networks: [CHAIN_ID],
-    }),
-  ],
-])
+    })
+  )
+}
 
 export function useWeb3Connect() {
   const web3ReactContext = useWeb3React()
@@ -80,6 +88,7 @@ export function useWeb3Connect() {
   return {
     account,
     activate,
+    connectors: WEB3_REACT_CONNECTORS,
     deactivate,
     ethersProvider,
     networkName: getNetworkName(chainId),
