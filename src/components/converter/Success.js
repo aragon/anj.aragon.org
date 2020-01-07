@@ -13,7 +13,7 @@ function SuccessSection({ onDone }) {
     <Success>
       <div>
         <img src={successImg} alt="" />
-        <p className="green">The transaction has been successful</p>
+        <p className="green">The transaction was successful</p>
         <p>
           Welcome juror. You have successfully activated the total amount of
           {decimals > -1 && lastAnjBought.gte(0)
