@@ -35,7 +35,7 @@ if (env('FORTMATIC_API_KEY')) {
     'fortmatic',
     new FortmaticConnector({
       apiKey: env('FORTMATIC_API_KEY'),
-      chainId: [CHAIN_ID],
+      chainId: CHAIN_ID,
     })
   )
 }
@@ -50,14 +50,14 @@ if (env('PORTIS_DAPP_ID')) {
   )
 }
 
-function logError(...messages) {
+function logError(err, ...messages) {
   typeof window !== 'undefined' ? window.alert : console.log
 
   if (typeof window !== 'undefined') {
     window.alert(messages.join(' '))
   }
 
-  console.error(...messages)
+  console.error(...messages, err)
 }
 
 export function useWeb3Connect() {
@@ -72,6 +72,7 @@ export function useWeb3Connect() {
         } catch (err) {
           if (err instanceof UnsupportedChainIdError) {
             logError(
+              err,
               `Unsupported chain: please connect to the network called ${getNetworkName(
                 CHAIN_ID
               )} in your Ethereum Provider.`
@@ -79,7 +80,10 @@ export function useWeb3Connect() {
             return
           }
 
-          logError('An error happened while trying to activate the wallet, please try again.')
+          logError(
+            err,
+            'An error happened while trying to activate the wallet, please try again.'
+          )
         }
       }
     },
