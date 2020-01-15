@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import styled from 'styled-components'
 import { breakpoint } from '../../microsite-logic'
 import { useWeb3Connect } from '../../web3-connect'
@@ -18,26 +18,36 @@ function Providers() {
   const isMetamask =
     ethersProvider && identifyProvider(ethersProvider.provider) === 'metamask'
 
+  const activateAndTrack = useCallback(
+    async providerId => {
+      const ok = await activate(providerId)
+      if (ok && window._paq && window._paq.push) {
+        _paq.push(['trackEvent', 'Web3', 'connect', providerId])
+      }
+    },
+    [activate]
+  )
+
   return (
     <Content>
       <Title>Enable your account</Title>
       <div>
-        <Button onClick={() => activate('injected')}>
+        <Button onClick={() => activateAndTrack('injected')}>
           <img src={metamask} alt="" />
           <p>{isMetamask ? 'Metamask' : 'Ethereum wallet'}</p>
         </Button>
-        <Button onClick={() => activate('frame')}>
+        <Button onClick={() => activateAndTrack('frame')}>
           <img src={frame} alt="" />
           <p>Frame</p>
         </Button>
         {connectors.has('fortmatic') && (
-          <Button onClick={() => activate('fortmatic')}>
+          <Button onClick={() => activateAndTrack('fortmatic')}>
             <img src={fortmatic} alt="" />
             <p>Fortmatic</p>
           </Button>
         )}
         {connectors.has('portis') && (
-          <Button onClick={() => activate('portis')}>
+          <Button onClick={() => activateAndTrack('portis')}>
             <img src={portis} alt="" />
             <p>Portis</p>
           </Button>

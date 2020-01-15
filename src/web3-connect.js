@@ -66,25 +66,29 @@ export function useWeb3Connect() {
   const activate = useCallback(
     async type => {
       const connector = WEB3_REACT_CONNECTORS.get(type)
-      if (connector) {
-        try {
-          await web3ReactContext.activate(connector, null, true)
-        } catch (err) {
-          if (err instanceof UnsupportedChainIdError) {
-            logError(
-              err,
-              `Unsupported chain: please connect to the network called ${getNetworkName(
-                CHAIN_ID
-              )} in your Ethereum Provider.`
-            )
-            return
-          }
 
+      if (!connector) {
+        return false
+      }
+
+      try {
+        await web3ReactContext.activate(connector, null, true)
+        return true
+      } catch (err) {
+        if (err instanceof UnsupportedChainIdError) {
           logError(
             err,
-            'An error happened while trying to activate the wallet, please try again.'
+            `Unsupported chain: please connect to the network called ${getNetworkName(
+              CHAIN_ID
+            )} in your Ethereum Provider.`
           )
+          return
         }
+
+        logError(
+          err,
+          'An error happened while trying to activate the wallet, please try again.'
+        )
       }
     },
     [web3ReactContext]
