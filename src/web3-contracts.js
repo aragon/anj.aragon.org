@@ -1,9 +1,12 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
 import { Contract as EthersContract } from 'ethers'
 import { getKnownContract } from './known-contracts'
+import tokenBalanceOfAbi from './token-balanceof.json'
 import { useWeb3Connect } from './web3-connect'
+import Web3EthContract from 'web3-eth-contract'
 import { bigNum } from './utils'
 
+const PRESALE_ADDR = '0xf89c8752d82972f94a4d1331e010ed6593e8ec49'
 const contractsCache = new Map()
 
 export function useContract(address, abi, signer = true) {
@@ -195,4 +198,19 @@ export function useConvertAntToAnj() {
     },
     [antContract, wrapperAddress]
   )
+}
+
+export function useAntStaked() {
+  const [antStaked, setAntStaked] = useState('0')
+  useEffect(() => {
+    async function fetchAntStaked() {
+      Web3EthContract.setProvider('wss://mainnet.eth.aragon.network/ws')
+      const ANT_ADDR = getKnownContract('TOKEN_ANT')[0]
+      const ant = new Web3EthContract(tokenBalanceOfAbi, ANT_ADDR)
+      const antStaked = await ant.methods.balanceOf(PRESALE_ADDR).call()
+      setAntStaked(String(antStaked))
+    }
+    fetchAntStaked()
+  }, [])
+  return antStaked
 }

@@ -16,14 +16,12 @@ class Navbar extends React.Component {
               <img src={logo} alt="" />
             </LogoLink>
             <LinksBox>
-              <a href="./#get-anj">Get ANJ</a>
-              <a href="./#about">About</a>
-              <a href="./#how-it-works">How it works</a>
+              <a href="./#get-anj">Become a Juror</a>
+              <a href="./#learn">Learn</a>
+              <a href="./#how-it-works">Dispute Example</a>
+              <a href="./#subscribe">Subscribe</a>
             </LinksBox>
           </Left>
-          <Button href="./#get-anj">
-            <span>Become a Juror</span>
-          </Button>
           <MenuModalBox>
             <MenuModal />
           </MenuModalBox>
