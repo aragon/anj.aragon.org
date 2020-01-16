@@ -1,5 +1,10 @@
 import path from 'path'
+import { execSync } from 'child_process'
 import React from 'react'
+import { version } from './package.json'
+
+const commit = execSync("git log --pretty=format:'%h' -n 1")
+process.env.BUILD = `${version}-${commit}`
 
 const REACT_STATIC_PATHS = {
   src: 'src',
