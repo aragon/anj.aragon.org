@@ -8,7 +8,7 @@ import { breakpoint } from '../microsite-logic'
 import jurors from './assets/juror-total.svg'
 import { bigNum, useAnJurors } from '../utils'
 import { useAntStaked } from '../web3-contracts'
-import { fromWei } from 'web3-utils'
+import { fromWei, toWei } from 'web3-utils'
 import { useTokenBalanceToUsd } from '../web3-utils'
 
 const medium = css => breakpoint('medium', css)
@@ -17,7 +17,6 @@ const formatTokenAmount = n =>
     .toFixed(2)
     .toString()
     .split('.')
-    .map(num => Number(num))
 
 const Stats = () => {
   const antStaked = useAntStaked()
@@ -25,55 +24,65 @@ const Stats = () => {
   const [wholeAnt, decimalAnt] = formatTokenAmount(antStaked)
   const [wholeAnj, decimalAnj] = formatTokenAmount(activeAnj)
   const usdAnt = useTokenBalanceToUsd('ANT', 18, bigNum(antStaked))
+  const unratedAnj = bigNum(activeAnj.toString()).div(100)
+  const usdAnj = useTokenBalanceToUsd(
+    'ANT',
+    18,
+    unratedAnj
+  )
   return (
     <StatsSection>
       <StatsDiv>
-      <Fade bottom duration={1200} delay={300}>
-        <Stat>
-          <ANJ src={anj} alt="" />
-          <h2>Active ANJ</h2>
-          <NumberWrapper>
-            <h2 className="pink number">{`${wholeAnj.toLocaleString()}.`}</h2>
-            <h2 className="pink decimal">{decimalAnj}</h2>
-            <h3 className="denomination">ANJ</h3>
-          </NumberWrapper>
-          <h3>{`$${usdAnt} USD`}</h3>
-        </Stat>
-      </Fade>
-      <Fade bottom duration={1200} delay={300}>
-        <Stat>
-          <ANJ src={ant} alt="" />
-          <h2>Staked ANT</h2>
-          <NumberWrapper>
-            <h2 className="pink number">{`${wholeAnt.toLocaleString()}.`}</h2>
-            <h2 className="pink decimal">{decimalAnt}</h2>
-            <h3 className="denomination">ANT</h3>
-          </NumberWrapper>
-          <h3>{`$${usdAnt} USD`}</h3>
-        </Stat>
-      </Fade>
-      <Fade bottom duration={1200} delay={300}>
-        <Stat
-          css={`
-            @media screen and (max-width: 1024px) {
-              margin-bottom: 114px;
-            }
-          `}
-        >
-          <ANJ src={jurors} alt="" />
-          <h2>Total Jurors</h2>
-          <NumberWrapper jurors>
-            <h2 className="pink number">{numOfjurors}</h2>
-            <h3 className="denomination">ACTIVE JURORS</h3>
-          </NumberWrapper>
-        </Stat>
-      </Fade>
+        <Fade bottom duration={1200} delay={300}>
+          <Stat>
+            <TokenImg src={ant} alt="" />
+            <h2>Staked ANT</h2>
+            <NumberWrapper>
+              <h2 className="pink number">{`${Number(
+                wholeAnt
+              ).toLocaleString()}.`}</h2>
+              <h2 className="pink decimal">{decimalAnt}</h2>
+              <h3 className="denomination">ANT</h3>
+            </NumberWrapper>
+            <h3>{`$${usdAnt} USD`}</h3>
+          </Stat>
+        </Fade>
+        <Fade bottom duration={1200} delay={300}>
+          <Stat>
+            <TokenImg src={anj} alt="" />
+            <h2>Active ANJ</h2>
+            <NumberWrapper>
+              <h2 className="pink number">{`${Number(
+                wholeAnj
+              ).toLocaleString()}.`}</h2>
+              <h2 className="pink decimal">{decimalAnj}</h2>
+              <h3 className="denomination">ANJ</h3>
+            </NumberWrapper>
+            <h3>{`$${usdAnj} USD`}</h3>
+          </Stat>
+        </Fade>
+        <Fade bottom duration={1200} delay={300}>
+          <Stat
+            css={`
+              @media screen and (max-width: 1024px) {
+                margin-bottom: 114px;
+              }
+            `}
+          >
+            <TokenImg src={jurors} alt="" />
+            <h2>Total Jurors</h2>
+            <NumberWrapper jurors>
+              <h2 className="pink number">{numOfjurors}</h2>
+              <h3 className="denomination">ACTIVE JURORS</h3>
+            </NumberWrapper>
+          </Stat>
+        </Fade>
       </StatsDiv>
     </StatsSection>
   )
 }
 
-const ANJ = styled.img`
+const TokenImg = styled.img`
   width: 50px;
   height: 56px;
   margin-bottom: 24px;

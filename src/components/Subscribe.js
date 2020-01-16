@@ -6,8 +6,11 @@ const Subscribe = () => (
   <SubscribeSection id="subscribe">
     <Container>
       <div>
-        <h3>Want to be notified when ANJ activation begins?</h3>
-        <p>Sign up for the Aragon Court newsletter to stay updated</p>
+        <h3>Want to use Aragon Court for your organization?</h3>
+        <p>
+          Prevent and resolve disputes more efficiently than traditional courts.
+          <br /> Leave your email and we'll be in touch!
+        </p>
         <form
           action="https://aragon.us15.list-manage.com/subscribe/post?u=a590aa3843a54b079d48e6e18&amp;id=9c51454655"
           method="post"
@@ -19,7 +22,7 @@ const Subscribe = () => (
             <input
               type="email"
               name="EMAIL"
-              placeholder="Your email address..."
+              placeholder="Enter Email Address"
               className="required email"
               id="mce-EMAIL"
             />
@@ -68,6 +71,10 @@ const SubscribeSection = styled.section`
   background-repeat: no-repeat;
   .email-field {
     display: inline-flex;
+    ::placeholder {
+      color: #707291;
+      font-weight: bold;
+    }
   }
   input {
     height: auto;

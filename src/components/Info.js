@@ -18,7 +18,7 @@ const Info = () => (
           </h2>
         </TitleWrapper>
         <br />
-        <h2 className="content">
+        <p className="content">
           On February 10th, when Aragon Court's first term begins, jurors will
           be able to deactivate and unstake ANJ using the jurors dashboard. In
           the meantime, you can check your active balance by connecting your
@@ -26,13 +26,13 @@ const Info = () => (
           <a className="pink" href="#get-anj">
             conversion module.
           </a>
-        </h2>
+        </p>
         <br />
-        <h2 className="content">
+        <p className="content">
           When the pre-activation phase ends, ANJ will be available at a
           variable rate. Price discovery will be automated by a bonding curve
           and it will vary based on supply and demand.
-        </h2>
+        </p>
       </TextContainer>
     </InfoWrapper>
   </InfoSection>
@@ -57,6 +57,12 @@ const TextContainer = styled.div`
     font-size: 24px;
     line-height: 1.58;
   }
+
+  p {
+    font-size: 24px;
+    line-height: 1.58;
+    color: #8a96a0;
+  }
   .content {
     color: #8a96a0;
   }
@@ -67,7 +73,9 @@ const TextContainer = styled.div`
     line-height: 1;
     margin: 0;
   }
-
+a {
+display: inline;
+}
   .pink {
     color: rgba(1, 191, 227);
     background: linear-gradient(
@@ -84,7 +92,6 @@ const TextContainer = styled.div`
     -webkit-text-fill-color: transparent;
 
     animation: shine 4s linear infinite;
-    display: block;
     ${medium('display: inline;')};
   }
 `
@@ -99,7 +106,7 @@ const Img = styled.img`
 const InfoWrapper = styled.div`
   position: relative;
   z-index: 2;
-  padding-top: 32px;
+  padding-top: 50px;
   padding-bottom: 32px;
   overflow: hidden;
   min-height: 600px;
