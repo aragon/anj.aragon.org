@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { utils as EthersUtils } from 'ethers'
+import * as Sentry from '@sentry/browser'
 import { useWeb3Connect } from './web3-connect'
 import env from './environment'
 import { request } from 'graphql-request'
@@ -20,11 +21,13 @@ export function useAnJurors() {
     async function fetchJurors() {
       const { jurors } = await request(
         GQL_ENDPOINT,
-        `{
-    jurors {
-      activeBalance
-    }
-  }`
+        `
+          {
+            jurors {
+              activeBalance
+            }
+          }
+        `
       )
       const anjActivated = jurors.reduce(
         (acc, { activeBalance }) => acc.add(toBN(activeBalance)),
@@ -42,12 +45,26 @@ export function useAnJurors() {
 export function usePostEmail() {
   const { account } = useWeb3Connect() || ''
   return useCallback(
-    async email =>
-      fetch(env('SUBSCRIPTIONS_URL'), {
-        method: 'post',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, address: account }),
-      }),
+    async email => {
+      let result
+      try {
+        const response = await fetch(env('SUBSCRIPTIONS_URL'), {
+          method: 'post',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, address: account }),
+        })
+        if (!response.ok) {
+          throw new Error(
+            `Received a wrong status when trying to subscribe: ${response.status}.`
+          )
+        }
+      } catch (err) {
+        Sentry.withScope(scope => {
+          scope.setUser({ email, username: account })
+          Sentry.captureException(err)
+        })
+      }
+    },
     [account]
   )
 }
