@@ -23,7 +23,7 @@ export function useAnJurors() {
         GQL_ENDPOINT,
         `
           {
-            jurors {
+            jurors(first: 1000) {
               activeBalance
             }
           }
