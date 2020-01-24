@@ -422,6 +422,15 @@ const Adornment = styled.div`
   align-items: center;
   justify-content: center;
 `
+
+const PopoverIndicator = styled.p`
+  font-size: 18px;
+  color: black;
+  .popover {
+    color: #516dff;
+  }
+`
+
 const AdornmentBox = styled.div`
   display: inline-flex;
   position: relative;

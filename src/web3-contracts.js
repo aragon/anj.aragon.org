@@ -200,6 +200,29 @@ export function useConvertAntToAnj() {
   )
 }
 
+// export function useConvertEthToAnj() {
+  // const { account } = useWeb3Connect()
+  // const [wrapperAddress] = getKnownContract('WRAPPER')
+  // // for making this line usable we need to have the ABI
+  // const wrapperContract = useContract(wrapperContract, wrapperAbi)
+
+  // return useCallback(
+    // async ethAmount => {
+      // if (!wrapperContract) {
+        // return false
+      // }
+      // const tx = await wrapperContract.methods
+        // .contributeEth(0, 60, true)
+        // .send({ from: account, value: ethAmount })
+      // if (tx.error) {
+        // return false
+      // }
+      // return true
+    // },
+    // [account]
+  // )
+// }
+
 export function useAntStaked() {
   const [antStaked, setAntStaked] = useState('0')
   useEffect(() => {

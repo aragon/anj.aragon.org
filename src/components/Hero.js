@@ -52,6 +52,7 @@ const HeroSection = styled.section`
 
 const TextContainer = styled.div`
   width: 80%;
+  max-width: 1180px;
   margin: auto;
   padding-top: 40px;
 

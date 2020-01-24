@@ -53,7 +53,8 @@ const ConverterSection = styled.div`
   background: #ffffff;
   box-shadow: 0px 5px 13px rgba(0, 0, 0, 0.15);
   border-radius: 8px;
-  max-width: 1109px;
+  width: 100%;
+  max-width: 1180px;
   min-height: 642px;
   max-width: 95%;
   p {
@@ -62,8 +63,9 @@ const ConverterSection = styled.div`
     line-height: 38px;
     color: #8a96a0;
   }
-  ${large('max-width: 1109px;')};
+  ${large('max-width: 1180px;')};
 `
+
 const OuterSection = styled.section`
   background: linear-gradient(
     to top,

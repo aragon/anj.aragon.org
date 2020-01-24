@@ -49,6 +49,7 @@ const LinksBox = styled.div`
 `
 const Container = styled.div`
   width: 100%;
+  max-width: 1180px;
   height: 65px;
   background: #1c1c1c;
   position: absolute;
@@ -61,7 +62,8 @@ const Container = styled.div`
 `
 
 const CourtNavbar = styled.div`
-  width: 80%;
+  width: 76%;
+  max-width: 1180px;
   height: 65px;
   background: transparent;
   display: flex;

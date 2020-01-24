@@ -8,7 +8,7 @@ import { breakpoint } from '../microsite-logic'
 import jurors from './assets/juror-total.svg'
 import { bigNum, useAnJurors } from '../utils'
 import { useAntStaked } from '../web3-contracts'
-import { fromWei, toWei } from 'web3-utils'
+import { fromWei } from 'web3-utils'
 import { useTokenBalanceToUsd } from '../web3-utils'
 
 const medium = css => breakpoint('medium', css)
@@ -17,6 +17,8 @@ const formatTokenAmount = n =>
     .toFixed(2)
     .toString()
     .split('.')
+const formatThousands = num =>
+  String(num).replace(/(?<!\..*)(\d)(?=(?:\d{3})+(?:\.|$))/g, '$1,')
 
 const Stats = () => {
   const antStaked = useAntStaked()
@@ -25,11 +27,7 @@ const Stats = () => {
   const [wholeAnj, decimalAnj] = formatTokenAmount(activeAnj)
   const usdAnt = useTokenBalanceToUsd('ANT', 18, bigNum(antStaked))
   const unratedAnj = bigNum(activeAnj.toString()).div(100)
-  const usdAnj = useTokenBalanceToUsd(
-    'ANT',
-    18,
-    unratedAnj
-  )
+  const usdAnj = useTokenBalanceToUsd('ANT', 18, unratedAnj)
   return (
     <StatsSection>
       <StatsDiv>
@@ -38,10 +36,10 @@ const Stats = () => {
             <TokenImg src={ant} alt="" />
             <h2>Staked ANT</h2>
             <NumberWrapper>
-              <h2 className="pink number">{`${Number(
-                wholeAnt
-              ).toLocaleString()}.`}</h2>
-              <h2 className="pink decimal">{decimalAnt}</h2>
+              <h2 className="pink number">
+                {`${formatThousands(wholeAnt)}`}.
+                <span className="decimal">{decimalAnt}</span>
+              </h2>
               <h3 className="denomination">ANT</h3>
             </NumberWrapper>
             <h3>{`$${usdAnt} USD`}</h3>
@@ -52,10 +50,10 @@ const Stats = () => {
             <TokenImg src={anj} alt="" />
             <h2>Active ANJ</h2>
             <NumberWrapper>
-              <h2 className="pink number">{`${Number(
-                wholeAnj
-              ).toLocaleString()}.`}</h2>
-              <h2 className="pink decimal">{decimalAnj}</h2>
+              <h2 className="pink number">
+                {`${formatThousands(wholeAnj)}`}.
+                <span className="decimal">{decimalAnj}</span>
+              </h2>
               <h3 className="denomination">ANJ</h3>
             </NumberWrapper>
             <h3>{`$${usdAnj} USD`}</h3>
@@ -72,7 +70,7 @@ const Stats = () => {
             <TokenImg src={jurors} alt="" />
             <h2>Total Jurors</h2>
             <NumberWrapper jurors>
-              <h2 className="pink number">{numOfjurors}</h2>
+              <h2 className="pink number">{formatThousands(numOfjurors)}</h2>
               <h3 className="denomination">ACTIVE JURORS</h3>
             </NumberWrapper>
           </Stat>
@@ -166,6 +164,7 @@ const StatsSection = styled.section`
 
 const StatsDiv = styled.div`
   width: 80%;
+  max-width: 1180px;
   margin: auto;
   margin-bottom: 120px;
   display: flex;
