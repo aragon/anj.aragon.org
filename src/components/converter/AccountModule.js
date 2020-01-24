@@ -5,6 +5,7 @@ import { OverlayTrigger, Popover } from 'react-bootstrap'
 import { useWeb3Connect } from '../../web3-connect'
 import {
   useJurorRegistryAnjBalance,
+  useEthBalance,
   useTokenBalance,
   useTokenDecimals,
 } from '../../web3-contracts'
@@ -28,11 +29,12 @@ AccountModule.propTypes = {
 function ConnectedMode() {
   const { account, networkName, deactivate } = useWeb3Connect()
   const balanceAnj = useJurorRegistryAnjBalance()
+  const balanceEth = useEthBalance()
   const balanceAnt = useTokenBalance('ANT')
   const antDecimals = useTokenDecimals('ANT')
   const anjDecimals = useTokenDecimals('ANJ')
   const antToUsd = useTokenBalanceToUsd('ANT', antDecimals, balanceAnt)
-
+  const ethToUsd = useTokenBalanceToUsd('ETH', antDecimals, balanceEth)
   const containerRef = useRef()
 
   return (
@@ -53,6 +55,13 @@ function ConnectedMode() {
                 <div>
                   <p>{formatUnits(balanceAnt, { digits: antDecimals })}</p>
                   <p>${antToUsd}</p>
+                </div>
+              </Row>
+              <Row>
+                <Token symbol="ETH" />
+                <div>
+                  <p>{formatUnits(balanceEth, { digits: antDecimals })}</p>
+                  <p>${ethToUsd}</p>
                 </div>
               </Row>
               <Row>

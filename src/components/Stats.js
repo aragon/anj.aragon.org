@@ -9,7 +9,7 @@ import jurors from './assets/juror-total.svg'
 import { bigNum, useAnJurors } from '../utils'
 import { useAntStaked } from '../web3-contracts'
 import { fromWei } from 'web3-utils'
-import { useTokenBalanceToUsd } from '../web3-utils'
+import { formatUnits, useTokenBalanceToUsd } from '../web3-utils'
 
 const medium = css => breakpoint('medium', css)
 const formatTokenAmount = n =>
@@ -17,8 +17,6 @@ const formatTokenAmount = n =>
     .toFixed(2)
     .toString()
     .split('.')
-const formatThousands = num =>
-  String(num).replace(/(?<!\..*)(\d)(?=(?:\d{3})+(?:\.|$))/g, '$1,')
 
 const Stats = () => {
   const antStaked = useAntStaked()
@@ -37,7 +35,7 @@ const Stats = () => {
             <h2>Staked ANT</h2>
             <NumberWrapper>
               <h2 className="pink number">
-                {`${formatThousands(wholeAnt)}`}.
+                {`${formatUnits(bigNum(wholeAnt), { digits: 0 })}`}.
                 <span className="decimal">{decimalAnt}</span>
               </h2>
               <h3 className="denomination">ANT</h3>
@@ -51,7 +49,7 @@ const Stats = () => {
             <h2>Active ANJ</h2>
             <NumberWrapper>
               <h2 className="pink number">
-                {`${formatThousands(wholeAnj)}`}.
+                {`${formatUnits(bigNum(wholeAnj), { digits: 0 })}`}.
                 <span className="decimal">{decimalAnj}</span>
               </h2>
               <h3 className="denomination">ANJ</h3>
@@ -70,7 +68,7 @@ const Stats = () => {
             <TokenImg src={jurors} alt="" />
             <h2>Total Jurors</h2>
             <NumberWrapper jurors>
-              <h2 className="pink number">{formatThousands(numOfjurors)}</h2>
+              <h2 className="pink number">{numOfjurors}</h2>
               <h3 className="denomination">ACTIVE JURORS</h3>
             </NumberWrapper>
           </Stat>

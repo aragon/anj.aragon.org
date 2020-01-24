@@ -11,6 +11,7 @@ import { bigNum, usePostEmail } from '../../utils'
 import { breakpoint, GU } from '../../microsite-logic'
 import { formatUnits, parseUnits } from '../../web3-utils'
 import { useConverterStatus, CONVERTER_STATUSES } from './converter-status'
+import ComboInput from './ComboInput'
 import Token from './Token'
 import Anchor from '../Anchor'
 
@@ -250,20 +251,40 @@ function FormSection() {
             {antError && <span className="error">{antError} </span>}
           </Info>
         </div>
-        <InputBox>
-          <Label>Amount of ANJ you will receive and activate</Label>
-          <AdornmentBox>
-            <Input
-              value={inputValueAnj}
-              onChange={handleAnjChange}
-              onBlur={() => setEditModeAnj(false)}
-              onFocus={() => setEditModeAnj(true)}
-            />
-            <Adornment>
-              <Token symbol="ANJ" />
-            </Adornment>
-          </AdornmentBox>
-        </InputBox>
+        <div>
+          <InputBox>
+            <Label>Amount of ANJ you will receive and activate</Label>
+            <AdornmentBox>
+              <Input
+                value={inputValueAnj}
+                onChange={handleAnjChange}
+                onBlur={() => setEditModeAnj(false)}
+                onFocus={() => setEditModeAnj(true)}
+              />
+              <Adornment>
+                <Token symbol="ANJ" />
+              </Adornment>
+            </AdornmentBox>
+            {/*            <ComboInput />
+            <Info>
+              This amount is an approximation.
+              <OverlayTrigger
+                show="true"
+                placement="top"
+                delay={{ hide: 400 }}
+                overlay={props => (
+                  <Tooltip {...props} show="true">
+                    The amount is approximate since we use an external provider
+                    for this transaction and we do not know the final amount
+                    until the transaction is undermined.
+                  </Tooltip>
+                )}
+              >
+                <span className="insight"> Why?</span>
+              </OverlayTrigger>
+            </Info>*/}
+          </InputBox>
+        </div>
         <OverlayTrigger
           placement="right"
           delay={{ hide: 400 }}
@@ -360,6 +381,10 @@ const Info = styled.div`
   .error {
     color: #ff6969;
   }
+
+  .insight {
+    color: #516dff;
+  }
 `
 
 const InputBox = styled.div`
@@ -421,14 +446,6 @@ const Adornment = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-`
-
-const PopoverIndicator = styled.p`
-  font-size: 18px;
-  color: black;
-  .popover {
-    color: #516dff;
-  }
 `
 
 const AdornmentBox = styled.div`

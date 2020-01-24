@@ -24,7 +24,6 @@ const TokenSection = styled.div`
   &.badge {
     top: -5px;
     margin: 0 5px;
-    ${medium('margin: 0 15px;')};
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.15);
     border-radius: 100px;
   }

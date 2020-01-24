@@ -52,9 +52,6 @@ const Container = styled.div`
   max-width: 1180px;
   height: 65px;
   background: #1c1c1c;
-  position: absolute;
-  top: 0;
-  left: 0;
   display: flex;
   justify-content: center;
   align-items: center;

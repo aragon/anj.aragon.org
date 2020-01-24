@@ -59,8 +59,61 @@ export function useTokenDecimals(symbol) {
   return decimals
 }
 
+export function useEthBalance() {
+  const { account, web3ReactContext } = useWeb3Connect()
+  const [balance, setBalance] = useState(bigNum(-1))
+
+  const cancelBalanceUpdate = useRef(null)
+
+  const updateBalance = useCallback(() => {
+    let cancelled = false
+
+    if (cancelBalanceUpdate.current) {
+      cancelBalanceUpdate.current()
+      cancelBalanceUpdate.current = null
+    }
+
+    if (!account || !web3ReactContext) {
+      setBalance(bigNum(-1))
+      return
+    }
+
+    cancelBalanceUpdate.current = () => {
+      cancelled = true
+    }
+
+    web3ReactContext.library.getBalance(account).then(balance => {
+      if (!cancelled) {
+        setBalance(balance)
+      }
+    })
+  }, [account, web3ReactContext])
+
+  useEffect(() => {
+    // Always update the balance if updateBalance() has changed
+    updateBalance()
+
+    if (!web3ReactContext || !account) {
+      return
+    }
+
+    const onTransfer = (from, to, value) => {
+      if (from === account || to === account) {
+        updateBalance()
+      }
+    }
+    web3ReactContext.library.on('Transfer', onTransfer)
+
+    return () => {
+      web3ReactContext.library.removeListener('Transfer', onTransfer)
+    }
+  }, [account, web3ReactContext, updateBalance])
+
+  return balance
+}
+
 export function useTokenBalance(symbol) {
-  const { account } = useWeb3Connect()
+  const { account, web3ReactContext } = useWeb3Connect()
   const [balance, setBalance] = useState(bigNum(-1))
   const tokenContract = useKnownContract(`TOKEN_${symbol}`)
 
@@ -201,26 +254,26 @@ export function useConvertAntToAnj() {
 }
 
 // export function useConvertEthToAnj() {
-  // const { account } = useWeb3Connect()
-  // const [wrapperAddress] = getKnownContract('WRAPPER')
-  // // for making this line usable we need to have the ABI
-  // const wrapperContract = useContract(wrapperContract, wrapperAbi)
+// const { account } = useWeb3Connect()
+// const [wrapperAddress] = getKnownContract('WRAPPER')
+// // for making this line usable we need to have the ABI
+// const wrapperContract = useContract(wrapperContract, wrapperAbi)
 
-  // return useCallback(
-    // async ethAmount => {
-      // if (!wrapperContract) {
-        // return false
-      // }
-      // const tx = await wrapperContract.methods
-        // .contributeEth(0, 60, true)
-        // .send({ from: account, value: ethAmount })
-      // if (tx.error) {
-        // return false
-      // }
-      // return true
-    // },
-    // [account]
-  // )
+// return useCallback(
+// async ethAmount => {
+// if (!wrapperContract) {
+// return false
+// }
+// const tx = await wrapperContract.methods
+// .contributeEth(0, 60, true)
+// .send({ from: account, value: ethAmount })
+// if (tx.error) {
+// return false
+// }
+// return true
+// },
+// [account]
+// )
 // }
 
 export function useAntStaked() {
