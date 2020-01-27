@@ -31,10 +31,15 @@ function ConnectedMode() {
   const balanceAnj = useJurorRegistryAnjBalance()
   const balanceEth = useEthBalance()
   const balanceAnt = useTokenBalance('ANT')
+  const balanceDai = useTokenBalance('DAI')
+  const balanceUsd = useTokenBalance('USD')
   const antDecimals = useTokenDecimals('ANT')
   const anjDecimals = useTokenDecimals('ANJ')
   const antToUsd = useTokenBalanceToUsd('ANT', antDecimals, balanceAnt)
+  const daiToUsd = useTokenBalanceToUsd('DAI', antDecimals, balanceDai)
   const ethToUsd = useTokenBalanceToUsd('ETH', antDecimals, balanceEth)
+  const usdcToUsd = useTokenBalanceToUsd('USDC', antDecimals, balanceUsd)
+
   const containerRef = useRef()
 
   return (
@@ -58,10 +63,24 @@ function ConnectedMode() {
                 </div>
               </Row>
               <Row>
+                <Token symbol="DAI" />
+                <div>
+                  <p>{formatUnits(balanceDai, { digits: antDecimals })}</p>
+                  <p>${daiToUsd}</p>
+                </div>
+              </Row>
+              <Row>
                 <Token symbol="ETH" />
                 <div>
                   <p>{formatUnits(balanceEth, { digits: antDecimals })}</p>
                   <p>${ethToUsd}</p>
+                </div>
+              </Row>
+              <Row>
+                <Token symbol="USD" />
+                <div>
+                  <p>{formatUnits(balanceUsd, { digits: antDecimals })}</p>
+                  <p>${usdcToUsd}</p>
                 </div>
               </Row>
               <Row>

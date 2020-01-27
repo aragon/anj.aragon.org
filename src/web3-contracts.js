@@ -253,28 +253,58 @@ export function useConvertAntToAnj() {
   )
 }
 
-// export function useConvertEthToAnj() {
-// const { account } = useWeb3Connect()
-// const [wrapperAddress] = getKnownContract('WRAPPER')
-// // for making this line usable we need to have the ABI
-// const wrapperContract = useContract(wrapperContract, wrapperAbi)
+export function useConvertTokenToAnj(selectedToken) {
+  const { account } = useWeb3Connect()
+  const tokenContract = useKnownContract(`TOKEN_${selectedToken}`)
+  const wrapperContract = useKnownContract(`WRAPPER`)
+  const [tokenAddress] = getKnownContract(`TOKEN_${selectedToken}`)
+  const [wrapperAddress] = getKnownContract('WRAPPER')
+  return useCallback(
+    async amount => {
+      if (!tokenContract || wrapperAddress) {
+        return false
+      }
 
-// return useCallback(
-// async ethAmount => {
-// if (!wrapperContract) {
-// return false
-// }
-// const tx = await wrapperContract.methods
-// .contributeEth(0, 60, true)
-// .send({ from: account, value: ethAmount })
-// if (tx.error) {
-// return false
-// }
-// return true
-// },
-// [account]
-// )
-// }
+      // If the user has selected ETH, we can just send the ETH to the function
+      if (selectedToken === 'ETH') {
+        return wrapperContract.methods
+          .contributeEth(0, 60, true)
+          .send({ from: account, value: amount})
+      }
+      // If the user has selected ANT, we can directly
+      // approve and call the wrapper using ANT
+      if (selectedToken === 'ANT') {
+        return tokenContract.approveAndCall(wrapperAddress, amount, '0x00', {
+          gasLimit: 1000000,
+        })
+      }
+
+      // else, we will need two transactions: the approval,
+      return tokenContract.approve(wrapperAddress, amount).then(() =>
+        // and the actual token staking.
+        wrapperContract.contributeExternalToken(
+          tokenAddress,
+          amount,
+          0,
+          0,
+          0,
+          true,
+          {
+            gasLimit: 1000000,
+          }
+        )
+      )
+    },
+    [
+      account,
+      selectedToken,
+      tokenAddress,
+      tokenContract,
+      wrapperAddress,
+      wrapperContract,
+    ]
+  )
+}
 
 export function useAntStaked() {
   const [antStaked, setAntStaked] = useState('0')

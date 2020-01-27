@@ -4,8 +4,10 @@ import { OverlayTrigger, Tooltip } from 'react-bootstrap'
 import {
   useTokenDecimals,
   useConvertAntToAnj,
+  useConvertTokenToAnj,
   useTokenBalance,
   useJurorRegistryAnjBalance,
+  useEthBalance,
 } from '../../web3-contracts'
 import { bigNum, usePostEmail } from '../../utils'
 import { breakpoint, GU } from '../../microsite-logic'
@@ -139,6 +141,17 @@ function useConvertInputs() {
 }
 
 function FormSection() {
+  const [selectedOption, setSelectedOption] = useState(0)
+  const [tokenBalance, setTokenBalance] = useState(bigNum(0))
+  const options = useMemo(() => ['ANT', 'DAI', 'ETH', 'USD'], [])
+  const selectedTokenBalance =
+    useTokenBalance(options[selectedOption]) || bigNum(0)
+  const ethBalance = useEthBalance()
+
+  useEffect(() => {
+    setTokenBalance(selectedTokenBalance)
+  }, [options, selectedOption, selectedTokenBalance])
+
   const {
     amountAnj,
     amountAnt,
@@ -151,9 +164,9 @@ function FormSection() {
   } = useConvertInputs()
 
   const convertAntToAnj = useConvertAntToAnj()
+  const convertTokenToAnj = useConvertTokenToAnj(options[selectedOption])
   const postEmail = usePostEmail()
 
-  const balanceAnt = useTokenBalance('ANT')
   const balanceAnj = useJurorRegistryAnjBalance()
   const antDecimals = useTokenDecimals('ANT')
 
@@ -172,7 +185,7 @@ function FormSection() {
 
     try {
       converterStatus.setStatus(CONVERTER_STATUSES.SIGNING)
-      const tx = await convertAntToAnj(amountAnt.toString())
+      const tx = await convertTokenToAnj(amountAnt.toString())
       converterStatus.setStatus(CONVERTER_STATUSES.PENDING)
       await tx.wait(1)
       converterStatus.setStatus(CONVERTER_STATUSES.SUCCESS)
@@ -202,12 +215,24 @@ function FormSection() {
       return 'The minimum amount of ANT is 100.'
     }
 
-    if (amountAnt && amountAnt.gte(0) && amountAnt.gt(balanceAnt)) {
+    const selectedTokenBalance =
+      options[selectedOption] === 'ETH' ? ethBalance : tokenBalance
+
+    if (amountAnt && amountAnt.gte(0) && amountAnt.gt(selectedTokenBalance)) {
       return 'Amount is greater than balance held.'
     }
 
     return null
-  }, [amountAnt, inputValueAnt, balanceAnj, amountAnj, balanceAnt])
+  }, [
+    amountAnt,
+    inputValueAnt,
+    balanceAnj,
+    amountAnj,
+    tokenBalance,
+    ethBalance,
+    options,
+    selectedOption,
+  ])
 
   const disabled = Boolean(
     !inputValueAnt.trim() ||
@@ -218,6 +243,11 @@ function FormSection() {
       !acceptTerms
   )
 
+  const handleSelect = useCallback(
+    optionIndex => setSelectedOption(optionIndex),
+    []
+  )
+
   return (
     <Form onSubmit={handleSubmit}>
       <div
@@ -226,27 +256,36 @@ function FormSection() {
         `}
       >
         <div>
-          <Label>Amount of ANT you want to convert</Label>
-          <AdornmentBox>
-            <Input
-              value={inputValueAnt}
-              onChange={handleAntChange}
-              onBlur={() => setEditModeAnt(false)}
-              onFocus={() => setEditModeAnt(true)}
-              placeholder={placeholder}
-            />
-            <Adornment>
-              <Token symbol="ANT" />
-            </Adornment>
-          </AdornmentBox>
+          <Label>Amount of {options[selectedOption]} you want to convert</Label>
+          <ComboInput
+            value={inputValueAnt}
+            onChange={handleAntChange}
+            options={[
+              <Token symbol="ANT" />,
+              <Token symbol="DAI" />,
+              <Token symbol="ETH" />,
+              <Token symbol="USD" />,
+            ]}
+            onBlur={() => {
+              setEditModeAnt(false)
+              console.log('hm')
+            }}
+            onFocus={() => setEditModeAnt(true)}
+            onSelect={handleSelect}
+            selectedOption={selectedOption}
+            placeholder={placeholder}
+          />
           <Info>
             <span>
               Balance:{' '}
-              {formatUnits(balanceAnt, {
-                digits: antDecimals,
-                replaceZeroBy: '0',
-              })}{' '}
-              ANT.{' '}
+              {formatUnits(
+                options[selectedOption] === 'ETH' ? ethBalance : tokenBalance,
+                {
+                  digits: antDecimals,
+                  replaceZeroBy: '0',
+                }
+              )}{' '}
+              {`${options[selectedOption]}.`}
             </span>
             {antError && <span className="error">{antError} </span>}
           </Info>
@@ -265,24 +304,25 @@ function FormSection() {
                 <Token symbol="ANJ" />
               </Adornment>
             </AdornmentBox>
-            {/*            <ComboInput />
-            <Info>
-              This amount is an approximation.
-              <OverlayTrigger
-                show="true"
-                placement="top"
-                delay={{ hide: 400 }}
-                overlay={props => (
-                  <Tooltip {...props} show="true">
-                    The amount is approximate since we use an external provider
-                    for this transaction and we do not know the final amount
-                    until the transaction is undermined.
-                  </Tooltip>
-                )}
-              >
-                <span className="insight"> Why?</span>
-              </OverlayTrigger>
-            </Info>*/}
+            {options[selectedOption] !== 'ANT' && (
+              <Info>
+                This amount is an approximation.
+                <OverlayTrigger
+                  show="true"
+                  placement="top"
+                  delay={{ hide: 400 }}
+                  overlay={props => (
+                    <Tooltip {...props} show="true">
+                      The amount is approximate since we use an external
+                      provider for this transaction and we do not know the final
+                      amount until the transaction is undermined.
+                    </Tooltip>
+                  )}
+                >
+                  <span className="insight"> Why?</span>
+                </OverlayTrigger>
+              </Info>
+            )}
           </InputBox>
         </div>
         <OverlayTrigger

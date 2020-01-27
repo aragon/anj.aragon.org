@@ -20,7 +20,6 @@ const TokenSection = styled.div`
   align-items: center;
   height: 38px;
   padding: 0 8px;
-  cursor: default;
   &.badge {
     top: -5px;
     margin: 0 5px;
