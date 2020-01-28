@@ -4,41 +4,44 @@ import Modal from 'react-bootstrap/Modal'
 import ButtonToolbar from 'react-bootstrap/ButtonToolbar'
 import Button from 'react-bootstrap/Button'
 
-const MenuModal = () => {
-  const [modalShow, setModal] = useState(false)
+function MenuModal() {
+  const [show, setShow] = useState(false)
+
+  const close = () => setShow(false)
+  const toggle = () => setShow(show => !show)
 
   return (
     <ButtonToolbar>
       <Button
         className={
-          modalShow
+          show
             ? 'hamburger hamburger-spin is-active'
             : 'hamburger hamburger-spin'
         }
         type="button"
-        onClick={() => setModal(!modalShow)}
+        onClick={toggle}
       >
         <span className="hamburger-box">
           <span className="hamburger-inner" />
         </span>
       </Button>
-      <StyledModal size="lg" aria-labelledby="title" show={modalShow}>
+      <StyledModal size="lg" aria-labelledby="title" show={show} onHide={close}>
         <LinksBox>
           <div className="links">
             <ul>
               <li>
-                <a href={'./#get-anj'} onClick={() => setModal(false)}>
+                <a href={'./#get-anj'} onClick={close}>
                   Get ANJ
                 </a>
               </li>
               <li>
-                <a href={'./#learn'} onClick={() => setModal(false)}>
-                 Learn 
+                <a href={'./#learn'} onClick={close}>
+                  Learn
                 </a>
               </li>
 
               <li>
-                <a href={'./#subscribe'} onClick={() => setModal(false)}>
+                <a href={'./#subscribe'} onClick={close}>
                   Subscribe
                 </a>
               </li>
