@@ -1,12 +1,15 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { utils as EthersUtils } from 'ethers'
 import * as Sentry from '@sentry/browser'
-import { useWeb3Connect } from './web3-connect'
-import env from './environment'
 import { request } from 'graphql-request'
 import { toBN } from 'web3-utils'
+import { useWeb3Connect } from './web3-connect'
+import env from './environment'
+
 const GQL_ENDPOINT =
   'https://api.thegraph.com/subgraphs/name/aragon/aragon-court'
+
+const FETCH_JURORS_RETRY_DELAY = 1000
 
 export function noop() {}
 
@@ -17,26 +20,48 @@ export function bigNum(value) {
 export function useAnJurors() {
   const [jurors, setJurors] = useState(0)
   const [activeAnj, setActiveAnj] = useState('0')
+
   useEffect(() => {
+    let retryTimer
+
     async function fetchJurors() {
-      const { jurors } = await request(
-        GQL_ENDPOINT,
-        `
-          {
-            jurors(first: 1000) {
-              activeBalance
+      let response
+
+      try {
+        response = await request(
+          GQL_ENDPOINT,
+          `
+            {
+              jurors(first: 1000) {
+                activeBalance
+              }
             }
-          }
-        `
-      )
+          `
+        )
+        if (!response.jurors) {
+          throw new Error('Wrong response')
+        }
+      } catch (err) {
+        retryTimer = setTimeout(fetchJurors, FETCH_JURORS_RETRY_DELAY)
+        return
+      }
+
+      const { jurors } = response
+
       const anjActivated = jurors.reduce(
         (acc, { activeBalance }) => acc.add(toBN(activeBalance)),
         toBN(0)
       )
+
       setJurors(jurors.length)
       setActiveAnj(anjActivated)
     }
+
     fetchJurors()
+
+    return () => {
+      clearTimeout(retryTimer)
+    }
   }, [])
 
   return [jurors, activeAnj]
