@@ -111,7 +111,7 @@ export function parseUnits(value, { digits = 18 } = {}) {
 /**
  * Format an amount of units to be displayed.
  *
- * @param {BigNumber} value Amount of units to format.
+ * @param {BigNumber|String} value Amount of units to format.
  * @param {Number} options.digits Amount of digits on the token.
  * @param {Boolean} options.commas Use comma-separated groups.
  * @param {Boolean} options.replaceZeroBy The string to be returned when value is zero.
@@ -120,6 +120,10 @@ export function formatUnits(
   value,
   { digits = 18, commas = true, replaceZeroBy = '' } = {}
 ) {
+  if (typeof value === 'string') {
+    value = bigNum(value)
+  }
+
   if (value.lt(0) || digits < 0) {
     return ''
   }

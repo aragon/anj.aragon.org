@@ -12,20 +12,28 @@ import { fromWei } from 'web3-utils'
 import { formatUnits, useTokenBalanceToUsd } from '../web3-utils'
 
 const medium = css => breakpoint('medium', css)
-const formatTokenAmount = n =>
-  ((parseFloat(fromWei(n)) * 100) / 100)
-    .toFixed(2)
-    .toString()
-    .split('.')
+
+function formatAndSplitAmount(value) {
+  const formatted = formatUnits(value, { replaceZeroBy: '0' })
+  let [whole, decimal] = formatted.split('.')
+
+  // Round and keep the last two digits
+  decimal = Math.round(parseInt((decimal || '0').slice(0, 4)) / 100)
+
+  return [whole || '0', decimal ? String(decimal) : '']
+}
 
 const Stats = () => {
   const antStaked = useAntStaked()
   const [numOfjurors, activeAnj] = useAnJurors()
-  const [wholeAnt, decimalAnt] = formatTokenAmount(antStaked)
-  const [wholeAnj, decimalAnj] = formatTokenAmount(activeAnj)
+
+  const [wholeAnt, decimalAnt] = formatAndSplitAmount(antStaked)
+  const [wholeAnj, decimalAnj] = formatAndSplitAmount(activeAnj)
+
   const usdAnt = useTokenBalanceToUsd('ANT', 18, bigNum(antStaked))
   const unratedAnj = bigNum(activeAnj.toString()).div(100)
   const usdAnj = useTokenBalanceToUsd('ANT', 18, unratedAnj)
+
   return (
     <StatsSection>
       <StatsDiv>
@@ -35,8 +43,12 @@ const Stats = () => {
             <h2>Staked ANT</h2>
             <NumberWrapper>
               <h2 className="pink number">
-                {`${formatUnits(bigNum(wholeAnt), { digits: 0 })}`}.
-                <span className="decimal">{decimalAnt}</span>
+                {wholeAnt}
+                {decimalAnt && (
+                  <span>
+                    .<span className="decimal">{decimalAnt}</span>
+                  </span>
+                )}
               </h2>
               <h3 className="denomination">ANT</h3>
             </NumberWrapper>
@@ -49,8 +61,12 @@ const Stats = () => {
             <h2>Active ANJ</h2>
             <NumberWrapper>
               <h2 className="pink number">
-                {`${formatUnits(bigNum(wholeAnj), { digits: 0 })}`}.
-                <span className="decimal">{decimalAnj}</span>
+                {wholeAnj}
+                {decimalAnj && (
+                  <span>
+                    .<span className="decimal">{decimalAnj}</span>
+                  </span>
+                )}
               </h2>
               <h3 className="denomination">ANJ</h3>
             </NumberWrapper>
