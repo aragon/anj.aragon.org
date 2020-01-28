@@ -113,7 +113,7 @@ export function useEthBalance() {
 }
 
 export function useTokenBalance(symbol) {
-  const { account, web3ReactContext } = useWeb3Connect()
+  const { account } = useWeb3Connect()
   const [balance, setBalance] = useState(bigNum(-1))
   const tokenContract = useKnownContract(`TOKEN_${symbol}`)
 
@@ -259,6 +259,7 @@ export function useConvertTokenToAnj(selectedToken) {
   const wrapperContract = useKnownContract(`WRAPPER`)
   const [tokenAddress] = getKnownContract(`TOKEN_${selectedToken}`)
   const [wrapperAddress] = getKnownContract('WRAPPER')
+
   return useCallback(
     async amount => {
       if (!tokenContract || wrapperAddress) {
@@ -269,7 +270,7 @@ export function useConvertTokenToAnj(selectedToken) {
       if (selectedToken === 'ETH') {
         return wrapperContract.methods
           .contributeEth(0, 60, true)
-          .send({ from: account, value: amount})
+          .send({ from: account, value: amount })
       }
       // If the user has selected ANT, we can directly
       // approve and call the wrapper using ANT
@@ -281,18 +282,10 @@ export function useConvertTokenToAnj(selectedToken) {
 
       // else, we will need two transactions: the approval,
       return tokenContract.approve(wrapperAddress, amount).then(() =>
-        // and the actual token staking.
-        wrapperContract.contributeExternalToken(
-          tokenAddress,
-          amount,
-          0,
-          0,
-          0,
-          true,
-          {
-            gasLimit: 1000000,
-          }
-        )
+        // and receiving the approval in the wrapper for the actual token staking.
+        wrapperContract.receiveApproval(account, amount, tokenAddress, '0x00', {
+          gasLimit: 1000000,
+        })
       )
     },
     [
