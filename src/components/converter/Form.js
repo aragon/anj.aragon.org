@@ -168,6 +168,8 @@ function FormSection() {
       await postEmail(email)
     } catch (err) {
       console.error(`Error while trying to subscribe ${email}`, err)
+      converterStatus.setStatus(CONVERTER_STATUSES.ERROR)
+      return
     }
 
     try {
