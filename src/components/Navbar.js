@@ -6,29 +6,27 @@ import MenuModal from './MenuModal'
 
 const medium = css => breakpoint('medium', css)
 
-class Navbar extends React.Component {
-  render() {
-    return (
-      <Container>
-        <CourtNavbar>
-          <Left>
-            <LogoLink to="/">
-              <img src={logo} alt="" />
-            </LogoLink>
-            <LinksBox>
-              <a href="./#get-anj">Become a Juror</a>
-              <a href="./#learn">Learn</a>
-              <a href="./#how-it-works">Dispute Example</a>
-              <a href="./#subscribe">Subscribe</a>
-            </LinksBox>
-          </Left>
-          <MenuModalBox>
-            <MenuModal />
-          </MenuModalBox>
-        </CourtNavbar>
-      </Container>
-    )
-  }
+function Navbar() {
+  return (
+    <Container>
+      <CourtNavbar>
+        <Left>
+          <LogoLink to="/">
+            <img src={logo} alt="" />
+          </LogoLink>
+          <LinksBox>
+            <a href="./#get-anj">Become a Juror</a>
+            <a href="./#learn">Learn</a>
+            <a href="./#how-it-works">Dispute Example</a>
+            <a href="./#subscribe">Subscribe</a>
+          </LinksBox>
+        </Left>
+        <MenuModalBox>
+          <MenuModal />
+        </MenuModalBox>
+      </CourtNavbar>
+    </Container>
+  )
 }
 
 const Left = styled.div`
