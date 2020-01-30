@@ -5,6 +5,7 @@ import tokenBalanceOfAbi from './token-balanceof.json'
 import { useWeb3Connect } from './web3-connect'
 import Web3EthContract from 'web3-eth-contract'
 import { bigNum } from './utils'
+import { toHex, toWei } from 'web3-utils'
 
 const PRESALE_ADDR = '0xf89c8752d82972f94a4d1331e010ed6593e8ec49'
 const contractsCache = new Map()
@@ -263,7 +264,7 @@ export function useConvertTokenToAnj(selectedToken) {
   const [wrapperAddress] = getKnownContract('WRAPPER')
 
   return useCallback(
-    async amount => {
+    async (amount, estimatedAnj) => {
       if ((!tokenContract && selectedToken !== 'ETH') || !wrapperAddress) {
         throw new Error('Could not get the token and wrapper contract.')
       }
@@ -294,7 +295,7 @@ export function useConvertTokenToAnj(selectedToken) {
           tokenAddress,
           amount,
           1,
-          1,
+          0,
           fiveMinutes,
           true,
           {
