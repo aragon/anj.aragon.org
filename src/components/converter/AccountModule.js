@@ -17,7 +17,7 @@ import {
 import Token from './Token'
 import EthIdenticon from './EthIdenticon'
 
-function AccountModule({ compact }) {
+function AccountModule() {
   const { account } = useWeb3Connect()
   return account ? <ConnectedMode /> : null
 }

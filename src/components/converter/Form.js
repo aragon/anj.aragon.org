@@ -3,13 +3,12 @@ import styled from 'styled-components'
 import { OverlayTrigger, Tooltip } from 'react-bootstrap'
 import {
   useTokenDecimals,
-  useConvertAntToAnj,
   useConvertTokenToAnj,
   useTokenBalance,
   useJurorRegistryAnjBalance,
   useEthBalance,
 } from '../../web3-contracts'
-import { bigNum, usePostEmail } from '../../utils'
+import { bigNum, usePostEmail, useTokenPrice } from '../../utils'
 import { breakpoint, GU } from '../../microsite-logic'
 import { formatUnits, parseUnits } from '../../web3-utils'
 import { useConverterStatus, CONVERTER_STATUSES } from './converter-status'
@@ -20,9 +19,8 @@ import Anchor from '../Anchor'
 import question from './assets/question.svg'
 
 const large = css => breakpoint('large', css)
-
-const ANJ_BY_ANT = 100
-const ANJ_MIN_REQUIRED = bigNum(10)
+const options = ['ANT', 'DAI', 'ETH', 'USDC']
+const ANJ_MIN_REQUIRED = bigNum(0)
   .pow(18)
   .mul(10000)
 
@@ -50,23 +48,31 @@ function convertInputValue(value, fromDecimals, toDecimals, convert) {
 }
 
 // Convert the two input values as the user types
-function useConvertInputs() {
+function useConvertInputs(tokenPrice, antPrice) {
   const [inputValueAnj, setInputValueAnj] = useState('')
-  const [inputValueAnt, setInputValueAnt] = useState('')
+  const [inputValueToken, setInputValueToken] = useState('')
   const [amountAnj, setAmountAnj] = useState(bigNum(0))
-  const [amountAnt, setAmountAnt] = useState(bigNum(0))
+  const [amountToken, setAmountAnt] = useState(bigNum(0))
 
   const antDecimals = useTokenDecimals('ANT')
   const anjDecimals = useTokenDecimals('ANJ')
 
+  // Reset the inputs anytime the selected token changes
+  useEffect(() => {
+    setInputValueToken('')
+    setInputValueAnj('')
+  }, [tokenPrice, antPrice])
+
   // Alternate the comma-separated format, based on the fields focus state.
-  const setEditModeAnt = useCallback(
+  const setEditModeToken = useCallback(
     editMode => {
-      setInputValueAnt(
-        formatUnits(amountAnt, { digits: antDecimals, commas: !editMode })
-      )
+      const units = formatUnits(amountToken, {
+        digits: antDecimals,
+        commas: !editMode,
+      })
+      setInputValueToken(units)
     },
-    [amountAnt, antDecimals]
+    [amountToken, antDecimals]
   )
 
   const setEditModeAnj = useCallback(
@@ -88,19 +94,23 @@ function useConvertInputs() {
         event.target.value,
         antDecimals,
         anjDecimals,
-        amount => amount.mul(ANJ_BY_ANT)
+        amount =>
+          amount
+            .mul(tokenPrice)
+            .div(antPrice)
+            .mul(100)
       )
 
       if (converted === null) {
         return
       }
 
-      setInputValueAnt(converted.fromInputValue)
+      setInputValueToken(converted.fromInputValue)
       setInputValueAnj(converted.toInputValue)
       setAmountAnt(converted.fromAmount)
       setAmountAnj(converted.toAmount)
     },
-    [antDecimals, anjDecimals]
+    [antDecimals, anjDecimals, antPrice, tokenPrice]
   )
 
   const handleAnjChange = useCallback(
@@ -113,7 +123,11 @@ function useConvertInputs() {
         event.target.value,
         anjDecimals,
         antDecimals,
-        amount => amount.div(ANJ_BY_ANT)
+        amount =>
+          amount
+            .mul(antPrice)
+            .div(tokenPrice)
+            .div(100)
       )
 
       if (converted === null) {
@@ -121,49 +135,43 @@ function useConvertInputs() {
       }
 
       setInputValueAnj(converted.fromInputValue)
-      setInputValueAnt(converted.toInputValue)
+      setInputValueToken(converted.toInputValue)
       setAmountAnj(converted.fromAmount)
       setAmountAnt(converted.toAmount)
     },
-    [antDecimals, anjDecimals]
+    [antDecimals, anjDecimals, antPrice, tokenPrice]
   )
 
   return {
     amountAnj,
-    amountAnt,
+    amountToken,
     setEditModeAnj,
-    setEditModeAnt,
+    setEditModeToken,
     handleAnjChange,
     handleAntChange,
     inputValueAnj,
-    inputValueAnt,
+    inputValueToken,
   }
 }
 
 function FormSection() {
   const [selectedOption, setSelectedOption] = useState(0)
-  const [tokenBalance, setTokenBalance] = useState(bigNum(0))
-  const options = useMemo(() => ['ANT', 'DAI', 'ETH', 'USD'], [])
-  const selectedTokenBalance =
-    useTokenBalance(options[selectedOption]) || bigNum(0)
+  const tokenBalance = useTokenBalance(options[selectedOption]) || bigNum(0)
+  const tokenPrice = useTokenPrice(options[selectedOption])
+  const antPrice = useTokenPrice('ANT')
   const ethBalance = useEthBalance()
-
-  useEffect(() => {
-    setTokenBalance(selectedTokenBalance)
-  }, [options, selectedOption, selectedTokenBalance])
 
   const {
     amountAnj,
-    amountAnt,
+    amountToken,
     setEditModeAnj,
-    setEditModeAnt,
+    setEditModeToken,
     handleAnjChange,
     handleAntChange,
     inputValueAnj,
-    inputValueAnt,
-  } = useConvertInputs()
+    inputValueToken,
+  } = useConvertInputs(tokenPrice, antPrice)
 
-  const convertAntToAnj = useConvertAntToAnj()
   const convertTokenToAnj = useConvertTokenToAnj(options[selectedOption])
   const postEmail = usePostEmail()
 
@@ -185,11 +193,12 @@ function FormSection() {
 
     try {
       converterStatus.setStatus(CONVERTER_STATUSES.SIGNING)
-      const tx = await convertTokenToAnj(amountAnt.toString())
+      const tx = await convertTokenToAnj(amountToken.toString())
       converterStatus.setStatus(CONVERTER_STATUSES.PENDING)
       await tx.wait(1)
       converterStatus.setStatus(CONVERTER_STATUSES.SUCCESS)
     } catch (err) {
+      console.log(err)
       converterStatus.setStatus(CONVERTER_STATUSES.ERROR)
     }
   }
@@ -206,8 +215,8 @@ function FormSection() {
 
   const antError = useMemo(() => {
     if (
-      amountAnt &&
-      inputValueAnt &&
+      amountToken &&
+      inputValueToken &&
       balanceAnj &&
       balanceAnj.lt(ANJ_MIN_REQUIRED) &&
       amountAnj.lt(ANJ_MIN_REQUIRED)
@@ -218,35 +227,39 @@ function FormSection() {
     const selectedTokenBalance =
       options[selectedOption] === 'ETH' ? ethBalance : tokenBalance
 
-    if (amountAnt && amountAnt.gte(0) && amountAnt.gt(selectedTokenBalance)) {
+    if (
+      amountToken &&
+      amountToken.gte(0) &&
+      amountToken.gt(selectedTokenBalance)
+    ) {
       return 'Amount is greater than balance held.'
     }
 
     return null
   }, [
-    amountAnt,
-    inputValueAnt,
+    amountToken,
+    inputValueToken,
     balanceAnj,
     amountAnj,
     tokenBalance,
     ethBalance,
-    options,
     selectedOption,
   ])
-
   const disabled = Boolean(
-    !inputValueAnt.trim() ||
+    !inputValueToken.trim() ||
       !inputValueAnj.trim() ||
       antError ||
       converterStatus.status !== CONVERTER_STATUSES.FORM ||
       !/[^@]+@[^@]+/.test(email) ||
       !acceptTerms
   )
-
   const handleSelect = useCallback(
     optionIndex => setSelectedOption(optionIndex),
     []
   )
+  useEffect(() => {
+    console.log(inputValueToken)
+  }, [inputValueToken])
 
   return (
     <Form onSubmit={handleSubmit}>
@@ -258,19 +271,16 @@ function FormSection() {
         <div>
           <Label>Amount of {options[selectedOption]} you want to convert</Label>
           <ComboInput
-            value={inputValueAnt}
+            inputValue={inputValueToken}
             onChange={handleAntChange}
             options={[
               <Token symbol="ANT" />,
               <Token symbol="DAI" />,
               <Token symbol="ETH" />,
-              <Token symbol="USD" />,
+              <Token symbol="USDC" />,
             ]}
-            onBlur={() => {
-              setEditModeAnt(false)
-              console.log('hm')
-            }}
-            onFocus={() => setEditModeAnt(true)}
+            onBlur={() => setEditModeToken(false)}
+            onFocus={() => setEditModeToken(true)}
             onSelect={handleSelect}
             selectedOption={selectedOption}
             placeholder={placeholder}
@@ -287,7 +297,7 @@ function FormSection() {
               )}{' '}
               {`${options[selectedOption]}.`}
             </span>
-            {antError && <span className="error">{antError} </span>}
+            {antError && <span className="error"> {antError} </span>}
           </Info>
         </div>
         <div>

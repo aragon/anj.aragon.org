@@ -36,10 +36,10 @@ export function ConverterProvider({ children }) {
       }
     }
 
-    wrapperContract.on('BoughtAndActivated', onBoughtAndActivated)
+    wrapperContract.on('BoughtAndRegistered', onBoughtAndActivated)
 
     return () => {
-      wrapperContract.removeListener('BoughtAndActivated', onBoughtAndActivated)
+      wrapperContract.removeListener('BoughtAndRegistered', onBoughtAndActivated)
     }
   }, [status, wrapperContract, account])
 

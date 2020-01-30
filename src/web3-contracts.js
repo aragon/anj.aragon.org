@@ -224,10 +224,13 @@ export function useJurorRegistryAnjBalance() {
         updateBalance()
       }
     }
-    wrapperContract.on('BoughtAndActivated', onBoughtAndActivated)
+    wrapperContract.on('BoughtAndRegistered', onBoughtAndActivated)
 
     return () => {
-      wrapperContract.removeListener('BoughtAndActivated', onBoughtAndActivated)
+      wrapperContract.removeListener(
+        'BoughtAndRegistered',
+        onBoughtAndActivated
+      )
     }
   }, [account, wrapperContract, updateBalance])
 
@@ -254,7 +257,6 @@ export function useConvertAntToAnj() {
 }
 
 export function useConvertTokenToAnj(selectedToken) {
-  const { account } = useWeb3Connect()
   const tokenContract = useKnownContract(`TOKEN_${selectedToken}`)
   const wrapperContract = useKnownContract(`WRAPPER`)
   const [tokenAddress] = getKnownContract(`TOKEN_${selectedToken}`)
@@ -262,34 +264,48 @@ export function useConvertTokenToAnj(selectedToken) {
 
   return useCallback(
     async amount => {
-      if (!tokenContract || wrapperAddress) {
-        return false
+      if ((!tokenContract && selectedToken !== 'ETH') || !wrapperAddress) {
+        throw new Error('Could not get the token and wrapper contract.')
       }
 
       // If the user has selected ETH, we can just send the ETH to the function
+      const fiveMinutes = Math.floor(Date.now() / 1000) + 60 * 5
+
       if (selectedToken === 'ETH') {
-        return wrapperContract.methods
-          .contributeEth(0, 60, true)
-          .send({ from: account, value: amount })
+        return await wrapperContract.contributeEth(1, fiveMinutes, true, {
+          gasLimit: 1000000,
+          value: bigNum(amount),
+        })
       }
+
       // If the user has selected ANT, we can directly
-      // approve and call the wrapper using ANT
+      // approve and call the wrapper using ANT's approveAndCall
       if (selectedToken === 'ANT') {
         return tokenContract.approveAndCall(wrapperAddress, amount, '0x00', {
           gasLimit: 1000000,
         })
       }
-
       // else, we will need two transactions: the approval,
-      return tokenContract.approve(wrapperAddress, amount).then(() =>
-        // and receiving the approval in the wrapper for the actual token staking.
-        wrapperContract.receiveApproval(account, amount, tokenAddress, '0x00', {
-          gasLimit: 1000000,
-        })
-      )
+      const approval = await tokenContract.approve(wrapperAddress, amount, {
+        gasLimit: 1000000,
+      })
+      if (approval) {
+        return await wrapperContract.contributeExternalToken(
+          tokenAddress,
+          amount,
+          1,
+          1,
+          fiveMinutes,
+          true,
+          {
+            gasLimit: 1000000,
+          }
+        )
+      } else {
+        throw new Error('User did not approve transaction')
+      }
     },
     [
-      account,
       selectedToken,
       tokenAddress,
       tokenContract,

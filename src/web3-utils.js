@@ -1,11 +1,66 @@
+import sha3 from 'js-sha3'
 import { useEffect, useState } from 'react'
 import { utils as EthersUtils } from 'ethers'
 import { bigNum } from './utils'
 
 const ADDRESS_REGEX = /^0x[0-9a-fA-F]{40}$/
+const EMPTY_ADDRESS = '0x0000000000000000000000000000000000000000'
+const TRUST_WALLET_BASE_URL =
+  'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum'
+const { keccak_256: keccak256 } = sha3
 
 export function isAddress(address) {
   return ADDRESS_REGEX.test(address)
+}
+
+/**
+ * Converts to a checksum address
+ *
+ * This function is taken from web3-utils:
+ * https://github.com/ethereum/web3.js/blob/22df832303e349f8ae02f0392e56abe10e1dfaac/packages/web3-utils/src/index.js#L287-L315
+ * And was adapted to use js-sha3 rather than soliditySha3.js from web3.js, in
+ * order to avoid adding the BN.js and underscore dependencies.
+ *
+ * @method toChecksumAddress
+ * @param {String} address the given HEX address
+ * @return {String}
+ */
+function toChecksumAddress(address) {
+  if (!/^(0x)?[0-9a-f]{40}$/i.test(address)) {
+    throw new Error(
+      'Given address "' + address + '" is not a valid Ethereum address.'
+    )
+  }
+
+  address = address.toLowerCase().replace(/^0x/i, '')
+
+  const addressHash = keccak256(address).replace(/^0x/i,'')
+  let checksumAddress = '0x'
+
+  for (let i = 0; i < address.length; i++) {
+    // If ith character is 9 to f then make it uppercase
+    if (parseInt(addressHash[i], 16) > 7) {
+      checksumAddress += address[i].toUpperCase()
+    } else {
+      checksumAddress += address[i]
+    }
+  }
+
+  return checksumAddress
+} 
+
+export function tokenIconUrl(address = '') {
+  try {
+    address = toChecksumAddress(address.trim())
+  } catch (err) {
+    return ''
+  }
+
+  if (address === EMPTY_ADDRESS) {
+    return `${TRUST_WALLET_BASE_URL}/info/logo.png`
+  }
+
+  return `${TRUST_WALLET_BASE_URL}/assets/${address}/logo.png`
 }
 
 export function shortenAddress(address, charsLength = 4) {

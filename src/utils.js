@@ -1,10 +1,11 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import  { useState, useEffect, useCallback } from 'react'
 import { utils as EthersUtils } from 'ethers'
 import * as Sentry from '@sentry/browser'
 import { useWeb3Connect } from './web3-connect'
 import env from './environment'
 import { request } from 'graphql-request'
 import { toBN } from 'web3-utils'
+
 const GQL_ENDPOINT =
   'https://api.thegraph.com/subgraphs/name/aragon/aragon-court'
 
@@ -40,6 +41,32 @@ export function useAnJurors() {
   }, [])
 
   return [jurors, activeAnj]
+}
+
+export function useTokenPrice(symbol) {
+  const [usd, setUsd] = useState('-')
+  useEffect(() => {
+    let cancelled = false
+
+    fetch(
+      `https://min-api.cryptocompare.com/data/price?fsym=${symbol}&tsyms=USD`
+    )
+      .then(res => res.json())
+      .then(price => {
+        if (cancelled || !(parseFloat(price.USD) > 0)) {
+          return
+        }
+        const precision = 6
+        const usdDigits = 2
+        setUsd(bigNum(parseInt(price.USD * 10 ** (precision + usdDigits), 10)))
+      })
+
+    return () => {
+      cancelled = true
+    }
+  }, [symbol])
+
+  return usd
 }
 
 export function usePostEmail() {

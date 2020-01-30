@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
 import styled from 'styled-components'
 import 'styled-components/macro'
 import { animated, useSpring } from 'react-spring'
@@ -18,8 +18,10 @@ function ComboInput({
   placeholder,
 }) {
   const [opened, setOpened] = useState(false)
+  const dropdownRef = useRef()
   const { openProgress } = useSpring({
     openProgress: opened ? 1 : 0,
+    config: { mass: 0.5, tension: 800, friction: 30 },
   })
 
   const handleSelect = useCallback(
@@ -45,7 +47,7 @@ function ComboInput({
           style={{
             position: 'absolute',
             right: 0,
-            padding: '16px',
+            padding: '8px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -61,31 +63,29 @@ function ComboInput({
       <AnimDiv
         style={{
           opacity: openProgress,
-          pointerEvents: openProgress ? 'auto' : 'none',
+          pointerEvents: opened ? 'auto' : 'none',
         }}
       >
-        {opened && (
-          <DropdownContent>
-            <ul>
-              <li>
-                {options.map((option, index) => (
-                  <div
-                    css={`
-                      padding: 0;
-                      display: flex;
-                      width: 100%;
-                      height: 100%;
-                    `}
-                    key={index}
-                    onClick={() => handleSelect(index)}
-                  >
-                    {option}
-                  </div>
-                ))}
-              </li>
-            </ul>
-          </DropdownContent>
-        )}
+        <DropdownContent ref={dropdownRef}>
+          <ul>
+            <li>
+              {options.map((option, index) => (
+                <div
+                  onClick={() => handleSelect(index)}
+                  key={index}
+                  css={`
+                    padding: 0;
+                    display: flex;
+                    width: 100%;
+                    height: 100%;
+                  `}
+                >
+                  {option}
+                </div>
+              ))}
+            </li>
+          </ul>
+        </DropdownContent>
       </AnimDiv>
     </ComboContainer>
   )
@@ -162,7 +162,7 @@ const Dropdown = styled.div`
 
 const DropdownContent = styled.div`
   position: absolute;
-  z-index: 100;
+  z-index: 2;
   top: 100%;
   right: 0;
   margin: 0;
