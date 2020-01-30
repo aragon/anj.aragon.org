@@ -4,6 +4,7 @@ import 'styled-components/macro'
 import { animated, useSpring } from 'react-spring'
 import Arrow from './assets/arrow.svg'
 
+const ESCAPE_KEY = 27
 const AnimDiv = animated.div
 const noop = () => {}
 
@@ -19,11 +20,16 @@ function ComboInput({
 }) {
   const [opened, setOpened] = useState(false)
   const dropdownRef = useRef()
+  const inputRef = useRef()
   const { openProgress } = useSpring({
     openProgress: opened ? 1 : 0,
     config: { mass: 0.5, tension: 800, friction: 30 },
   })
-
+  useEffect(() => {
+    if (opened && dropdownRef.current) {
+      dropdownRef.current.focus()
+    }
+  }, [opened])
   const handleSelect = useCallback(
     optionIndex => {
       setOpened(opened => !opened)
@@ -40,8 +46,16 @@ function ComboInput({
         onBlur={onBlur}
         onFocus={onFocus}
         placeholder={placeholder}
+        ref={inputRef}
       />
-      <Dropdown onClick={() => setOpened(isOpen => !isOpen)}>
+      <Dropdown
+        onClick={e => {
+          e.preventDefault()
+          setOpened(isOpen => {
+            return !isOpen
+          })
+        }}
+      >
         <div className="header">{options[selectedOption]}</div>
         <AnimDiv
           style={{
@@ -66,22 +80,42 @@ function ComboInput({
           pointerEvents: opened ? 'auto' : 'none',
         }}
       >
-        <DropdownContent ref={dropdownRef}>
+        <DropdownContent
+          tabIndex="0"
+          ref={dropdownRef}
+          onBlur={e => {
+            if (e.relatedTarget && !e.relatedTarget.id) {
+              setOpened(false)
+            }
+          }}
+          onKeyDown={e => {
+            if (e.keyCode === ESCAPE_KEY) {
+              setOpened(false)
+              inputRef.current.focus()
+            }
+          }}
+        >
           <ul>
             <li>
               {options.map((option, index) => (
-                <div
-                  onClick={() => handleSelect(index)}
+                <button
+                  id={index}
+                  onClick={e => {
+                    e.preventDefault()
+                    handleSelect(index)
+                  }}
                   key={index}
                   css={`
+                    border: none;
                     padding: 0;
                     display: flex;
                     width: 100%;
                     height: 100%;
+                    cursor: pointer;
                   `}
                 >
                   {option}
-                </div>
+                </button>
               ))}
             </li>
           </ul>
@@ -134,7 +168,7 @@ const Input = styled.input`
   }
 `
 
-const Dropdown = styled.div`
+const Dropdown = styled.button`
   position: absolute;
   right: 0;
   z-index: 2;
@@ -154,7 +188,7 @@ const Dropdown = styled.div`
   cursor: pointer;
   .header {
     position: absolute;
-    left: 5%;
+    left: 0;
     padding: 0;
     width: 100%;
   }
@@ -186,7 +220,6 @@ const DropdownContent = styled.div`
     li {
       width: 100%;
       height: 100%;
-      padding-left: 6px;
     }
   }
 `
