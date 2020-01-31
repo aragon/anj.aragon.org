@@ -157,10 +157,10 @@ function useConvertInputs(tokenPrice, antPrice) {
 
 function FormSection() {
   const [selectedOption, setSelectedOption] = useState(0)
-  const tokenBalance = useTokenBalance(options[selectedOption]) || bigNum(0)
+  const tokenBalance = useTokenBalance(options[selectedOption])
+  const ethBalance = useEthBalance()
   const tokenPrice = useTokenPrice(options[selectedOption])
   const antPrice = useTokenPrice('ANT')
-  const ethBalance = useEthBalance()
 
   const {
     amountAnj,
@@ -182,7 +182,6 @@ function FormSection() {
   const converterStatus = useConverterStatus()
   const [email, setEmail] = useState('')
   const [acceptTerms, setAcceptTerms] = useState(false)
-
   const handleSubmit = async event => {
     event.preventDefault()
 
@@ -199,7 +198,6 @@ function FormSection() {
           ? CONVERTER_STATUSES.SIGNING_ERC
           : CONVERTER_STATUSES.SIGNING
       )
-      console.log(amountToken, amountAnj)
       const tx = await convertTokenToAnj(amountToken.toString(), amountAnj)
       converterStatus.setStatus(CONVERTER_STATUSES.PENDING)
       await tx.wait(1)
@@ -214,6 +212,8 @@ function FormSection() {
   }
 
   const [placeholder, setPlaceholder] = useState('')
+  const selectedTokenBalance =
+    options[selectedOption] === 'ETH' ? ethBalance : tokenBalance
 
   useEffect(() => {
     if (balanceAnj && balanceAnj.gte(bigNum(String(10000)))) {
@@ -234,13 +234,11 @@ function FormSection() {
       return 'The minimum amount of ANT is 100.'
     }
 
-    const selectedTokenBalance =
-      options[selectedOption] === 'ETH' ? ethBalance : tokenBalance
-
     if (
       amountToken &&
       amountToken.gte(0) &&
-      amountToken.gt(selectedTokenBalance)
+      amountToken.gt(selectedTokenBalance) &&
+      !selectedTokenBalance.eq(-1)
     ) {
       return 'Amount is greater than balance held.'
     }
@@ -251,9 +249,7 @@ function FormSection() {
     inputValueToken,
     balanceAnj,
     amountAnj,
-    tokenBalance,
-    ethBalance,
-    selectedOption,
+    selectedTokenBalance,
   ])
   const disabled = Boolean(
     !inputValueToken.trim() ||
@@ -267,6 +263,16 @@ function FormSection() {
     optionIndex => setSelectedOption(optionIndex),
     []
   )
+
+  const formattedTokenBalance = selectedTokenBalance.eq(-1)
+    ? 'Fetching...'
+    : `${formatUnits(
+        options[selectedOption] === 'ETH' ? ethBalance : tokenBalance,
+        {
+          digits: antDecimals,
+          replaceZeroBy: '0',
+        }
+      )} ${options[selectedOption]}.`
 
   return (
     <Form onSubmit={handleSubmit}>
@@ -293,17 +299,7 @@ function FormSection() {
             placeholder={placeholder}
           />
           <Info>
-            <span>
-              Balance:{' '}
-              {formatUnits(
-                options[selectedOption] === 'ETH' ? ethBalance : tokenBalance,
-                {
-                  digits: antDecimals,
-                  replaceZeroBy: '0',
-                }
-              )}{' '}
-              {`${options[selectedOption]}.`}
-            </span>
+            <span>Balance:{` ${formattedTokenBalance}`}</span>
             {antError && <span className="error"> {antError} </span>}
           </Info>
         </div>
