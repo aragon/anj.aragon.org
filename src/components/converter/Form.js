@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
+import * as Sentry from '@sentry/browser'
 import { OverlayTrigger, Tooltip } from 'react-bootstrap'
 import {
   useTokenDecimals,
@@ -192,13 +193,22 @@ function FormSection() {
     }
 
     try {
-      converterStatus.setStatus(CONVERTER_STATUSES.SIGNING)
-      const tx = await convertTokenToAnj(amountToken.toString())
+      const selectedToken = options[selectedOption]
+      converterStatus.setStatus(
+        selectedToken === 'DAI' || selectedToken === 'USDC'
+          ? CONVERTER_STATUSES.SIGNING_ERC
+          : CONVERTER_STATUSES.SIGNING
+      )
+      console.log(amountToken, amountAnj)
+      const tx = await convertTokenToAnj(amountToken.toString(), amountAnj)
       converterStatus.setStatus(CONVERTER_STATUSES.PENDING)
       await tx.wait(1)
       converterStatus.setStatus(CONVERTER_STATUSES.SUCCESS)
     } catch (err) {
       console.log(err)
+      if (process.env.NODE_ENV === 'production') {
+        Sentry.captureException(err)
+      }
       converterStatus.setStatus(CONVERTER_STATUSES.ERROR)
     }
   }
@@ -257,9 +267,6 @@ function FormSection() {
     optionIndex => setSelectedOption(optionIndex),
     []
   )
-  useEffect(() => {
-    console.log(inputValueToken)
-  }, [inputValueToken])
 
   return (
     <Form onSubmit={handleSubmit}>

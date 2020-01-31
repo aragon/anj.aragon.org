@@ -2,19 +2,30 @@ import React from 'react'
 import styled from 'styled-components'
 import processing from './assets/loader'
 
-function Processing({ signing }) {
+function Processing({ signing, signTwice }) {
   return (
     <ProcessingIn>
       <div>
         <img src={processing} alt="" />
-        {signing ? (
+        {signing && signTwice && (
+          <>
+            <p className="black">Please sign the transactions</p>
+            <p>
+              Sign the transactions in your provider so they can get processed.
+              Two transactions are needed if you are converting an ERC-20 token
+              and you have not approved enough allowance for us to convert.
+            </p>
+          </>
+        )}
+        {signing && !signTwice && (
           <>
             <p className="black">Please sign the transaction</p>
             <p>
               Sign the transaction in your provider so it can get processed.
             </p>
           </>
-        ) : (
+        )}
+        {!signing && !signTwice && (
           <>
             <p className="black">Processing your transaction</p>
             <p>Your transaction is being processed, please be patient.</p>

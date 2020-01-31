@@ -6,6 +6,7 @@ import { bigNum } from '../../utils'
 export const CONVERTER_STATUSES = {
   FORM: Symbol('STATE_FORM'),
   SIGNING: Symbol('STATE_SIGNING'),
+  SIGNING_ERC: Symbol('STATE_SIGNING_ERC'),
   PENDING: Symbol('STATE_PENDING'),
   ERROR: Symbol('STATE_ERROR'),
   SUCCESS: Symbol('STATE_SUCCESS'),
@@ -29,17 +30,17 @@ export function ConverterProvider({ children }) {
       return
     }
 
-    const onBoughtAndActivated = (from, to, value) => {
+    const onBought = (from, to, value) => {
       if (from === account) {
         setLastAnjBought(value)
         setStatus(CONVERTER_STATUSES.SUCCESS)
       }
     }
 
-    wrapperContract.on('BoughtAndRegistered', onBoughtAndActivated)
+    wrapperContract.on('Bought', onBought)
 
     return () => {
-      wrapperContract.removeListener('BoughtAndRegistered', onBoughtAndActivated)
+      wrapperContract.removeListener('Bought', onBought)
     }
   }, [status, wrapperContract, account])
 

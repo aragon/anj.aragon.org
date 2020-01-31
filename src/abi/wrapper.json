@@ -1,5 +1,5 @@
 [
-  "event BoughtAndRegistered(address from, address collateralToken, uint256 buyAmount, uint256 activatedAmount)",
+  "event Bought(address from, address contributionToken, uint256 buyAmount, uint256 activatedAmount)",
   {
     "constant": false,
     "inputs": [

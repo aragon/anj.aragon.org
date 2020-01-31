@@ -4,5 +4,17 @@
   "function balanceOf(address _owner) view returns (uint256 balance)",
   "function decimals() view returns (uint8)",
   "function approve(address usr, uint wad) external returns (bool)",
+  {
+    "constant": true,
+    "inputs": [
+      { "internalType": "address", "name": "", "type": "address" },
+      { "internalType": "address", "name": "", "type": "address" }
+    ],
+    "name": "allowance",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
   "function transferFrom(address src, address dst, uint wad) public returns (bool)"
 ]

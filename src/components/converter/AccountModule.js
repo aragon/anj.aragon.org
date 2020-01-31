@@ -32,7 +32,7 @@ function ConnectedMode() {
   const balanceEth = useEthBalance()
   const balanceAnt = useTokenBalance('ANT')
   const balanceDai = useTokenBalance('DAI')
-  const balanceUsd = useTokenBalance('USD')
+  const balanceUsd = useTokenBalance('USDC')
   const antDecimals = useTokenDecimals('ANT')
   const anjDecimals = useTokenDecimals('ANJ')
   const antToUsd = useTokenBalanceToUsd('ANT', antDecimals, balanceAnt)
@@ -77,7 +77,7 @@ function ConnectedMode() {
                 </div>
               </Row>
               <Row>
-                <Token symbol="USD" />
+                <Token symbol="USDC" />
                 <div>
                   <p>{formatUnits(balanceUsd, { digits: antDecimals })}</p>
                   <p>${usdcToUsd}</p>

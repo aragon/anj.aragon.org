@@ -112,6 +112,9 @@ function ComboInput({
                     width: 100%;
                     height: 100%;
                     cursor: pointer;
+                    :hover {
+                      background: #dde6ed;
+                    }
                   `}
                 >
                   {option}

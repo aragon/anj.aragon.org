@@ -40,6 +40,14 @@ function ConverterIn() {
   if (status === CONVERTER_STATUSES.ERROR) {
     return <ErrorScreen onDone={backToForm} />
   }
+  if (status === CONVERTER_STATUSES.SIGNING_ERC) {
+    return (
+      <ProcessingScreen
+        signing={status === CONVERTER_STATUSES.SIGNING_ERC}
+        signTwice
+      />
+    )
+  }
   if (
     status === CONVERTER_STATUSES.PENDING ||
     status === CONVERTER_STATUSES.SIGNING

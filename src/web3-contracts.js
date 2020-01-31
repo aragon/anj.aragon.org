@@ -5,7 +5,6 @@ import tokenBalanceOfAbi from './token-balanceof.json'
 import { useWeb3Connect } from './web3-connect'
 import Web3EthContract from 'web3-eth-contract'
 import { bigNum } from './utils'
-import { toHex, toWei } from 'web3-utils'
 
 const PRESALE_ADDR = '0xf89c8752d82972f94a4d1331e010ed6593e8ec49'
 const contractsCache = new Map()
@@ -220,18 +219,15 @@ export function useJurorRegistryAnjBalance() {
       return
     }
 
-    const onBoughtAndActivated = (from, to, value) => {
+    const onBought = (from, to, value) => {
       if (from === account) {
         updateBalance()
       }
     }
-    wrapperContract.on('BoughtAndRegistered', onBoughtAndActivated)
+    wrapperContract.on('Bought', onBought)
 
     return () => {
-      wrapperContract.removeListener(
-        'BoughtAndRegistered',
-        onBoughtAndActivated
-      )
+      wrapperContract.removeListener('Bought', onBought)
     }
   }, [account, wrapperContract, updateBalance])
 
@@ -258,6 +254,7 @@ export function useConvertAntToAnj() {
 }
 
 export function useConvertTokenToAnj(selectedToken) {
+  const { account } = useWeb3Connect()
   const tokenContract = useKnownContract(`TOKEN_${selectedToken}`)
   const wrapperContract = useKnownContract(`WRAPPER`)
   const [tokenAddress] = getKnownContract(`TOKEN_${selectedToken}`)
@@ -271,12 +268,21 @@ export function useConvertTokenToAnj(selectedToken) {
 
       // If the user has selected ETH, we can just send the ETH to the function
       const fiveMinutes = Math.floor(Date.now() / 1000) + 60 * 5
+      const underestimatedAnj = estimatedAnj
+        .mul(90)
+        .div(100)
+        .toString()
 
       if (selectedToken === 'ETH') {
-        return await wrapperContract.contributeEth(1, fiveMinutes, true, {
-          gasLimit: 1000000,
-          value: bigNum(amount),
-        })
+        return await wrapperContract.contributeEth(
+          underestimatedAnj,
+          fiveMinutes,
+          true,
+          {
+            gasLimit: 1000000,
+            value: bigNum(amount),
+          }
+        )
       }
 
       // If the user has selected ANT, we can directly
@@ -286,16 +292,21 @@ export function useConvertTokenToAnj(selectedToken) {
           gasLimit: 1000000,
         })
       }
-      // else, we will need two transactions: the approval,
-      const approval = await tokenContract.approve(wrapperAddress, amount, {
-        gasLimit: 1000000,
-      })
-      if (approval) {
+      // else, we will need two transactions: the approval if we don't have enough allowance,
+      const allowance = await tokenContract.allowance(account, wrapperAddress)
+      let approval = null
+      if (allowance.lt(bigNum(amount))) {
+        approval = await tokenContract.approve(wrapperAddress, amount, {
+          gasLimit: 1000000,
+        })
+      }
+      if (approval || allowance.gte(bigNum(amount))) {
+        // and the actual token staking.
         return await wrapperContract.contributeExternalToken(
           tokenAddress,
           amount,
-          1,
-          0,
+          underestimatedAnj,
+          bigNum(0),
           fiveMinutes,
           true,
           {
@@ -312,6 +323,7 @@ export function useConvertTokenToAnj(selectedToken) {
       tokenContract,
       wrapperAddress,
       wrapperContract,
+      account,
     ]
   )
 }
