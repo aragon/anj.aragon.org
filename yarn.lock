@@ -1317,17 +1317,17 @@
   dependencies:
     "@web3-react/types" "^6.0.2"
 
-"@web3-react/core@^6.0.0-beta.25":
-  version "6.0.2"
-  resolved "https://registry.yarnpkg.com/@web3-react/core/-/core-6.0.2.tgz#3824187557159b1015d861bd6bdbb8a6a13209d0"
-  integrity sha512-VepdSh5h2CMV7BuJo8UbuRPICoyKUl+00dA8T9SP5rGUsaeN3z8y18x/otYgY9xD5NJQl8r+wcQ9234pYPxbJQ==
+"@web3-react/core@^6.0.6":
+  version "6.0.6"
+  resolved "https://registry.yarnpkg.com/@web3-react/core/-/core-6.0.6.tgz#d45c2658a0be6f54657d5f7f0511caf777eed9ec"
+  integrity sha512-J+bZ9lCZM3hU5rKdnHrT4tLQ0tp6zt0HEKOIaeGR5zpCMcnURyrYEjp5menGVVcAhuNKwKhDvijjI2gj8EPxCw==
   dependencies:
     "@ethersproject/keccak256" "^5.0.0-beta.130"
     "@web3-react/types" "^6.0.2"
     tiny-invariant "^1.0.6"
     tiny-warning "^1.0.3"
 
-"@web3-react/fortmatic-connector@^6.0.0-beta.25":
+"@web3-react/fortmatic-connector@^6.0.2":
   version "6.0.2"
   resolved "https://registry.yarnpkg.com/@web3-react/fortmatic-connector/-/fortmatic-connector-6.0.2.tgz#ba766a8c76fc4ddfec42efaed44f587812a35d35"
   integrity sha512-G/HVA4v6Ivj9zoGnZ/XEBr3DrzUSu6+0fCU7b6eYKCCpiHqc2DE4j1RpmJkV0ODyylxvZzv5OmQmP/MGSG2aJg==
@@ -1337,7 +1337,7 @@
     fortmatic "^1.0.0"
     tiny-invariant "^1.0.6"
 
-"@web3-react/frame-connector@^6.0.0-beta.25":
+"@web3-react/frame-connector@^6.0.2":
   version "6.0.2"
   resolved "https://registry.yarnpkg.com/@web3-react/frame-connector/-/frame-connector-6.0.2.tgz#f218d5dac53e1654666e232e42c3eddec25ff5e8"
   integrity sha512-p7Bk/ht6+jPnekOzv0uzbScqhcLTgeiDFUcbEIJ2JUsC8MSlUO2s2vig18ohJkNQSIrQQaA3F1/4PPVv9Li9eg==
@@ -1347,16 +1347,16 @@
     eth-provider "^0.2.5"
     tiny-invariant "^1.0.6"
 
-"@web3-react/injected-connector@^6.0.0-beta.25":
-  version "6.0.2"
-  resolved "https://registry.yarnpkg.com/@web3-react/injected-connector/-/injected-connector-6.0.2.tgz#3f42126bca3efb40b950280e95186c873700f0fe"
-  integrity sha512-xlHuvhtbjVqE0eh782Q+RNVJvtoym/0ldD582zzBlR5gGmDAM72lwTivuTgo/3tRyLNiGwhx9T2nko+9vTMFAA==
+"@web3-react/injected-connector@^6.0.3":
+  version "6.0.3"
+  resolved "https://registry.yarnpkg.com/@web3-react/injected-connector/-/injected-connector-6.0.3.tgz#48b615c95129c63a1c20fb292534836c4059103e"
+  integrity sha512-4mjafFRDewgSIdvlzrgDTWsKmOstkYo20Bor+OEh3XFWPxQ4Mk/CMBOQwzaehcxP1qV06mTWg+GDwoKI9zxNpw==
   dependencies:
     "@web3-react/abstract-connector" "^6.0.2"
     "@web3-react/types" "^6.0.2"
     tiny-warning "^1.0.3"
 
-"@web3-react/portis-connector@^6.0.0-beta.25":
+"@web3-react/portis-connector@^6.0.2":
   version "6.0.2"
   resolved "https://registry.yarnpkg.com/@web3-react/portis-connector/-/portis-connector-6.0.2.tgz#934e9cc02f0735ddcbf08fde963e8d639a28638b"
   integrity sha512-oEdvyyqiFyj0KSHBTKDOLtYDmTQOeFlUHAx4Iwv2DqMB3ogcxEXSZUBYnzGVWTwEHFCUcSsP4YpVH+LJwsHkOA==
