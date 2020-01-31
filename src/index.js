@@ -11,11 +11,11 @@ import App from './App'
 export default App
 
 if (env('SENTRY_DSN')) {
-  if (typeof window !== 'undefined') {
-    window.SENTRY_RELEASE = process.env.BUILD
-    window.SENTRY_ENVIRONMENT = process.env.NODE_ENV
-  }
-  Sentry.init({ dsn: env('SENTRY_DSN') })
+  Sentry.init({
+    dsn: env('SENTRY_DSN'),
+    environment: env('NODE_ENV'),
+    release: 'anj.aragon.org@' + env('BUILD'),
+  })
 }
 
 // Render your app

@@ -7,6 +7,8 @@ const envVars = {
     process.env.SUBSCRIPTIONS_URL,
     'https://court-backend.eth.aragon.network/subscriptions',
   ],
+  BUILD: [process.env.BUILD, ''],
+  NODE_ENV: [process.env.NODE_ENV, 'development'],
 }
 
 export default function environment(name) {
