@@ -54,7 +54,6 @@ function useConvertInputs(tokenPrice, antPrice) {
   const [inputValueToken, setInputValueToken] = useState('')
   const [amountAnj, setAmountAnj] = useState(bigNum(0))
   const [amountToken, setAmountAnt] = useState(bigNum(0))
-
   const antDecimals = useTokenDecimals('ANT')
   const anjDecimals = useTokenDecimals('ANJ')
 
@@ -105,7 +104,6 @@ function useConvertInputs(tokenPrice, antPrice) {
       if (converted === null) {
         return
       }
-
       setInputValueToken(converted.fromInputValue)
       setInputValueAnj(converted.toInputValue)
       setAmountAnt(converted.fromAmount)
@@ -157,11 +155,12 @@ function useConvertInputs(tokenPrice, antPrice) {
 
 function FormSection() {
   const [selectedOption, setSelectedOption] = useState(0)
+  const [estimatedEth, setEstimatedEth] = useState(bigNum(0))
   const tokenBalance = useTokenBalance(options[selectedOption])
   const ethBalance = useEthBalance()
   const tokenPrice = useTokenPrice(options[selectedOption])
   const antPrice = useTokenPrice('ANT')
-
+  const ethPrice = useTokenPrice('ETH')
   const {
     amountAnj,
     amountToken,
@@ -172,6 +171,18 @@ function FormSection() {
     inputValueAnj,
     inputValueToken,
   } = useConvertInputs(tokenPrice, antPrice)
+
+  useEffect(() => {
+    if (!amountToken.eq(-1) && !tokenPrice.eq(0) && !ethPrice.eq(0)) {
+      setEstimatedEth(
+        amountToken
+          .mul(tokenPrice)
+          .div(ethPrice)
+          .mul(95)
+          .div(100)
+      )
+    }
+  }, [amountToken, ethPrice, tokenPrice])
 
   const convertTokenToAnj = useConvertTokenToAnj(options[selectedOption])
   const postEmail = usePostEmail()
@@ -198,7 +209,11 @@ function FormSection() {
           ? CONVERTER_STATUSES.SIGNING_ERC
           : CONVERTER_STATUSES.SIGNING
       )
-      const tx = await convertTokenToAnj(amountToken.toString(), amountAnj)
+      const tx = await convertTokenToAnj(
+        amountToken.toString(),
+        amountAnj.div(100),
+        estimatedEth
+      )
       converterStatus.setStatus(CONVERTER_STATUSES.PENDING)
       await tx.wait(1)
       converterStatus.setStatus(CONVERTER_STATUSES.SUCCESS)

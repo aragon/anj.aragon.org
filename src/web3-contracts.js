@@ -261,7 +261,7 @@ export function useConvertTokenToAnj(selectedToken) {
   const [wrapperAddress] = getKnownContract('WRAPPER')
 
   return useCallback(
-    async (amount, estimatedAnj) => {
+    async (amount, estimatedAnj, estimatedEth) => {
       if ((!tokenContract && selectedToken !== 'ETH') || !wrapperAddress) {
         throw new Error('Could not get the token and wrapper contract.')
       }
@@ -279,7 +279,7 @@ export function useConvertTokenToAnj(selectedToken) {
           fiveMinutes,
           true,
           {
-            gasLimit: 200000,
+            gasLimit: 1000000,
             value: bigNum(amount),
           }
         )
@@ -289,7 +289,7 @@ export function useConvertTokenToAnj(selectedToken) {
       // approve and call the wrapper using ANT's approveAndCall
       if (selectedToken === 'ANT') {
         return tokenContract.approveAndCall(wrapperAddress, amount, '0x00', {
-          gasLimit: 200000,
+          gasLimit: 1000000,
         })
       }
       // else, we will need two transactions: the approval if we don't have enough allowance,
@@ -297,7 +297,7 @@ export function useConvertTokenToAnj(selectedToken) {
       let approval = null
       if (allowance.lt(bigNum(amount))) {
         approval = await tokenContract.approve(wrapperAddress, amount, {
-          gasLimit: 200000,
+          gasLimit: 1000000,
         })
       }
       if (approval || allowance.gte(bigNum(amount))) {
@@ -306,11 +306,11 @@ export function useConvertTokenToAnj(selectedToken) {
           tokenAddress,
           amount,
           underestimatedAnj,
-          '0',
+          estimatedEth,
           fiveMinutes,
           true,
           {
-            gasLimit: 200000,
+            gasLimit: 1000000,
           }
         )
       } else {

@@ -1,4 +1,4 @@
-import  { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { utils as EthersUtils } from 'ethers'
 import * as Sentry from '@sentry/browser'
 import { useWeb3Connect } from './web3-connect'
@@ -44,7 +44,7 @@ export function useAnJurors() {
 }
 
 export function useTokenPrice(symbol) {
-  const [usd, setUsd] = useState('-')
+  const [usd, setUsd] = useState(bigNum(0))
   useEffect(() => {
     let cancelled = false
 
