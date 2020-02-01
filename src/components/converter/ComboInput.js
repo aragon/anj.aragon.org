@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react'
-import styled from 'styled-components'
 import 'styled-components/macro'
 import { animated, useSpring, useTransition } from 'react-spring'
 import arrowSvg from './assets/arrow.svg'

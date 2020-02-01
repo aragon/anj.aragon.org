@@ -1,8 +1,5 @@
 import React from 'react'
 import styled from 'styled-components'
-import { breakpoint } from '../../microsite-logic'
-
-const medium = css => breakpoint('medium', css)
 
 function Token({ symbol, badge }) {
   return (

@@ -22,7 +22,7 @@ function Providers() {
     async providerId => {
       const ok = await activate(providerId)
       if (ok && window._paq && window._paq.push) {
-        _paq.push(['trackEvent', 'Web3', 'connect', providerId])
+        window._paq.push(['trackEvent', 'Web3', 'connect', providerId])
       }
     },
     [activate]

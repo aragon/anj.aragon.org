@@ -97,7 +97,6 @@ export function usePostEmail() {
   const { account } = useWeb3Connect() || ''
   return useCallback(
     async email => {
-      let result
       try {
         const response = await fetch(env('SUBSCRIPTIONS_URL'), {
           method: 'post',
