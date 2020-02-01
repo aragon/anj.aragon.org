@@ -38,6 +38,7 @@ const TokenSection = styled.div`
   }
   img {
     flex-grow: 0;
+    flex-shrink: 0;
     margin: 0 6px 0 2px;
   }
   span {

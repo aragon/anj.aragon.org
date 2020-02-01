@@ -334,25 +334,29 @@ function FormSection() {
                 <Token symbol="ANJ" />
               </Adornment>
             </AdornmentBox>
-            {options[selectedOption] !== 'ANT' && (
-              <Info>
-                This amount is an approximation.
-                <OverlayTrigger
-                  show="true"
-                  placement="top"
-                  delay={{ hide: 400 }}
-                  overlay={props => (
-                    <Tooltip {...props} show="true">
-                      The amount is approximate since we use an external
-                      provider for this transaction and we do not know the final
-                      amount until the transaction is undermined.
-                    </Tooltip>
-                  )}
-                >
-                  <span className="insight"> Why?</span>
-                </OverlayTrigger>
-              </Info>
-            )}
+            <Info>
+              {options[selectedOption] !== 'ANT' ? (
+                <>
+                  This amount is an approximation.
+                  <OverlayTrigger
+                    show="true"
+                    placement="top"
+                    delay={{ hide: 400 }}
+                    overlay={props => (
+                      <Tooltip {...props} show="true">
+                        The amount is approximate since we use an external
+                        provider for this transaction and we do not know the
+                        final amount until the transaction is undermined.
+                      </Tooltip>
+                    )}
+                  >
+                    <span className="insight"> Why?</span>
+                  </OverlayTrigger>
+                </>
+              ) : (
+                ' ' // prevent page jumps when selecting a token
+              )}
+            </Info>
           </InputBox>
         </div>
         <OverlayTrigger
@@ -451,7 +455,6 @@ const Info = styled.div`
   .error {
     color: #ff6969;
   }
-
   .insight {
     color: #516dff;
   }
