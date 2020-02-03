@@ -133,6 +133,7 @@ export function usePostEmail() {
           scope.setUser({ email, username: account })
           Sentry.captureException(err)
         })
+        throw err
       }
     },
     [account]
