@@ -32,13 +32,15 @@ function ConnectedMode() {
   const balanceEth = useEthBalance()
   const balanceAnt = useTokenBalance('ANT')
   const balanceDai = useTokenBalance('DAI')
-  const balanceUsd = useTokenBalance('USDC')
+  const balanceUsdc = useTokenBalance('USDC')
   const antDecimals = useTokenDecimals('ANT')
   const anjDecimals = useTokenDecimals('ANJ')
+  const daiDecimals = useTokenDecimals('DAI')
+  const usdcDecimals = useTokenDecimals('USDC')
   const antToUsd = useTokenBalanceToUsd('ANT', antDecimals, balanceAnt)
-  const daiToUsd = useTokenBalanceToUsd('DAI', antDecimals, balanceDai)
-  const ethToUsd = useTokenBalanceToUsd('ETH', antDecimals, balanceEth)
-  const usdcToUsd = useTokenBalanceToUsd('USDC', antDecimals, balanceUsd)
+  const daiToUsd = useTokenBalanceToUsd('DAI', daiDecimals, balanceDai)
+  const ethToUsd = useTokenBalanceToUsd('ETH', 18, balanceEth)
+  const usdcToUsd = useTokenBalanceToUsd('USDC', usdcDecimals, balanceUsdc)
 
   const containerRef = useRef()
 
@@ -65,21 +67,21 @@ function ConnectedMode() {
               <Row>
                 <Token symbol="DAI" />
                 <div>
-                  <p>{formatUnits(balanceDai, { digits: antDecimals })}</p>
+                  <p>{formatUnits(balanceDai, { digits: daiDecimals })}</p>
                   <p>${daiToUsd}</p>
                 </div>
               </Row>
               <Row>
                 <Token symbol="ETH" />
                 <div>
-                  <p>{formatUnits(balanceEth, { digits: antDecimals })}</p>
+                  <p>{formatUnits(balanceEth, { digits: 18 })}</p>
                   <p>${ethToUsd}</p>
                 </div>
               </Row>
               <Row>
                 <Token symbol="USDC" />
                 <div>
-                  <p>{formatUnits(balanceUsd, { digits: antDecimals })}</p>
+                  <p>{formatUnits(balanceUsdc, { digits: usdcDecimals })}</p>
                   <p>${usdcToUsd}</p>
                 </div>
               </Row>

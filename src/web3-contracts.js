@@ -46,7 +46,9 @@ export function useTokenDecimals(symbol) {
     let cancelled = false
     setDecimals(-1)
 
-    if (tokenContract) {
+    if (symbol === 'ETH') {
+      setDecimals(18)
+    } else if (tokenContract) {
       tokenContract.decimals().then(decimals => {
         if (!cancelled) {
           setDecimals(decimals)
@@ -55,7 +57,7 @@ export function useTokenDecimals(symbol) {
     }
 
     return () => (cancelled = true)
-  }, [tokenContract])
+  }, [symbol, tokenContract])
 
   return decimals
 }

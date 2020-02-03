@@ -177,7 +177,7 @@ function FormSection() {
   const postEmail = usePostEmail()
 
   const balanceAnj = useJurorRegistryAnjBalance()
-  const antDecimals = useTokenDecimals('ANT')
+  const selectedTokenDecimals = useTokenDecimals(options[selectedOption])
 
   const converterStatus = useConverterStatus()
   const [email, setEmail] = useState('')
@@ -271,7 +271,7 @@ function FormSection() {
     : `${formatUnits(
         options[selectedOption] === 'ETH' ? ethBalance : tokenBalance,
         {
-          digits: antDecimals,
+          digits: selectedTokenDecimals,
           replaceZeroBy: '0',
         }
       )} ${options[selectedOption]}.`
@@ -329,9 +329,9 @@ function FormSection() {
                     delay={{ hide: 400 }}
                     overlay={props => (
                       <Tooltip {...props} show="true">
-                        The amount is approximate since we use an external
-                        provider for this transaction and we do not know the
-                        final amount until the transaction is undermined.
+                        As this transaction will use an external, decentralized
+                        exchange, we will not know the final exchange rate for
+                        your transaction until it is mined.
                       </Tooltip>
                     )}
                   >
