@@ -142,7 +142,7 @@ function useConvertInputs(tokenToAntRate, antToTokenRate) {
       setAmountAnj(converted.fromAmount)
       setAmountToken(converted.toAmount)
     },
-    [antDecimals, anjDecimals, tokenToAntRate]
+    [antDecimals, anjDecimals, antToTokenRate]
   )
 
   return {
