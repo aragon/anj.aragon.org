@@ -189,6 +189,14 @@ function FormSection() {
       await postEmail(email)
     } catch (err) {
       console.error(`Error while trying to subscribe ${email}`, err)
+
+      if (process.env.NODE_ENV === 'production') {
+        Sentry.captureException(err)
+      } else if (err.message !== 'TypeError: Failed to fetch') {
+        // Ignore CORS issues with the email request on development
+        return
+      }
+
       converterStatus.setStatus(CONVERTER_STATUSES.ERROR)
       return
     }
