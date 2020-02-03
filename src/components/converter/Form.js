@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import * as Sentry from '@sentry/browser'
 import { OverlayTrigger, Tooltip } from 'react-bootstrap'
+import { toWei, fromWei } from 'web3-utils'
 import {
   useTokenDecimals,
   useConvertTokenToAnj,
@@ -9,7 +10,7 @@ import {
   useJurorRegistryAnjBalance,
   useEthBalance,
 } from '../../web3-contracts'
-import { bigNum, usePostEmail, useTokenPrice } from '../../utils'
+import { bigNum, usePostEmail, useUniswapTokenRate } from '../../utils'
 import { breakpoint, GU } from '../../microsite-logic'
 import { formatUnits, parseUnits } from '../../web3-utils'
 import { useConverterStatus, CONVERTER_STATUSES } from './converter-status'
@@ -39,21 +40,24 @@ function convertInputValue(value, fromDecimals, toDecimals, convert) {
     return null
   }
 
-  const toAmount = convert(fromAmount)
-
+  const toAmount = bigNum(
+    fromWei(convert(fromAmount).toString(), 'ether').split('.')[0]
+  )
   // fromInputValue and toInputValue are filtered values to be set on inputs (strings).
   const fromInputValue = value
-  const toInputValue = formatUnits(toAmount, { digits: toDecimals })
+  const toInputValue = formatUnits(toAmount, {
+    digits: toDecimals,
+  })
 
   return { fromInputValue, toInputValue, fromAmount, toAmount }
 }
 
 // Convert the two input values as the user types
-function useConvertInputs(tokenPrice, antPrice) {
+function useConvertInputs(tokenToAntRate, antToTokenRate) {
   const [inputValueAnj, setInputValueAnj] = useState('')
   const [inputValueToken, setInputValueToken] = useState('')
   const [amountAnj, setAmountAnj] = useState(bigNum(0))
-  const [amountToken, setAmountAnt] = useState(bigNum(0))
+  const [amountToken, setAmountToken] = useState(bigNum(0))
   const antDecimals = useTokenDecimals('ANT')
   const anjDecimals = useTokenDecimals('ANJ')
 
@@ -61,7 +65,9 @@ function useConvertInputs(tokenPrice, antPrice) {
   useEffect(() => {
     setInputValueToken('')
     setInputValueAnj('')
-  }, [tokenPrice, antPrice])
+    setAmountAnj(bigNum(0))
+    setAmountToken(bigNum(0))
+  }, [tokenToAntRate])
 
   // Alternate the comma-separated format, based on the fields focus state.
   const setEditModeToken = useCallback(
@@ -78,7 +84,10 @@ function useConvertInputs(tokenPrice, antPrice) {
   const setEditModeAnj = useCallback(
     editMode => {
       setInputValueAnj(
-        formatUnits(amountAnj, { digits: anjDecimals, commas: !editMode })
+        formatUnits(amountAnj, {
+          digits: anjDecimals,
+          commas: !editMode,
+        })
       )
     },
     [amountAnj, anjDecimals]
@@ -90,26 +99,24 @@ function useConvertInputs(tokenPrice, antPrice) {
         return
       }
 
+      const properTokenRate = bigNum(toWei(tokenToAntRate.toString()))
       const converted = convertInputValue(
         event.target.value,
         antDecimals,
         anjDecimals,
-        amount =>
-          amount
-            .mul(tokenPrice)
-            .div(antPrice)
-            .mul(100)
+        amount => properTokenRate.mul(amount).mul(100)
       )
 
       if (converted === null) {
         return
       }
+
       setInputValueToken(converted.fromInputValue)
       setInputValueAnj(converted.toInputValue)
-      setAmountAnt(converted.fromAmount)
+      setAmountToken(converted.fromAmount)
       setAmountAnj(converted.toAmount)
     },
-    [antDecimals, anjDecimals, antPrice, tokenPrice]
+    [antDecimals, anjDecimals, tokenToAntRate]
   )
 
   const handleAnjChange = useCallback(
@@ -118,15 +125,12 @@ function useConvertInputs(tokenPrice, antPrice) {
         return
       }
 
+      const properTokenRate = bigNum(toWei(antToTokenRate.toString()))
       const converted = convertInputValue(
         event.target.value,
         anjDecimals,
         antDecimals,
-        amount =>
-          amount
-            .mul(antPrice)
-            .div(tokenPrice)
-            .div(100)
+        amount => properTokenRate.mul(amount).div(100)
       )
 
       if (converted === null) {
@@ -136,9 +140,9 @@ function useConvertInputs(tokenPrice, antPrice) {
       setInputValueAnj(converted.fromInputValue)
       setInputValueToken(converted.toInputValue)
       setAmountAnj(converted.fromAmount)
-      setAmountAnt(converted.toAmount)
+      setAmountToken(converted.toAmount)
     },
-    [antDecimals, anjDecimals, antPrice, tokenPrice]
+    [antDecimals, anjDecimals, tokenToAntRate]
   )
 
   return {
@@ -155,12 +159,9 @@ function useConvertInputs(tokenPrice, antPrice) {
 
 function FormSection() {
   const [selectedOption, setSelectedOption] = useState(0)
-  const [estimatedEth, setEstimatedEth] = useState(bigNum(0))
   const tokenBalance = useTokenBalance(options[selectedOption])
   const ethBalance = useEthBalance()
-  const tokenPrice = useTokenPrice(options[selectedOption])
-  const antPrice = useTokenPrice('ANT')
-  const ethPrice = useTokenPrice('ETH')
+  const tokenRate = useUniswapTokenRate(options[selectedOption])
   const {
     amountAnj,
     amountToken,
@@ -170,19 +171,7 @@ function FormSection() {
     handleAntChange,
     inputValueAnj,
     inputValueToken,
-  } = useConvertInputs(tokenPrice, antPrice)
-
-  useEffect(() => {
-    if (!amountToken.eq(-1) && !tokenPrice.eq(0) && !ethPrice.eq(0)) {
-      setEstimatedEth(
-        amountToken
-          .mul(tokenPrice)
-          .div(ethPrice)
-          .mul(95)
-          .div(100)
-      )
-    }
-  }, [amountToken, ethPrice, tokenPrice])
+  } = useConvertInputs(tokenRate.rate, tokenRate.rateInverted)
 
   const convertTokenToAnj = useConvertTokenToAnj(options[selectedOption])
   const postEmail = usePostEmail()
@@ -211,11 +200,7 @@ function FormSection() {
           ? CONVERTER_STATUSES.SIGNING_ERC
           : CONVERTER_STATUSES.SIGNING
       )
-      const tx = await convertTokenToAnj(
-        amountToken.toString(),
-        amountAnj.div(100),
-        estimatedEth
-      )
+      const tx = await convertTokenToAnj(amountToken, amountAnj.div(100))
       converterStatus.setStatus(CONVERTER_STATUSES.PENDING)
       await tx.wait(1)
       converterStatus.setStatus(CONVERTER_STATUSES.SUCCESS)

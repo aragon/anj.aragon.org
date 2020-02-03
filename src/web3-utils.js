@@ -182,7 +182,6 @@ export function formatUnits(
   if (value.lt(0) || digits < 0) {
     return ''
   }
-
   let valueBeforeCommas = EthersUtils.formatUnits(value.toString(), digits)
 
   // Replace 0 by an empty value

@@ -1,15 +1,21 @@
 import { useState, useEffect, useCallback } from 'react'
 import { utils as EthersUtils } from 'ethers'
+import { getTokenReserves, getMarketDetails } from '@uniswap/sdk'
 import * as Sentry from '@sentry/browser'
 import { request } from 'graphql-request'
 import { toBN } from 'web3-utils'
 import { useWeb3Connect } from './web3-connect'
 import env from './environment'
+import { getKnownContract } from './known-contracts'
 
 const GQL_ENDPOINT =
   'https://api.thegraph.com/subgraphs/name/aragon/aragon-court'
 
-const FETCH_JURORS_RETRY_DELAY = 1000
+const FETCH_RETRY_DELAY = 1000
+const DEFAULT_RATE_STATE = {
+  rate: bigNum(0),
+  rateInverted: bigNum(0),
+}
 
 export function noop() {}
 
@@ -42,7 +48,7 @@ export function useAnJurors() {
           throw new Error('Wrong response')
         }
       } catch (err) {
-        retryTimer = setTimeout(fetchJurors, FETCH_JURORS_RETRY_DELAY)
+        retryTimer = setTimeout(fetchJurors, FETCH_RETRY_DELAY)
         return
       }
 
@@ -67,30 +73,44 @@ export function useAnJurors() {
   return [jurors, activeAnj]
 }
 
-export function useTokenPrice(symbol) {
-  const [usd, setUsd] = useState(bigNum(0))
-  useEffect(() => {
-    let cancelled = false
+export function useUniswapTokenRate(symbol) {
+  const [tokenRates, setTokenRates] = useState(DEFAULT_RATE_STATE)
+  const [tokenAddress] = getKnownContract(`TOKEN_${symbol}`)
+  const [antAddress] = getKnownContract(`TOKEN_ANT`)
 
-    fetch(
-      `https://min-api.cryptocompare.com/data/price?fsym=${symbol}&tsyms=USD`
-    )
-      .then(res => res.json())
-      .then(price => {
-        if (cancelled || !(parseFloat(price.USD) > 0)) {
-          return
+  useEffect(() => {
+    let retryTimer
+
+    async function getUniswapRates() {
+      let response
+      try {
+        const [tokenData, antData] = await Promise.all(
+          [tokenAddress, antAddress].map(async address => {
+            if (symbol === 'ETH' && !address) {
+              return undefined
+            }
+            return await getTokenReserves(address, Number(env('CHAIN_ID')))
+          })
+        )
+        if ((!tokenData && symbol !== 'ETH') || !antData) {
+          throw new Error('Could not fetch reserves')
         }
-        const precision = 6
-        const usdDigits = 2
-        setUsd(bigNum(parseInt(price.USD * 10 ** (precision + usdDigits), 10)))
-      })
+        response = getMarketDetails(tokenData, antData)
+        setTokenRates({ ...response.marketRate })
+      } catch (err) {
+        retryTimer = setTimeout(getUniswapRates, FETCH_RETRY_DELAY)
+        return
+      }
+    }
+
+    getUniswapRates()
 
     return () => {
-      cancelled = true
+      clearTimeout(retryTimer)
     }
-  }, [symbol])
+  }, [tokenAddress, antAddress, symbol])
 
-  return usd
+  return tokenRates
 }
 
 export function usePostEmail() {

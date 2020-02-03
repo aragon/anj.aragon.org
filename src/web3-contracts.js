@@ -4,7 +4,8 @@ import { getKnownContract } from './known-contracts'
 import tokenBalanceOfAbi from './token-balanceof.json'
 import { useWeb3Connect } from './web3-connect'
 import Web3EthContract from 'web3-eth-contract'
-import { bigNum } from './utils'
+import { bigNum, useUniswapTokenRate } from './utils'
+import { fromWei, toWei } from 'web3-utils'
 
 const PRESALE_ADDR = '0xf89c8752d82972f94a4d1331e010ed6593e8ec49'
 const contractsCache = new Map()
@@ -259,28 +260,29 @@ export function useConvertTokenToAnj(selectedToken) {
   const wrapperContract = useKnownContract(`WRAPPER`)
   const [tokenAddress] = getKnownContract(`TOKEN_${selectedToken}`)
   const [wrapperAddress] = getKnownContract('WRAPPER')
+  const ethToAntRate = useUniswapTokenRate('ETH')
 
   return useCallback(
-    async (amount, estimatedAnj, estimatedEth) => {
+    async (amount, estimatedAnt) => {
       if ((!tokenContract && selectedToken !== 'ETH') || !wrapperAddress) {
         throw new Error('Could not get the token and wrapper contract.')
       }
 
       // If the user has selected ETH, we can just send the ETH to the function
       const fiveMinutes = Math.floor(Date.now() / 1000) + 60 * 5
-      const underestimatedAnj = estimatedAnj
+      const underestimatedAnt = estimatedAnt
         .mul(90)
         .div(100)
         .toString()
 
       if (selectedToken === 'ETH') {
         return await wrapperContract.contributeEth(
-          underestimatedAnj,
+          underestimatedAnt,
           fiveMinutes,
           true,
           {
             gasLimit: 1000000,
-            value: bigNum(amount),
+            value: amount,
           }
         )
       }
@@ -301,11 +303,21 @@ export function useConvertTokenToAnj(selectedToken) {
         })
       }
       if (approval || allowance.gte(bigNum(amount))) {
+        const estimatedEth = bigNum(
+          toWei(
+            String(
+              parseFloat(ethToAntRate.rateInverted.toString()) *
+                parseFloat(fromWei(estimatedAnt.toString(), 'ether'))
+            )
+          )
+        )
+          .mul(95)
+          .div(100)
         // and the actual token staking.
         return await wrapperContract.contributeExternalToken(
           tokenAddress,
           amount,
-          underestimatedAnj,
+          underestimatedAnt,
           estimatedEth,
           fiveMinutes,
           true,
@@ -324,6 +336,7 @@ export function useConvertTokenToAnj(selectedToken) {
       wrapperAddress,
       wrapperContract,
       account,
+      ethToAntRate,
     ]
   )
 }
