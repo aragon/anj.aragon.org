@@ -270,17 +270,17 @@ export function useConvertTokenToAnj(selectedToken) {
         throw new Error('Could not get the token and wrapper contract.')
       }
 
-      // If the user has selected ETH, we can just send the ETH to the function
-      const fiveMinutes = Math.floor(Date.now() / 1000) + 60 * 5
+      const tenMinuteExpiry = Math.floor(Date.now() / 1000) + 60 * 10
       const underestimatedAnt = estimatedAnt
         .mul(90)
         .div(100)
         .toString()
 
+      // If the user has selected ETH, we can just send the ETH to the function
       if (selectedToken === 'ETH') {
         return await wrapperContract.contributeEth(
           underestimatedAnt,
-          fiveMinutes,
+          tenMinuteExpiry,
           true,
           {
             gasLimit: 1000000,
@@ -296,13 +296,19 @@ export function useConvertTokenToAnj(selectedToken) {
           gasLimit: 1000000,
         })
       }
-      // else, we will need two transactions: the approval if we don't have enough allowance,
+      // else, we may need two transactions:
+      //   1. the approval if we don't have enough allowance,
+      //   2. the token contribution
       const allowance = await tokenContract.allowance(account, wrapperAddress)
       let approval = null
       if (allowance.lt(bigNum(amount))) {
-        approval = await tokenContract.approve(wrapperAddress, amount, {
-          gasLimit: 1000000,
-        })
+        try {
+          approval = await tokenContract.approve(wrapperAddress, amount, {
+            gasLimit: 200000,
+          })
+        } catch (err) {
+          console.log(err)
+        }
       }
       if (approval || allowance.gte(bigNum(amount))) {
         const estimatedEth = bigNum(
@@ -313,7 +319,7 @@ export function useConvertTokenToAnj(selectedToken) {
             )
           )
         )
-          .mul(95)
+          .mul(90)
           .div(100)
         // and the actual token staking.
         return await wrapperContract.contributeExternalToken(
@@ -321,7 +327,7 @@ export function useConvertTokenToAnj(selectedToken) {
           amount,
           underestimatedAnt,
           estimatedEth,
-          fiveMinutes,
+          tenMinuteExpiry,
           true,
           {
             gasLimit: 1000000,
