@@ -129,6 +129,18 @@ export function usePostEmail() {
           )
         }
       } catch (err) {
+        console.error(`Error while trying to subscribe ${email}`, err)
+
+        if (
+          process.env.NODE_ENV !== 'production' &&
+          err instanceof TypeError &&
+          err.message === 'Failed to fetch'
+        ) {
+          // Ignore CORS issues with the email request on development
+          console.log('Ignoring failed subscribe request on development')
+          return
+        }
+
         Sentry.withScope(scope => {
           scope.setUser({ email, username: account })
           Sentry.captureException(err)

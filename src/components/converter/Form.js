@@ -189,26 +189,17 @@ function FormSection() {
     try {
       await postEmail(email)
     } catch (err) {
-      console.error(`Error while trying to subscribe ${email}`, err)
-
-      if (process.env.NODE_ENV === 'production') {
-        Sentry.captureException(err)
-      } else if (err.message !== 'TypeError: Failed to fetch') {
-        // Ignore CORS issues with the email request on development
-        return
-      }
-
       converterStatus.setStatus(CONVERTER_STATUSES.ERROR)
       return
     }
 
+    const selectedToken = options[selectedOption]
+    converterStatus.setStatus(
+      selectedToken === 'DAI' || selectedToken === 'USDC'
+        ? CONVERTER_STATUSES.SIGNING_ERC
+        : CONVERTER_STATUSES.SIGNING
+    )
     try {
-      const selectedToken = options[selectedOption]
-      converterStatus.setStatus(
-        selectedToken === 'DAI' || selectedToken === 'USDC'
-          ? CONVERTER_STATUSES.SIGNING_ERC
-          : CONVERTER_STATUSES.SIGNING
-      )
       const tx = await convertTokenToAnj(amountToken, amountAnj.div(100))
       converterStatus.setStatus(CONVERTER_STATUSES.PENDING)
       await tx.wait(1)
