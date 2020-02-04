@@ -233,7 +233,7 @@ function FormSection() {
       balanceAnj.lt(ANJ_MIN_REQUIRED) &&
       amountAnj.lt(ANJ_MIN_REQUIRED)
     ) {
-      return 'The minimum ANJ required to become a juror is 10,000.'
+      return 'You need to activate at least 10,000 ANJ.'
     }
 
     if (
@@ -332,8 +332,8 @@ function FormSection() {
                     overlay={props => (
                       <Tooltip {...props} show="true">
                         As this transaction will use an external, decentralized
-                        exchange, we will not know the final exchange rate for
-                        your transaction until it is mined.
+                        exchange, we will not know the final exchange rate until
+                        your transaction is mined.
                       </Tooltip>
                     )}
                   >

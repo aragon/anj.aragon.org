@@ -12,8 +12,8 @@ function Processing({ signing, signTwice }) {
             <p className="black">Please sign the transactions</p>
             <p>
               Sign the transactions in your provider so they can get processed.
-              Two transactions are needed if you are converting an ERC-20 token
-              and you have not approved enough allowance for us to convert.
+              Two transactions may be needed for this conversion if we did not previously
+              receive your approval on this ERC-20 token to convert the requested amount.
             </p>
           </>
         )}
