@@ -73,6 +73,7 @@ function useConvertInputs(tokenToAntRate, antToTokenRate) {
   const setEditModeToken = useCallback(
     editMode => {
       const units = formatUnits(amountToken, {
+        // FIXME: change decimals based on token
         digits: antDecimals,
         commas: !editMode,
       })
@@ -93,7 +94,7 @@ function useConvertInputs(tokenToAntRate, antToTokenRate) {
     [amountAnj, anjDecimals]
   )
 
-  const handleAntChange = useCallback(
+  const handleInputTokenChange = useCallback(
     event => {
       if (antDecimals === -1 || anjDecimals === -1) {
         return
@@ -151,7 +152,7 @@ function useConvertInputs(tokenToAntRate, antToTokenRate) {
     setEditModeAnj,
     setEditModeToken,
     handleAnjChange,
-    handleAntChange,
+    handleInputTokenChange,
     inputValueAnj,
     inputValueToken,
   }
@@ -168,7 +169,7 @@ function FormSection() {
     setEditModeAnj,
     setEditModeToken,
     handleAnjChange,
-    handleAntChange,
+    handleInputTokenChange,
     inputValueAnj,
     inputValueToken,
   } = useConvertInputs(tokenRate.rate, tokenRate.rateInverted)
@@ -233,7 +234,7 @@ function FormSection() {
     }
   }, [balanceAnj])
 
-  const antError = useMemo(() => {
+  const tokenBalanceError = useMemo(() => {
     if (
       amountToken &&
       inputValueToken &&
@@ -241,7 +242,7 @@ function FormSection() {
       balanceAnj.lt(ANJ_MIN_REQUIRED) &&
       amountAnj.lt(ANJ_MIN_REQUIRED)
     ) {
-      return 'The minimum amount of ANT is 100.'
+      return 'The minimum ANJ required to become a juror is 10,000.'
     }
 
     if (
@@ -264,7 +265,7 @@ function FormSection() {
   const disabled = Boolean(
     !inputValueToken.trim() ||
       !inputValueAnj.trim() ||
-      antError ||
+      tokenBalanceError ||
       converterStatus.status !== CONVERTER_STATUSES.FORM ||
       !/[^@]+@[^@]+/.test(email) ||
       !acceptTerms
@@ -295,7 +296,7 @@ function FormSection() {
           <Label>Amount of {options[selectedOption]} you want to convert</Label>
           <ComboInput
             inputValue={inputValueToken}
-            onChange={handleAntChange}
+            onChange={handleInputTokenChange}
             options={[
               <Token symbol="ANT" />,
               <Token symbol="DAI" />,
@@ -310,7 +311,9 @@ function FormSection() {
           />
           <Info>
             <span>Balance:{` ${formattedTokenBalance}`}</span>
-            {antError && <span className="error"> {antError} </span>}
+            {tokenBalanceError && (
+              <span className="error"> {tokenBalanceError} </span>
+            )}
           </Info>
         </div>
         <div>
