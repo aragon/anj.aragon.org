@@ -22,7 +22,7 @@ import question from './assets/question.svg'
 
 const large = css => breakpoint('large', css)
 const options = ['ANT', 'DAI', 'ETH', 'USDC']
-const ANJ_MIN_REQUIRED = bigNum(0)
+const ANJ_MIN_REQUIRED = bigNum(10)
   .pow(18)
   .mul(10000)
 
