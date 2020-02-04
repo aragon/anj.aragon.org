@@ -300,42 +300,38 @@ export function useConvertTokenToAnj(selectedToken) {
       //   1. the approval if we don't have enough allowance,
       //   2. the token contribution
       const allowance = await tokenContract.allowance(account, wrapperAddress)
-      let approval = null
       if (allowance.lt(bigNum(amount))) {
         try {
-          approval = await tokenContract.approve(wrapperAddress, amount, {
+          await tokenContract.approve(wrapperAddress, amount, {
             gasLimit: 200000,
           })
+          // Don't wait for the approval to be mined before showing second transaction
         } catch (err) {
-          console.log(err)
+          throw new Error('User did not approve transaction')
         }
       }
-      if (approval || allowance.gte(bigNum(amount))) {
-        const estimatedEth = bigNum(
-          toWei(
-            String(
-              parseFloat(ethToAntRate.rateInverted.toString()) *
-                parseFloat(fromWei(estimatedAnt.toString(), 'ether'))
-            )
+
+      const estimatedEth = bigNum(
+        toWei(
+          String(
+            parseFloat(ethToAntRate.rateInverted.toString()) *
+              parseFloat(fromWei(estimatedAnt.toString(), 'ether'))
           )
         )
-          .mul(90)
-          .div(100)
-        // and the actual token staking.
-        return await wrapperContract.contributeExternalToken(
-          tokenAddress,
-          amount,
-          underestimatedAnt,
-          estimatedEth,
-          tenMinuteExpiry,
-          true,
-          {
-            gasLimit: 1000000,
-          }
-        )
-      } else {
-        throw new Error('User did not approve transaction')
-      }
+      )
+        .mul(90)
+        .div(100)
+      return await wrapperContract.contributeExternalToken(
+        tokenAddress,
+        amount,
+        underestimatedAnt,
+        estimatedEth,
+        tenMinuteExpiry,
+        true,
+        {
+          gasLimit: 1000000,
+        }
+      )
     },
     [
       selectedToken,
