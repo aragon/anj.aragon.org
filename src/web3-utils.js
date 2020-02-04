@@ -115,10 +115,16 @@ export function parseUnits(value, { digits = 18 } = {}) {
  * @param {Number} options.digits Amount of digits on the token.
  * @param {Boolean} options.commas Use comma-separated groups.
  * @param {Boolean} options.replaceZeroBy The string to be returned when value is zero.
+ * @param {Number} options.truncateToDecimalPlace Number of decimal places to show.
  */
 export function formatUnits(
   value,
-  { digits = 18, commas = true, replaceZeroBy = '' } = {}
+  {
+    digits = 18,
+    commas = true,
+    replaceZeroBy = '',
+    truncateToDecimalPlace,
+  } = {}
 ) {
   if (typeof value === 'string') {
     value = bigNum(value)
@@ -137,6 +143,14 @@ export function formatUnits(
 
   // EthersUtils.formatUnits() adds a decimal even when 0, this removes it.
   valueBeforeCommas = valueBeforeCommas.replace(/\.0$/, '')
+
+  if (typeof truncateToDecimalPlace === 'number') {
+    const [whole = '', dec = ''] = valueBeforeCommas.split('.')
+    if (dec) {
+      const truncatedDec = dec.slice(0, truncateToDecimalPlace).replace(/0*$/, '')
+      valueBeforeCommas = truncatedDec ? `${whole}.${truncatedDec}` : whole
+    }
+  }
 
   return commas ? EthersUtils.commify(valueBeforeCommas) : valueBeforeCommas
 }

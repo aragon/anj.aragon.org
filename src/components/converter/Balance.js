@@ -18,7 +18,11 @@ function Balance() {
       <p>Your account’s active balance</p>
       <h3>
         <span className="mono">
-          {(account && formatUnits(anjBalance, { digits: anjDecimals })) ||
+          {(account &&
+            formatUnits(anjBalance, {
+              digits: anjDecimals,
+              truncateToDecimalPlace: 3,
+            })) ||
             '0.00'}
         </span>{' '}
         <Token symbol="ANJ" />
