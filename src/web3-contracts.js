@@ -4,7 +4,8 @@ import { getKnownContract } from './known-contracts'
 import tokenBalanceOfAbi from './token-balanceof.json'
 import { useWeb3Connect } from './web3-connect'
 import Web3EthContract from 'web3-eth-contract'
-import { bigNum } from './utils'
+import { bigNum, useUniswapTokenRate } from './utils'
+import { fromWei, toWei } from 'web3-utils'
 
 const PRESALE_ADDR = '0xf89c8752d82972f94a4d1331e010ed6593e8ec49'
 const contractsCache = new Map()
@@ -45,7 +46,9 @@ export function useTokenDecimals(symbol) {
     let cancelled = false
     setDecimals(-1)
 
-    if (tokenContract) {
+    if (symbol === 'ETH') {
+      setDecimals(18)
+    } else if (tokenContract) {
       tokenContract.decimals().then(decimals => {
         if (!cancelled) {
           setDecimals(decimals)
@@ -54,7 +57,7 @@ export function useTokenDecimals(symbol) {
     }
 
     return () => (cancelled = true)
-  }, [tokenContract])
+  }, [symbol, tokenContract])
 
   return decimals
 }
@@ -113,7 +116,7 @@ export function useEthBalance() {
 }
 
 export function useTokenBalance(symbol) {
-  const { account, web3ReactContext } = useWeb3Connect()
+  const { account } = useWeb3Connect()
   const [balance, setBalance] = useState(bigNum(-1))
   const tokenContract = useKnownContract(`TOKEN_${symbol}`)
 
@@ -219,15 +222,15 @@ export function useJurorRegistryAnjBalance() {
       return
     }
 
-    const onBoughtAndActivated = (from, to, value) => {
+    const onBought = (from, to, value) => {
       if (from === account) {
         updateBalance()
       }
     }
-    wrapperContract.on('BoughtAndActivated', onBoughtAndActivated)
+    wrapperContract.on('Bought', onBought)
 
     return () => {
-      wrapperContract.removeListener('BoughtAndActivated', onBoughtAndActivated)
+      wrapperContract.removeListener('Bought', onBought)
     }
   }, [account, wrapperContract, updateBalance])
 
@@ -253,28 +256,94 @@ export function useConvertAntToAnj() {
   )
 }
 
-// export function useConvertEthToAnj() {
-// const { account } = useWeb3Connect()
-// const [wrapperAddress] = getKnownContract('WRAPPER')
-// // for making this line usable we need to have the ABI
-// const wrapperContract = useContract(wrapperContract, wrapperAbi)
+export function useConvertTokenToAnj(selectedToken) {
+  const { account } = useWeb3Connect()
+  const tokenContract = useKnownContract(`TOKEN_${selectedToken}`)
+  const wrapperContract = useKnownContract(`WRAPPER`)
+  const [tokenAddress] = getKnownContract(`TOKEN_${selectedToken}`)
+  const [wrapperAddress] = getKnownContract('WRAPPER')
+  const ethToAntRate = useUniswapTokenRate('ETH')
 
-// return useCallback(
-// async ethAmount => {
-// if (!wrapperContract) {
-// return false
-// }
-// const tx = await wrapperContract.methods
-// .contributeEth(0, 60, true)
-// .send({ from: account, value: ethAmount })
-// if (tx.error) {
-// return false
-// }
-// return true
-// },
-// [account]
-// )
-// }
+  return useCallback(
+    async (amount, estimatedAnt) => {
+      if ((!tokenContract && selectedToken !== 'ETH') || !wrapperAddress) {
+        throw new Error('Could not get the token and wrapper contract.')
+      }
+
+      const tenMinuteExpiry = Math.floor(Date.now() / 1000) + 60 * 10
+      const underestimatedAnt = estimatedAnt
+        .mul(90)
+        .div(100)
+        .toString()
+
+      // If the user has selected ETH, we can just send the ETH to the function
+      if (selectedToken === 'ETH') {
+        return await wrapperContract.contributeEth(
+          underestimatedAnt,
+          tenMinuteExpiry,
+          true,
+          {
+            gasLimit: 1000000,
+            value: amount,
+          }
+        )
+      }
+
+      // If the user has selected ANT, we can directly
+      // approve and call the wrapper using ANT's approveAndCall
+      if (selectedToken === 'ANT') {
+        return tokenContract.approveAndCall(wrapperAddress, amount, '0x00', {
+          gasLimit: 1000000,
+        })
+      }
+      // else, we may need two transactions:
+      //   1. the approval if we don't have enough allowance,
+      //   2. the token contribution
+      const allowance = await tokenContract.allowance(account, wrapperAddress)
+      if (allowance.lt(bigNum(amount))) {
+        try {
+          await tokenContract.approve(wrapperAddress, amount, {
+            gasLimit: 200000,
+          })
+          // Don't wait for the approval to be mined before showing second transaction
+        } catch (err) {
+          throw new Error('User did not approve transaction')
+        }
+      }
+
+      const estimatedEth = bigNum(
+        toWei(
+          String(
+            parseFloat(ethToAntRate.rateInverted.toString()) *
+              parseFloat(fromWei(estimatedAnt.toString(), 'ether'))
+          )
+        )
+      )
+        .mul(90)
+        .div(100)
+      return await wrapperContract.contributeExternalToken(
+        tokenAddress,
+        amount,
+        underestimatedAnt,
+        estimatedEth,
+        tenMinuteExpiry,
+        true,
+        {
+          gasLimit: 1000000,
+        }
+      )
+    },
+    [
+      selectedToken,
+      tokenAddress,
+      tokenContract,
+      wrapperAddress,
+      wrapperContract,
+      account,
+      ethToAntRate,
+    ]
+  )
+}
 
 export function useAntStaked() {
   const [antStaked, setAntStaked] = useState('0')

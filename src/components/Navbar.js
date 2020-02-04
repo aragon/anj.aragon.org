@@ -70,45 +70,6 @@ const MenuModalBox = styled.div`
   display: block;
   ${medium('display: none;')};
 `
-const Button = styled.a`
-  display: none;
-  background: #262626;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.15);
-  border-radius: 6px;
-  padding: 7px 16px 4px 16px;
-  line-height: 1;
-  font-weight: 600;
-  font-size: 16px;
-  line-height: 19px;
-  ${medium('display: flex; justify-content: center;')};
-  &:hover {
-    background: #323232;
-  }
-  @keyframes shine {
-    to {
-      background-position: 200% center;
-    }
-  }
-  span {
-    color: #ff9a84;
-  }
-  span:hover {
-    background: linear-gradient(
-      to right,
-      #ff7c7c 20%,
-      #ffc58f 40%,
-      #ffc58f 60%,
-      #ff7c7c 80%
-    );
-    background-size: 200% auto;
-    background-clip: text;
-    text-fill-color: transparent;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-
-    animation: shine 4s linear infinite;
-  }
-`
 
 const LogoLink = styled.a`
   display: flex;

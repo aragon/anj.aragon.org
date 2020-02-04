@@ -8,7 +8,6 @@ import { breakpoint } from '../microsite-logic'
 import jurors from './assets/juror-total.svg'
 import { bigNum, useAnJurors } from '../utils'
 import { useAntStaked } from '../web3-contracts'
-import { fromWei } from 'web3-utils'
 import { formatUnits, useTokenBalanceToUsd } from '../web3-utils'
 
 const medium = css => breakpoint('medium', css)

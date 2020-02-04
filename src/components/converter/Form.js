@@ -1,13 +1,16 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
+import * as Sentry from '@sentry/browser'
 import { OverlayTrigger, Tooltip } from 'react-bootstrap'
+import { toWei } from 'web3-utils'
 import {
   useTokenDecimals,
-  useConvertAntToAnj,
+  useConvertTokenToAnj,
   useTokenBalance,
   useJurorRegistryAnjBalance,
+  useEthBalance,
 } from '../../web3-contracts'
-import { bigNum, usePostEmail } from '../../utils'
+import { bigNum, usePostEmail, useUniswapTokenRate } from '../../utils'
 import { breakpoint, GU } from '../../microsite-logic'
 import { formatUnits, parseUnits } from '../../web3-utils'
 import { useConverterStatus, CONVERTER_STATUSES } from './converter-status'
@@ -18,8 +21,7 @@ import Anchor from '../Anchor'
 import question from './assets/question.svg'
 
 const large = css => breakpoint('large', css)
-
-const ANJ_BY_ANT = 100
+const options = ['ANT', 'DAI', 'ETH', 'USDC']
 const ANJ_MIN_REQUIRED = bigNum(10)
   .pow(18)
   .mul(10000)
@@ -33,85 +35,123 @@ function convertInputValue(value, fromDecimals, toDecimals, convert) {
   }
 
   // fromAmount and toAmount are the parsed values (BigNumber instances).
-  const fromAmount = parseUnits(value)
+  const fromAmount = parseUnits(value, { digits: fromDecimals })
   if (fromAmount.lt(0)) {
     return null
   }
 
-  const toAmount = convert(fromAmount)
+  // notes on the token conversion's decimal units:
+  //   - to keep precision high, the conversion's resulting decimal units are
+  //     [input token's decimals] * 18
+  //   - for illustration an input token with:
+  //     - 18 decimals will result in a value with 36 decimals (18 + 18)
+  //     - 6 decimals will result in a value with 24 decimals (18 + 6)
+  //   - to get this converted value into the output token's decimals base, we can
+  //     break down the units of [input token * conversion = x * output token] to
+  //       [input decimals + 18 = x + output decimals], and then
+  //       [x = 18 + input decimals - output decimals]
+  //   - for illustration:
+  //     - for an input decimals of 18 and output decimals of 6: x = 30
+  //     - for an input decimals of 18 and output decimals of 18: x = 18
+  const convertedBaseAmount = convert(fromAmount).toString() // units: 18 + input decimals
+  // As we always floor on divides, we can use string truncation to convert
+  const truncateTo = Math.max(0, convertedBaseAmount.length - (18 + fromDecimals - toDecimals))
+  const toAmount = bigNum(convertedBaseAmount.slice(0, truncateTo))
 
   // fromInputValue and toInputValue are filtered values to be set on inputs (strings).
   const fromInputValue = value
-  const toInputValue = formatUnits(toAmount, { digits: toDecimals })
+  const toInputValue = formatUnits(toAmount, {
+    digits: toDecimals,
+  })
 
   return { fromInputValue, toInputValue, fromAmount, toAmount }
 }
 
 // Convert the two input values as the user types
-function useConvertInputs() {
+function useConvertInputs(symbol, tokenToAntRate, antToTokenRate) {
   const [inputValueAnj, setInputValueAnj] = useState('')
-  const [inputValueAnt, setInputValueAnt] = useState('')
+  const [inputValueToken, setInputValueToken] = useState('')
   const [amountAnj, setAmountAnj] = useState(bigNum(0))
-  const [amountAnt, setAmountAnt] = useState(bigNum(0))
-
+  const [amountToken, setAmountToken] = useState(bigNum(0))
   const antDecimals = useTokenDecimals('ANT')
   const anjDecimals = useTokenDecimals('ANJ')
+  const usdcDecimals = useTokenDecimals('USDC')
+
+  const tokenDecimals = useMemo(
+    () => (symbol === 'USDC' ? usdcDecimals : antDecimals),
+    [antDecimals, symbol, usdcDecimals]
+  )
+
+  // Reset the inputs anytime the selected token changes
+  useEffect(() => {
+    setInputValueToken('')
+    setInputValueAnj('')
+    setAmountAnj(bigNum(0))
+    setAmountToken(bigNum(0))
+  }, [tokenToAntRate])
 
   // Alternate the comma-separated format, based on the fields focus state.
-  const setEditModeAnt = useCallback(
+  const setEditModeToken = useCallback(
     editMode => {
-      setInputValueAnt(
-        formatUnits(amountAnt, { digits: antDecimals, commas: !editMode })
-      )
+      const units = formatUnits(amountToken, {
+        digits: tokenDecimals,
+        commas: !editMode,
+      })
+      setInputValueToken(units)
     },
-    [amountAnt, antDecimals]
+    [amountToken, tokenDecimals]
   )
 
   const setEditModeAnj = useCallback(
     editMode => {
       setInputValueAnj(
-        formatUnits(amountAnj, { digits: anjDecimals, commas: !editMode })
+        formatUnits(amountAnj, {
+          digits: anjDecimals,
+          commas: !editMode,
+        })
       )
     },
     [amountAnj, anjDecimals]
   )
 
-  const handleAntChange = useCallback(
+  const handleInputTokenChange = useCallback(
     event => {
-      if (antDecimals === -1 || anjDecimals === -1) {
+      if (tokenDecimals === -1 || anjDecimals === -1) {
         return
       }
 
+      const properTokenRate = bigNum(toWei(tokenToAntRate.toString()))
       const converted = convertInputValue(
         event.target.value,
-        antDecimals,
+        tokenDecimals,
         anjDecimals,
-        amount => amount.mul(ANJ_BY_ANT)
+        amount => properTokenRate.mul(amount).mul(100)
       )
 
       if (converted === null) {
         return
       }
 
-      setInputValueAnt(converted.fromInputValue)
+      setInputValueToken(converted.fromInputValue)
       setInputValueAnj(converted.toInputValue)
-      setAmountAnt(converted.fromAmount)
+      setAmountToken(converted.fromAmount)
       setAmountAnj(converted.toAmount)
     },
-    [antDecimals, anjDecimals]
+    [tokenDecimals, anjDecimals, tokenToAntRate]
   )
 
   const handleAnjChange = useCallback(
     event => {
-      if (antDecimals === -1 || anjDecimals === -1) {
+      if (tokenDecimals === -1 || anjDecimals === -1) {
         return
       }
 
+      const properTokenRate = bigNum(toWei(antToTokenRate.toString()))
       const converted = convertInputValue(
         event.target.value,
         anjDecimals,
-        antDecimals,
-        amount => amount.div(ANJ_BY_ANT)
+        tokenDecimals,
+        amount => properTokenRate.mul(amount).div(100)
       )
 
       if (converted === null) {
@@ -119,71 +159,87 @@ function useConvertInputs() {
       }
 
       setInputValueAnj(converted.fromInputValue)
-      setInputValueAnt(converted.toInputValue)
+      setInputValueToken(converted.toInputValue)
       setAmountAnj(converted.fromAmount)
-      setAmountAnt(converted.toAmount)
+      setAmountToken(converted.toAmount)
     },
-    [antDecimals, anjDecimals]
+    [tokenDecimals, anjDecimals, antToTokenRate]
   )
 
   return {
     amountAnj,
-    amountAnt,
+    amountToken,
     setEditModeAnj,
-    setEditModeAnt,
+    setEditModeToken,
     handleAnjChange,
-    handleAntChange,
+    handleInputTokenChange,
     inputValueAnj,
-    inputValueAnt,
+    inputValueToken,
   }
 }
 
 function FormSection() {
+  const [selectedOption, setSelectedOption] = useState(0)
+  const tokenBalance = useTokenBalance(options[selectedOption])
+  const ethBalance = useEthBalance()
+  const tokenRate = useUniswapTokenRate(options[selectedOption])
   const {
     amountAnj,
-    amountAnt,
+    amountToken,
     setEditModeAnj,
-    setEditModeAnt,
+    setEditModeToken,
     handleAnjChange,
-    handleAntChange,
+    handleInputTokenChange,
     inputValueAnj,
-    inputValueAnt,
-  } = useConvertInputs()
+    inputValueToken,
+  } = useConvertInputs(
+    options[selectedOption],
+    tokenRate.rate,
+    tokenRate.rateInverted
+  )
 
-  const convertAntToAnj = useConvertAntToAnj()
+  const convertTokenToAnj = useConvertTokenToAnj(options[selectedOption])
   const postEmail = usePostEmail()
 
-  const balanceAnt = useTokenBalance('ANT')
   const balanceAnj = useJurorRegistryAnjBalance()
-  const antDecimals = useTokenDecimals('ANT')
+  const selectedTokenDecimals = useTokenDecimals(options[selectedOption])
 
   const converterStatus = useConverterStatus()
   const [email, setEmail] = useState('')
   const [acceptTerms, setAcceptTerms] = useState(false)
-
   const handleSubmit = async event => {
     event.preventDefault()
 
     try {
       await postEmail(email)
     } catch (err) {
-      console.error(`Error while trying to subscribe ${email}`, err)
       converterStatus.setStatus(CONVERTER_STATUSES.ERROR)
       return
     }
 
+    const selectedToken = options[selectedOption]
+    converterStatus.setStatus(
+      selectedToken === 'DAI' || selectedToken === 'USDC'
+        ? CONVERTER_STATUSES.SIGNING_ERC
+        : CONVERTER_STATUSES.SIGNING
+    )
     try {
-      converterStatus.setStatus(CONVERTER_STATUSES.SIGNING)
-      const tx = await convertAntToAnj(amountAnt.toString())
+      const tx = await convertTokenToAnj(amountToken, amountAnj.div(100))
       converterStatus.setStatus(CONVERTER_STATUSES.PENDING)
       await tx.wait(1)
       converterStatus.setStatus(CONVERTER_STATUSES.SUCCESS)
     } catch (err) {
+      console.log(err)
+      if (process.env.NODE_ENV === 'production') {
+        Sentry.captureException(err)
+      }
       converterStatus.setStatus(CONVERTER_STATUSES.ERROR)
     }
   }
 
   const [placeholder, setPlaceholder] = useState('')
+  const selectedTokenBalance =
+    options[selectedOption] === 'ETH' ? ethBalance : tokenBalance
 
   useEffect(() => {
     if (balanceAnj && balanceAnj.gte(bigNum(String(10000)))) {
@@ -193,32 +249,56 @@ function FormSection() {
     }
   }, [balanceAnj])
 
-  const antError = useMemo(() => {
+  const tokenBalanceError = useMemo(() => {
     if (
-      amountAnt &&
-      inputValueAnt &&
+      amountToken &&
+      inputValueToken &&
       balanceAnj &&
       balanceAnj.lt(ANJ_MIN_REQUIRED) &&
       amountAnj.lt(ANJ_MIN_REQUIRED)
     ) {
-      return 'The minimum amount of ANT is 100.'
+      return 'You need to activate at least 10,000 ANJ.'
     }
 
-    if (amountAnt && amountAnt.gte(0) && amountAnt.gt(balanceAnt)) {
+    if (
+      amountToken &&
+      amountToken.gte(0) &&
+      amountToken.gt(selectedTokenBalance) &&
+      !selectedTokenBalance.eq(-1)
+    ) {
       return 'Amount is greater than balance held.'
     }
 
     return null
-  }, [amountAnt, inputValueAnt, balanceAnj, amountAnj, balanceAnt])
-
+  }, [
+    amountToken,
+    inputValueToken,
+    balanceAnj,
+    amountAnj,
+    selectedTokenBalance,
+  ])
   const disabled = Boolean(
-    !inputValueAnt.trim() ||
+    !inputValueToken.trim() ||
       !inputValueAnj.trim() ||
-      antError ||
+      tokenBalanceError ||
       converterStatus.status !== CONVERTER_STATUSES.FORM ||
       !/[^@]+@[^@]+/.test(email) ||
       !acceptTerms
   )
+  const handleSelect = useCallback(
+    optionIndex => setSelectedOption(optionIndex),
+    []
+  )
+
+  const formattedTokenBalance = selectedTokenBalance.eq(-1)
+    ? 'Fetching...'
+    : `${formatUnits(
+        options[selectedOption] === 'ETH' ? ethBalance : tokenBalance,
+        {
+          digits: selectedTokenDecimals,
+          replaceZeroBy: '0',
+        }
+      )} ${options[selectedOption]}.`
 
   return (
     <Form onSubmit={handleSubmit}>
@@ -228,29 +308,27 @@ function FormSection() {
         `}
       >
         <div>
-          <Label>Amount of ANT you want to convert</Label>
-          <AdornmentBox>
-            <Input
-              value={inputValueAnt}
-              onChange={handleAntChange}
-              onBlur={() => setEditModeAnt(false)}
-              onFocus={() => setEditModeAnt(true)}
-              placeholder={placeholder}
-            />
-            <Adornment>
-              <Token symbol="ANT" />
-            </Adornment>
-          </AdornmentBox>
+          <Label>Amount of {options[selectedOption]} you want to convert</Label>
+          <ComboInput
+            inputValue={inputValueToken}
+            onChange={handleInputTokenChange}
+            options={[
+              <Token symbol="ANT" />,
+              <Token symbol="DAI" />,
+              <Token symbol="ETH" />,
+              <Token symbol="USDC" />,
+            ]}
+            onBlur={() => setEditModeToken(false)}
+            onFocus={() => setEditModeToken(true)}
+            onSelect={handleSelect}
+            selectedOption={selectedOption}
+            placeholder={placeholder}
+          />
           <Info>
-            <span>
-              Balance:{' '}
-              {formatUnits(balanceAnt, {
-                digits: antDecimals,
-                replaceZeroBy: '0',
-              })}{' '}
-              ANT.{' '}
-            </span>
-            {antError && <span className="error">{antError} </span>}
+            <span>Balance:{` ${formattedTokenBalance}`}</span>
+            {tokenBalanceError && (
+              <span className="error"> {tokenBalanceError} </span>
+            )}
           </Info>
         </div>
         <div>
@@ -267,24 +345,29 @@ function FormSection() {
                 <Token symbol="ANJ" />
               </Adornment>
             </AdornmentBox>
-            {/*            <ComboInput />
             <Info>
-              This amount is an approximation.
-              <OverlayTrigger
-                show="true"
-                placement="top"
-                delay={{ hide: 400 }}
-                overlay={props => (
-                  <Tooltip {...props} show="true">
-                    The amount is approximate since we use an external provider
-                    for this transaction and we do not know the final amount
-                    until the transaction is undermined.
-                  </Tooltip>
-                )}
-              >
-                <span className="insight"> Why?</span>
-              </OverlayTrigger>
-            </Info>*/}
+              {options[selectedOption] !== 'ANT' ? (
+                <>
+                  This amount is an approximation.
+                  <OverlayTrigger
+                    show="true"
+                    placement="top"
+                    delay={{ hide: 400 }}
+                    overlay={props => (
+                      <Tooltip {...props} show="true">
+                        As this transaction will use an external, decentralized
+                        exchange, we will not know the final exchange rate until
+                        your transaction is mined.
+                      </Tooltip>
+                    )}
+                  >
+                    <span className="insight"> Why?</span>
+                  </OverlayTrigger>
+                </>
+              ) : (
+                ' ' // prevent page jumps when selecting a token
+              )}
+            </Info>
           </InputBox>
         </div>
         <OverlayTrigger
@@ -383,7 +466,6 @@ const Info = styled.div`
   .error {
     color: #ff6969;
   }
-
   .insight {
     color: #516dff;
   }

@@ -1,15 +1,21 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { utils as EthersUtils } from 'ethers'
+import { getTokenReserves, getMarketDetails } from '@uniswap/sdk'
 import * as Sentry from '@sentry/browser'
 import { request } from 'graphql-request'
 import { toBN } from 'web3-utils'
 import { useWeb3Connect } from './web3-connect'
 import env from './environment'
+import { getKnownContract } from './known-contracts'
 
 const GQL_ENDPOINT =
   'https://api.thegraph.com/subgraphs/name/aragon/aragon-court'
 
-const FETCH_JURORS_RETRY_DELAY = 1000
+const FETCH_RETRY_DELAY = 1000
+const DEFAULT_RATE_STATE = {
+  rate: bigNum(0),
+  rateInverted: bigNum(0),
+}
 
 export function noop() {}
 
@@ -42,7 +48,7 @@ export function useAnJurors() {
           throw new Error('Wrong response')
         }
       } catch (err) {
-        retryTimer = setTimeout(fetchJurors, FETCH_JURORS_RETRY_DELAY)
+        retryTimer = setTimeout(fetchJurors, FETCH_RETRY_DELAY)
         return
       }
 
@@ -67,11 +73,50 @@ export function useAnJurors() {
   return [jurors, activeAnj]
 }
 
+export function useUniswapTokenRate(symbol) {
+  const [tokenRates, setTokenRates] = useState(DEFAULT_RATE_STATE)
+  const [tokenAddress] = getKnownContract(`TOKEN_${symbol}`)
+  const [antAddress] = getKnownContract(`TOKEN_ANT`)
+
+  useEffect(() => {
+    let retryTimer
+
+    async function getUniswapRates() {
+      let response
+      try {
+        const [tokenData, antData] = await Promise.all(
+          [tokenAddress, antAddress].map(async address => {
+            if (symbol === 'ETH' && !address) {
+              return undefined
+            }
+            return await getTokenReserves(address, Number(env('CHAIN_ID')))
+          })
+        )
+        if ((!tokenData && symbol !== 'ETH') || !antData) {
+          throw new Error('Could not fetch reserves')
+        }
+        response = getMarketDetails(tokenData, antData)
+        setTokenRates({ ...response.marketRate })
+      } catch (err) {
+        retryTimer = setTimeout(getUniswapRates, FETCH_RETRY_DELAY)
+        return
+      }
+    }
+
+    getUniswapRates()
+
+    return () => {
+      clearTimeout(retryTimer)
+    }
+  }, [tokenAddress, antAddress, symbol])
+
+  return tokenRates
+}
+
 export function usePostEmail() {
   const { account } = useWeb3Connect() || ''
   return useCallback(
     async email => {
-      let result
       try {
         const response = await fetch(env('SUBSCRIPTIONS_URL'), {
           method: 'post',
@@ -84,10 +129,23 @@ export function usePostEmail() {
           )
         }
       } catch (err) {
+        console.error(`Error while trying to subscribe ${email}`, err)
+
+        if (
+          process.env.NODE_ENV !== 'production' &&
+          err instanceof TypeError &&
+          err.message === 'Failed to fetch'
+        ) {
+          // Ignore CORS issues with the email request on development
+          console.log('Ignoring failed subscribe request on development')
+          return
+        }
+
         Sentry.withScope(scope => {
           scope.setUser({ email, username: account })
           Sentry.captureException(err)
         })
+        throw err
       }
     },
     [account]

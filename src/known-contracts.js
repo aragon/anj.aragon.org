@@ -1,6 +1,7 @@
 import env from './environment'
 
 import tokenAbi from './abi/token.json'
+import ercTokenAbi from './abi/erctoken.json'
 import jurorsRegistryAbi from './abi/jurors-registry.json'
 import wrapperAbi from './abi/wrapper.json'
 
@@ -10,16 +11,20 @@ const KNOWN_CONTRACTS_BY_ENV = new Map([
     {
       TOKEN_ANT: '0x960b236A07cf122663c4303350609A66A7B288C0',
       TOKEN_ANJ: '0xcD62b1C403fa761BAadFC74C525ce2B51780b184',
-      WRAPPER: '0x5202E766DC1D11a94a2A300D2ed27C688644e8FE',
+      TOKEN_DAI: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+      TOKEN_USDC: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+      WRAPPER: '0x28877a0f8c38536923507efc8691ca9748471622',
       JURORS_REGISTRY: '0xf9dda954adf5e54b89f988c1560553a0a387cce1',
     },
   ],
   [
     '4',
     {
-      TOKEN_ANT: '0x5cC7986D7A793b9930BD80067ca54c3E6D2F261B',
+      TOKEN_ANT: '0x2D23F49a6C1B60e614952d8b0D53bd7a2DbF6433',
       TOKEN_ANJ: '0x2f61FfC3C1d058212Cd08077fc84D883916F74E3',
-      WRAPPER: '0x671970d3fee809727D1D7D5709b6bb9033E3E877',
+      TOKEN_DAI: '0x55Ab9B236CDC9e2CecBD41ADa45D8261f8A6049b',
+      TOKEN_USDC: '0xB9DE9Fa099E1415B491ed6072B4F947955e6B596',
+      WRAPPER: '0xDAd9F5E6d092EafBe6f7e3907e2504fC0f858401',
       JURORS_REGISTRY: '0x13474160a55a4579B9fE79e6aF8E28727516098A',
     },
   ],
@@ -28,6 +33,8 @@ const KNOWN_CONTRACTS_BY_ENV = new Map([
 const ABIS = new Map([
   ['TOKEN_ANT', tokenAbi],
   ['TOKEN_ANJ', tokenAbi],
+  ['TOKEN_DAI', ercTokenAbi],
+  ['TOKEN_USDC', ercTokenAbi],
   ['JURORS_REGISTRY', jurorsRegistryAbi],
   ['WRAPPER', wrapperAbi],
 ])

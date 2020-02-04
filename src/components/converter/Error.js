@@ -9,7 +9,7 @@ function ErrorSection({ onDone }) {
       <div>
         <img src={error} alt="" />
         <p className="red">Something went wrong</p>
-        <p>Some error has occurred at the time of the transaction.</p>
+        <p>An error occurred with the transaction.</p>
         <Button onClick={onDone}>
           <img src={repeat} alt="" />
           Repeat transaction

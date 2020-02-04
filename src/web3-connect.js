@@ -22,8 +22,6 @@ import { getNetworkName } from './web3-utils'
 const { Web3Provider: EthersWeb3Provider } = EthersProviders
 
 const CHAIN_ID = Number(env('CHAIN_ID'))
-const FORTMATIC_API_KEY = env('FORTMATIC_API_KEY')
-const PORTIS_DAPP_ID = env('PORTIS_DAPP_ID')
 
 const WEB3_REACT_CONNECTORS = new Map([
   ['injected', new InjectedConnector({ supportedChainIds: [CHAIN_ID] })],
@@ -51,12 +49,9 @@ if (env('PORTIS_DAPP_ID')) {
 }
 
 function logError(err, ...messages) {
-  typeof window !== 'undefined' ? window.alert : console.log
-
   if (typeof window !== 'undefined') {
     window.alert(messages.join(' '))
   }
-
   console.error(...messages, err)
 }
 

@@ -17,7 +17,7 @@ import {
 import Token from './Token'
 import EthIdenticon from './EthIdenticon'
 
-function AccountModule({ compact }) {
+function AccountModule() {
   const { account } = useWeb3Connect()
   return account ? <ConnectedMode /> : null
 }
@@ -31,10 +31,17 @@ function ConnectedMode() {
   const balanceAnj = useJurorRegistryAnjBalance()
   const balanceEth = useEthBalance()
   const balanceAnt = useTokenBalance('ANT')
+  const balanceDai = useTokenBalance('DAI')
+  const balanceUsdc = useTokenBalance('USDC')
   const antDecimals = useTokenDecimals('ANT')
   const anjDecimals = useTokenDecimals('ANJ')
+  const daiDecimals = useTokenDecimals('DAI')
+  const usdcDecimals = useTokenDecimals('USDC')
   const antToUsd = useTokenBalanceToUsd('ANT', antDecimals, balanceAnt)
-  const ethToUsd = useTokenBalanceToUsd('ETH', antDecimals, balanceEth)
+  const daiToUsd = useTokenBalanceToUsd('DAI', daiDecimals, balanceDai)
+  const ethToUsd = useTokenBalanceToUsd('ETH', 18, balanceEth)
+  const usdcToUsd = useTokenBalanceToUsd('USDC', usdcDecimals, balanceUsdc)
+
   const containerRef = useRef()
 
   return (
@@ -58,10 +65,24 @@ function ConnectedMode() {
                 </div>
               </Row>
               <Row>
+                <Token symbol="DAI" />
+                <div>
+                  <p>{formatUnits(balanceDai, { digits: daiDecimals })}</p>
+                  <p>${daiToUsd}</p>
+                </div>
+              </Row>
+              <Row>
                 <Token symbol="ETH" />
                 <div>
-                  <p>{formatUnits(balanceEth, { digits: antDecimals })}</p>
+                  <p>{formatUnits(balanceEth, { digits: 18 })}</p>
                   <p>${ethToUsd}</p>
+                </div>
+              </Row>
+              <Row>
+                <Token symbol="USDC" />
+                <div>
+                  <p>{formatUnits(balanceUsdc, { digits: usdcDecimals })}</p>
+                  <p>${usdcToUsd}</p>
                 </div>
               </Row>
               <Row>

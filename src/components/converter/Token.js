@@ -1,7 +1,5 @@
 import React from 'react'
 import styled from 'styled-components'
-import { breakpoint } from '../../microsite-logic'
-const medium = css => breakpoint('medium', css)
 
 function Token({ symbol, badge }) {
   return (
@@ -20,7 +18,6 @@ const TokenSection = styled.div`
   align-items: center;
   height: 38px;
   padding: 0 8px;
-  cursor: default;
   &.badge {
     top: -5px;
     margin: 0 5px;
@@ -28,6 +25,7 @@ const TokenSection = styled.div`
     border-radius: 100px;
   }
   > div {
+    flex-shrink: 1;
     display: flex;
     align-items: center;
     font-weight: 400;
@@ -36,8 +34,8 @@ const TokenSection = styled.div`
     margin: 0;
   }
   img {
-    flex-shrink: 0;
     flex-grow: 0;
+    flex-shrink: 0;
     margin: 0 6px 0 2px;
   }
   span {
