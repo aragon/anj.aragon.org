@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import * as Sentry from '@sentry/browser'
 import { OverlayTrigger, Tooltip } from 'react-bootstrap'
-import { toWei, fromWei } from 'web3-utils'
+import { toWei } from 'web3-utils'
 import {
   useTokenDecimals,
   useConvertTokenToAnj,
@@ -35,14 +35,29 @@ function convertInputValue(value, fromDecimals, toDecimals, convert) {
   }
 
   // fromAmount and toAmount are the parsed values (BigNumber instances).
-  const fromAmount = parseUnits(value)
+  const fromAmount = parseUnits(value, { digits: fromDecimals })
   if (fromAmount.lt(0)) {
     return null
   }
 
-  const toAmount = bigNum(
-    fromWei(convert(fromAmount).toString(), 'ether').split('.')[0]
-  )
+  // notes on the token conversion's decimal units:
+  //   - to keep precision high, the conversion's resulting decimal units are
+  //     [input token's decimals] * 18
+  //   - for illustration an input token with:
+  //     - 18 decimals will result in a value with 36 decimals (18 + 18)
+  //     - 6 decimals will result in a value with 24 decimals (18 + 6)
+  //   - to get this converted value into the output token's decimals base, we can
+  //     break down the units of [input token * conversion = x * output token] to
+  //       [input decimals + 18 = x + output decimals], and then
+  //       [x = 18 + input decimals - output decimals]
+  //   - for illustration:
+  //     - for an input decimals of 18 and output decimals of 6: x = 30
+  //     - for an input decimals of 18 and output decimals of 18: x = 18
+  const convertedBaseAmount = convert(fromAmount).toString() // units: 18 + input decimals
+  // As we always floor on divides, we can use string truncation to convert
+  const truncateTo = Math.max(0, convertedBaseAmount.length - (18 + fromDecimals - toDecimals))
+  const toAmount = bigNum(convertedBaseAmount.slice(0, truncateTo))
+
   // fromInputValue and toInputValue are filtered values to be set on inputs (strings).
   const fromInputValue = value
   const toInputValue = formatUnits(toAmount, {
@@ -53,13 +68,19 @@ function convertInputValue(value, fromDecimals, toDecimals, convert) {
 }
 
 // Convert the two input values as the user types
-function useConvertInputs(tokenToAntRate, antToTokenRate) {
+function useConvertInputs(symbol, tokenToAntRate, antToTokenRate) {
   const [inputValueAnj, setInputValueAnj] = useState('')
   const [inputValueToken, setInputValueToken] = useState('')
   const [amountAnj, setAmountAnj] = useState(bigNum(0))
   const [amountToken, setAmountToken] = useState(bigNum(0))
   const antDecimals = useTokenDecimals('ANT')
   const anjDecimals = useTokenDecimals('ANJ')
+  const usdcDecimals = useTokenDecimals('USDC')
+
+  const tokenDecimals = useMemo(
+    () => (symbol === 'USDC' ? usdcDecimals : antDecimals),
+    [antDecimals, symbol, usdcDecimals]
+  )
 
   // Reset the inputs anytime the selected token changes
   useEffect(() => {
@@ -73,13 +94,12 @@ function useConvertInputs(tokenToAntRate, antToTokenRate) {
   const setEditModeToken = useCallback(
     editMode => {
       const units = formatUnits(amountToken, {
-        // FIXME: change decimals based on token
-        digits: antDecimals,
+        digits: tokenDecimals,
         commas: !editMode,
       })
       setInputValueToken(units)
     },
-    [amountToken, antDecimals]
+    [amountToken, tokenDecimals]
   )
 
   const setEditModeAnj = useCallback(
@@ -96,14 +116,14 @@ function useConvertInputs(tokenToAntRate, antToTokenRate) {
 
   const handleInputTokenChange = useCallback(
     event => {
-      if (antDecimals === -1 || anjDecimals === -1) {
+      if (tokenDecimals === -1 || anjDecimals === -1) {
         return
       }
 
       const properTokenRate = bigNum(toWei(tokenToAntRate.toString()))
       const converted = convertInputValue(
         event.target.value,
-        antDecimals,
+        tokenDecimals,
         anjDecimals,
         amount => properTokenRate.mul(amount).mul(100)
       )
@@ -117,12 +137,12 @@ function useConvertInputs(tokenToAntRate, antToTokenRate) {
       setAmountToken(converted.fromAmount)
       setAmountAnj(converted.toAmount)
     },
-    [antDecimals, anjDecimals, tokenToAntRate]
+    [tokenDecimals, anjDecimals, tokenToAntRate]
   )
 
   const handleAnjChange = useCallback(
     event => {
-      if (antDecimals === -1 || anjDecimals === -1) {
+      if (tokenDecimals === -1 || anjDecimals === -1) {
         return
       }
 
@@ -130,7 +150,7 @@ function useConvertInputs(tokenToAntRate, antToTokenRate) {
       const converted = convertInputValue(
         event.target.value,
         anjDecimals,
-        antDecimals,
+        tokenDecimals,
         amount => properTokenRate.mul(amount).div(100)
       )
 
@@ -143,7 +163,7 @@ function useConvertInputs(tokenToAntRate, antToTokenRate) {
       setAmountAnj(converted.fromAmount)
       setAmountToken(converted.toAmount)
     },
-    [antDecimals, anjDecimals, antToTokenRate]
+    [tokenDecimals, anjDecimals, antToTokenRate]
   )
 
   return {
@@ -172,7 +192,11 @@ function FormSection() {
     handleInputTokenChange,
     inputValueAnj,
     inputValueToken,
-  } = useConvertInputs(tokenRate.rate, tokenRate.rateInverted)
+  } = useConvertInputs(
+    options[selectedOption],
+    tokenRate.rate,
+    tokenRate.rateInverted
+  )
 
   const convertTokenToAnj = useConvertTokenToAnj(options[selectedOption])
   const postEmail = usePostEmail()
