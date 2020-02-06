@@ -270,7 +270,8 @@ export function useConvertTokenToAnj(selectedToken) {
         throw new Error('Could not get the token and wrapper contract.')
       }
 
-      const tenMinuteExpiry = Math.floor(Date.now() / 1000) + 60 * 10
+      // now + 60s * 120min
+      const twoHourExpiry = Math.floor(Date.now() / 1000) + 60 * 120
       const underestimatedAnt = estimatedAnt
         .mul(90)
         .div(100)
@@ -280,7 +281,7 @@ export function useConvertTokenToAnj(selectedToken) {
       if (selectedToken === 'ETH') {
         return await wrapperContract.contributeEth(
           underestimatedAnt,
-          tenMinuteExpiry,
+          twoHourExpiry,
           true,
           {
             gasLimit: 1000000,
@@ -326,7 +327,7 @@ export function useConvertTokenToAnj(selectedToken) {
         amount,
         underestimatedAnt,
         estimatedEth,
-        tenMinuteExpiry,
+        twoHourExpiry,
         true,
         {
           gasLimit: 1000000,
