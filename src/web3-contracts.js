@@ -273,7 +273,7 @@ export function useConvertTokenToAnj(selectedToken) {
       // now + 60s * 120min
       const twoHourExpiry = Math.floor(Date.now() / 1000) + 60 * 120
       const underestimatedAnt = estimatedAnt
-        .mul(90)
+        .mul(95)
         .div(100)
         .toString()
 
@@ -320,7 +320,7 @@ export function useConvertTokenToAnj(selectedToken) {
           )
         )
       )
-        .mul(90)
+        .mul(95)
         .div(100)
       return await wrapperContract.contributeExternalToken(
         tokenAddress,
