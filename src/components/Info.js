@@ -1,42 +1,97 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import styled from 'styled-components'
 import { breakpoint } from '../microsite-logic'
+import { FIRST_TERM, PREACTIVATION_END } from '../utils'
 import infoBackground from './assets/info-background.svg'
 import anj from './assets/anj-logo.png'
 
 const large = css => breakpoint('large', css)
 const medium = css => breakpoint('medium', css)
 
-const Info = () => (
-  <InfoSection>
-    <InfoWrapper>
-      <TextContainer>
-        <TitleWrapper>
-          <Img src={anj} alt="" />
-          <h2 className="pink header">
-            Pre-activation ends when Aragon Court Launches on Feb 10th
-          </h2>
-        </TitleWrapper>
-        <br />
-        <p className="content">
-          On February 10th, when Aragon Court's first term begins, jurors will
-          be able to deactivate and unstake ANJ using the jurors dashboard. In
-          the meantime, you can check your active balance by connecting your
-          wallet to the{' '}
-          <a className="pink" href="#get-anj">
-            conversion module.
-          </a>
-        </p>
-        <br />
-        <p className="content">
-          When the pre-activation phase ends, ANJ will be available at a
-          variable rate. Price discovery will be automated by a bonding curve
-          and it will vary based on supply and demand.
-        </p>
-      </TextContainer>
-    </InfoWrapper>
-  </InfoSection>
-)
+const Info = () => {
+  const { title, content } = useMemo(() => {
+    const now = new Date()
+
+    if (now > FIRST_TERM) {
+      return {
+        title: 'Aragon Court has launched',
+        content: (
+          <>
+            <p className="content">
+              As a juror, you can now access your ANJ by using the jurors
+              dashboard. You can still check your active balance by connecting
+              your wallet to the{' '}
+              <a className="pink" href="#get-anj">
+                conversion module.
+              </a>
+            </p>
+            <br />
+            <p className="content">
+              ANJ is now available at a variable rate, based on supply and
+              demand. Price discovery is automated by a bonding curve.
+            </p>
+          </>
+        ),
+      }
+    } else if (now > PREACTIVATION_END) {
+      return {
+        title: 'Aragon Court will be launching soon',
+        content: (
+          <>
+            <p className="content">
+              When Aragon Court's first term begins today at 16:00 UTC, jurors
+              will be able to deactivate and unstake ANJ using the jurors
+              dashboard.
+            </p>
+            <br />
+            <p className="content">
+              ANJ is now available at a variable rate, based on supply and
+              demand. Price discovery is automated by a bonding curve.
+            </p>
+          </>
+        ),
+      }
+    }
+
+    return {
+      title: 'Pre-activation ends when Aragon Court Launches on Feb 10th',
+      content: (
+        <>
+          <p className="content">
+            On February 10th, when Aragon Court's first term begins, jurors will
+            be able to deactivate and unstake ANJ using the jurors dashboard. In
+            the meantime, you can check your active balance by connecting your
+            wallet to the{' '}
+            <a className="pink" href="#get-anj">
+              conversion module.
+            </a>
+          </p>
+          <br />
+          <p className="content">
+            When the pre-activation phase ends, ANJ will be available at a
+            variable rate. Price discovery will be automated by a bonding curve
+            and it will vary based on supply and demand.
+          </p>
+        </>
+      ),
+    }
+  }, [])
+
+  return (
+    <InfoSection>
+      <InfoWrapper>
+        <TextContainer>
+          <TitleWrapper>
+            <Img src={anj} alt="" />
+            <h2 className="pink header">{title}</h2>
+          </TitleWrapper>
+          <br />
+          {content}
+        </TextContainer>
+      </InfoWrapper>
+    </InfoSection>
+  )
+}
 
 const InfoSection = styled.section`
   background: linear-gradient(210.76deg, #fffaf1 -3.6%, #ffebeb 216.17%);
@@ -73,9 +128,9 @@ const TextContainer = styled.div`
     line-height: 1;
     margin: 0;
   }
-a {
-display: inline;
-}
+  a {
+    display: inline;
+  }
   .pink {
     color: rgba(1, 191, 227);
     background: linear-gradient(
@@ -99,7 +154,6 @@ display: inline;
 const Img = styled.img`
   width: 50px;
   height: 50px;
-  margin: auto;
   margin-right: 8px;
 `
 

@@ -1,17 +1,26 @@
 import React from 'react'
 import styled from 'styled-components'
+import { PREACTIVATION_END } from '../../utils'
 
 function Info() {
+  const preactivationActive = new Date() < PREACTIVATION_END
   return (
     <InfoIn>
       <h1>Please read</h1>
       <ul>
         <li>Minimum 10,000 ANJ is required to become a juror.</li>
-        <li>The pre-activation period ends February 10th.</li>
-        <li>1 ANT = 100 ANJ during pre-activation period only.</li>
+        <li>
+          The pre-activation period {preactivationActive ? 'ends' : 'ended'}{' '}
+          February 10th.
+        </li>
+        {preactivationActive && (
+          <li>1 ANT = 100 ANJ during pre-activation period only.</li>
+        )}
         <li>ANT will be converted to ANJ.</li>
         <li>
-          ANJ will be automatically activated and locked until February 10th.
+          {preactivationActive
+            ? 'ANJ will be automatically activated and locked until February 10th.'
+            : 'You can manage your activate ANJ by going to the jurors dashboard.'}
         </li>
       </ul>
     </InfoIn>

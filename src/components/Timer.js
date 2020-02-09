@@ -79,14 +79,17 @@ class Timer extends React.Component {
 
   render() {
     const countDown = this.state
+    const hasDays = countDown.days > 0
 
     return (
       <Container>
-        <div>
-          <p>
-            <span>{this.addLeadingZeros(countDown.days)}</span> D
-          </p>
-        </div>
+        {hasDays && (
+          <div>
+            <p>
+              <span>{this.addLeadingZeros(countDown.days)}</span> D
+            </p>
+          </div>
+        )}
         <div>
           <p>
             <span>{this.addLeadingZeros(countDown.hours)}</span> H
@@ -97,11 +100,13 @@ class Timer extends React.Component {
             <span>{this.addLeadingZeros(countDown.min)}</span> M
           </p>
         </div>
-        <div>
-          <p>
-            <span>{this.addLeadingZeros(countDown.sec)}</span> S
-          </p>
-        </div>
+        {!hasDays && (
+          <div>
+            <p>
+              <span>{this.addLeadingZeros(countDown.sec)}</span> S
+            </p>
+          </div>
+        )}
       </Container>
     )
   }
