@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { ACTIVATION_START } from '../utils'
 import { breakpoint } from '../microsite-logic'
-import Countdown from './Countdown'
+import Timer from './Timer'
 
 import content from './assets/convert-module.png'
 import lock from './assets/lock.svg'
@@ -18,7 +18,7 @@ const GetAnj = () => (
       <img src={lock} alt="" />
       <div>
         <p>Time to unlock </p>
-        <Countdown date={ACTIVATION_START} />
+        <Timer date={ACTIVATION_START} />
       </div>
     </a>
   </GetAnjSection>

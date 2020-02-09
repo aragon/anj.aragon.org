@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import Timer from './Timer'
+import Timer from '../Timer'
 import { breakpoint } from '../../microsite-logic'
 import { ACTIVATION_END } from '../../utils'
 
