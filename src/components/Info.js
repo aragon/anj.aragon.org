@@ -41,7 +41,7 @@ function Info() {
         content: (
           <>
             <p className="content">
-              When Aragon Court's first term begins today at 16:00 UTC, jurors
+              When Aragon Court’s first term begins today at 16:00 UTC, jurors
               will be able to deactivate and unstake ANJ using the jurors
               dashboard.
             </p>
@@ -60,7 +60,7 @@ function Info() {
       content: (
         <>
           <p className="content">
-            On February 10th, when Aragon Court's first term begins, jurors will
+            On February 10th, when Aragon Court’s first term begins, jurors will
             be able to deactivate and unstake ANJ using the jurors dashboard. In
             the meantime, you can check your active balance by connecting your
             wallet to the{' '}
