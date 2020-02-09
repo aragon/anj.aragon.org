@@ -73,6 +73,19 @@ export function useAnJurors() {
   return [jurors, activeAnj]
 }
 
+export function useNow(updateEvery = 1000) {
+  const [now, setNow] = useState(new Date())
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setNow(new Date())
+    }, updateEvery)
+    return () => {
+      clearInterval(timer)
+    }
+  }, [updateEvery])
+  return now
+}
+
 export function useUniswapTokenRate(symbol) {
   const [tokenRates, setTokenRates] = useState(DEFAULT_RATE_STATE)
   const [tokenAddress] = getKnownContract(`TOKEN_${symbol}`)
@@ -160,5 +173,7 @@ export const CSS_UNSELECTABLE = `
   user-select: none;
 `
 
-export const ACTIVATION_START = new Date('January 7, 2020 18:00:00 GMT+0000')
-export const ACTIVATION_END = new Date('February 10, 2020 00:00:00 GMT+0000')
+export const FIRST_TERM = new Date('February 10, 2020 16:00:00 GMT+0000')
+export const PREACTIVATION_END = new Date('February 10, 2020 00:00:00 GMT+0000')
+export const PREACTIVATION_LOCKED = new Date(PREACTIVATION_END.getTime() - 15 * 1000) // 15s before end
+export const PREACTIVATION_START = new Date('January 7, 2020 18:00:00 GMT+0000')

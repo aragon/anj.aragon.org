@@ -1,30 +1,30 @@
 import React from 'react'
 import styled from 'styled-components'
-import { ACTIVATION_START } from '../utils'
-import { breakpoint } from '../microsite-logic'
-import Countdown from './Countdown'
+import { breakpoint } from '../../microsite-logic'
+import { FIRST_TERM } from '../../utils'
+import Timer from '../Timer'
 
-import content from './assets/convert-module.png'
-import lock from './assets/lock.svg'
-import contentMobile from './assets/convert-module-mobile.png'
+import content from '../assets/convert-module.png'
+import lock from '../assets/lock.svg'
+import contentMobile from '../assets/convert-module-mobile.png'
 
 const medium = css => breakpoint('medium', css)
 
-const GetAnj = () => (
-  <GetAnjSection id="get-anj">
+const LockedConventer = () => (
+  <LockedConventerSection id="get-anj">
     <Content className="medium" src={content} />
     <Content className="mobile" src={contentMobile} />
-    <a href="#subscribe">
+    <a href="#how-it-works">
       <img src={lock} alt="" />
       <div>
-        <p>Time to unlock </p>
-        <Countdown date={ACTIVATION_START} />
+        <p>The world's first digital jurisdiction opens in </p>
+        <Timer date={FIRST_TERM} />
       </div>
     </a>
-  </GetAnjSection>
+  </LockedConventerSection>
 )
 
-const GetAnjSection = styled.section`
+const LockedConventerSection = styled.section`
   background: linear-gradient(
     to top,
     #fff 0%,
@@ -43,7 +43,7 @@ const GetAnjSection = styled.section`
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 290px;
+    width: 328px;
     background: #ffffff;
     border: 2px solid rgba(212, 220, 227, 0.5);
     box-sizing: border-box;
@@ -64,14 +64,15 @@ const GetAnjSection = styled.section`
       align-items: center;
       color: #8a96a0;
       margin: 0;
+      padding-bottom: 8px;
       ${medium('font-size: 23px;')};
     }
-    ${medium('width: 365px;')};
+    ${medium('width: 376px;')};
   }
   a img {
-    max-width: 106px;
+    max-width: 94px;
     padding-right: 10px;
-    ${medium('padding-right: 28px;')};
+    ${medium('padding-right: 16px;')};
   }
   .mobile {
     display: inline;
@@ -88,4 +89,4 @@ const Content = styled.img`
   ${medium('max-width: calc(80% + 30px);')};
 `
 
-export default GetAnj
+export default LockedConventer

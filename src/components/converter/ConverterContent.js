@@ -2,11 +2,11 @@ import React from 'react'
 import styled from 'styled-components'
 import { breakpoint } from '../../microsite-logic'
 import { useWeb3Connect } from '../../web3-connect'
+import Callout from './Callout'
 import Form from './Form'
 import Balance from './Balance'
-import Providers from './Providers'
 import Info from './Info'
-import Countdown from './Countdown'
+import Providers from './Providers'
 
 const large = css => breakpoint('large', css)
 
@@ -18,7 +18,7 @@ function ConverterContent() {
       <div className="secondary">
         <Balance />
         <Info />
-        <Countdown />
+        <Callout />
       </div>
       <div className="primary-mobile">{account ? <Form /> : <Providers />}</div>
     </Content>
@@ -27,7 +27,6 @@ function ConverterContent() {
 
 const Content = styled.div`
   display: flex;
-  align-items: center;
   justify-content: space-between;
   flex-direction: column;
   padding: 20px 15px 40px 15px;

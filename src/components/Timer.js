@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 
-class Countdown extends React.Component {
+class Timer extends React.Component {
   constructor(props) {
     super(props)
 
@@ -16,7 +16,7 @@ class Countdown extends React.Component {
   componentDidMount() {
     // update every second
     this.interval = setInterval(() => {
-      const date = this.calculateCountdown(this.props.date)
+      const date = this.calculateTimer(this.props.date)
       date ? this.setState(date) : this.stop()
     }, 1000)
   }
@@ -25,7 +25,7 @@ class Countdown extends React.Component {
     this.stop()
   }
 
-  calculateCountdown(endDate) {
+  calculateTimer(endDate) {
     let diff = (Date.parse(new Date(endDate)) - Date.parse(new Date())) / 1000
 
     // clear countdown when date is reached
@@ -79,14 +79,17 @@ class Countdown extends React.Component {
 
   render() {
     const countDown = this.state
+    const hasDays = countDown.days > 0
 
     return (
       <Container>
-        <div>
-          <p>
-            <span>{this.addLeadingZeros(countDown.days)}</span> D
-          </p>
-        </div>
+        {hasDays && (
+          <div>
+            <p>
+              <span>{this.addLeadingZeros(countDown.days)}</span> D
+            </p>
+          </div>
+        )}
         <div>
           <p>
             <span>{this.addLeadingZeros(countDown.hours)}</span> H
@@ -97,11 +100,13 @@ class Countdown extends React.Component {
             <span>{this.addLeadingZeros(countDown.min)}</span> M
           </p>
         </div>
-        <div>
-          <p>
-            <span>{this.addLeadingZeros(countDown.sec)}</span> S
-          </p>
-        </div>
+        {!hasDays && (
+          <div>
+            <p>
+              <span>{this.addLeadingZeros(countDown.sec)}</span> S
+            </p>
+          </div>
+        )}
       </Container>
     )
   }
@@ -110,17 +115,17 @@ class Countdown extends React.Component {
 const Container = styled.div`
   position: relative;
   display: flex;
-  margin: 0 -7px;
+  margin: 0 -10px;
   div {
-    padding: 0 7px !important;
+    padding: 0 10px;
     span {
       color: black;
     }
   }
 `
 
-Countdown.defaultProps = {
+Timer.defaultProps = {
   date: new Date(),
 }
 
-export default Countdown
+export default Timer

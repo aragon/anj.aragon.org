@@ -55,7 +55,10 @@ function convertInputValue(value, fromDecimals, toDecimals, convert) {
   //     - for an input decimals of 18 and output decimals of 18: x = 18
   const convertedBaseAmount = convert(fromAmount).toString() // units: 18 + input decimals
   // As we always floor on divides, we can use string truncation to convert
-  const truncateTo = Math.max(0, convertedBaseAmount.length - (18 + fromDecimals - toDecimals))
+  const truncateTo = Math.max(
+    0,
+    convertedBaseAmount.length - (18 + fromDecimals - toDecimals)
+  )
   const toAmount = bigNum(convertedBaseAmount.slice(0, truncateTo))
 
   // fromInputValue and toInputValue are filtered values to be set on inputs (strings).
@@ -375,15 +378,16 @@ function FormSection() {
           delay={{ hide: 400 }}
           overlay={props => (
             <Tooltip {...props} show="true">
-              If you enter your email address, we will notify you directly when
+              By entering your email address, we will notify you directly when
               the court is live and how you can participate in upcoming court
               cases. Since there are financial penalties for not participating
-              in cases you are drafted in, we strongly recommend signing up for
-              court notifications via email.
+              in cases you are drafted in, we would like all jurors to sign up
+              for court notifications via email.
             </Tooltip>
           )}
         >
           <Label>
+            {/* TODO: update to "Notify me about actions I need to take as a juror" */}
             Notify me when the Court is live
             <img src={question} alt="" />
           </Label>
