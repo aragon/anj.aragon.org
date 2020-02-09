@@ -73,6 +73,19 @@ export function useAnJurors() {
   return [jurors, activeAnj]
 }
 
+export function useNow(updateEvery = 1000) {
+  const [now, setNow] = useState(new Date())
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setNow(new Date())
+    }, updateEvery)
+    return () => {
+      clearInterval(timer)
+    }
+  }, [updateEvery])
+  return now
+}
+
 export function useUniswapTokenRate(symbol) {
   const [tokenRates, setTokenRates] = useState(DEFAULT_RATE_STATE)
   const [tokenAddress] = getKnownContract(`TOKEN_${symbol}`)

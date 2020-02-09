@@ -1,13 +1,14 @@
 import React from 'react'
 import styled from 'styled-components'
 import { breakpoint } from '../../microsite-logic'
-import { PREACTIVATION_END } from '../../utils'
+import { useNow, PREACTIVATION_END } from '../../utils'
 import Timer from '../Timer'
 
 const medium = css => breakpoint('medium', css)
 
-const Callout = () => {
-  const preactivationActive = new Date() < PREACTIVATION_END
+function Callout() {
+  const now = useNow(5000) // update every 5s
+  const preactivationActive = now < PREACTIVATION_END
   return (
     <CalloutContainer>
       {preactivationActive ? (

@@ -10,10 +10,10 @@ import Hero from '../components/Hero'
 import Info from '../components/Info'
 import Stats from '../components/Stats'
 import Subscribe from '../components/Subscribe'
-import { FIRST_TERM, PREACTIVATION_LOCKED } from '../utils'
+import { useNow, FIRST_TERM, PREACTIVATION_LOCKED } from '../utils'
 
 export default () => {
-  const now = new Date()
+  const now = useNow()
 	const lockConverter = now <= FIRST_TERM && now >= PREACTIVATION_LOCKED
   return (
     <div>

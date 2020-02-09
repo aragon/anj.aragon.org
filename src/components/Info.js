@@ -1,17 +1,17 @@
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
 import { breakpoint } from '../microsite-logic'
-import { FIRST_TERM, PREACTIVATION_END } from '../utils'
+import { useNow, FIRST_TERM, PREACTIVATION_END } from '../utils'
 import infoBackground from './assets/info-background.svg'
 import anj from './assets/anj-logo.png'
 
 const large = css => breakpoint('large', css)
 const medium = css => breakpoint('medium', css)
 
-const Info = () => {
-  const { title, content } = useMemo(() => {
-    const now = new Date()
+function Info() {
+  const now = useNow(5000) // re-render every 5s
 
+  const { title, content } = useMemo(() => {
     if (now > FIRST_TERM) {
       return {
         title: 'Aragon Court has launched',
@@ -33,7 +33,9 @@ const Info = () => {
           </>
         ),
       }
-    } else if (now > PREACTIVATION_END) {
+    }
+
+    if (now > PREACTIVATION_END) {
       return {
         title: 'Aragon Court will be launching soon',
         content: (
@@ -75,7 +77,7 @@ const Info = () => {
         </>
       ),
     }
-  }, [])
+  }, [now])
 
   return (
     <InfoSection>
