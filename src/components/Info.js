@@ -37,7 +37,7 @@ function Info() {
 
     if (now > PREACTIVATION_END) {
       return {
-        title: 'Aragon Court will be launching soon',
+        title: 'Aragon Court’s first term starts today',
         content: (
           <>
             <p className="content">
