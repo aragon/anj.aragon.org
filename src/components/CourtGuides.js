@@ -9,14 +9,14 @@ const CourtGuides = () => (
     <Card>
       <img src={guide} alt="" />
       <div className="info">
-        <h2>Juror Pre-Activation Guide</h2>
+        <h2>Juror Dashboard User Guide</h2>
         <br />
         <h3>
           Rewards &amp; responsibilities,
           <br /> Step by Step guide
         </h3>
         <br />
-        <a href="https://blog.aragon.org/juror-pre-activation-guide/">
+        <a href="https://help.aragon.org/article/41-aragon-court">
           Read more
         </a>
       </div>
@@ -24,14 +24,14 @@ const CourtGuides = () => (
     <Card>
       <img src={howto} alt="" />{' '}
       <div className="info">
-        <h2>How to get ANJ</h2>
+        <h2>Precedence Campaign</h2>
         <br />
         <h3>
-          The quickest guide to getting ANJ
+          Learn more about the first disputes to be tried
           <br />
         </h3>
         <br />
-        <a href="https://blog.aragon.org/get-anj/">Read more</a>
+        <a href="https://blog.aragon.org/precedence-campaign-primer/">Read more</a>
       </div>
     </Card>
     <Card>
