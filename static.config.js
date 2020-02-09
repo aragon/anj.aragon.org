@@ -22,11 +22,6 @@ export default {
       component: 'src/pages/index',
       getData: () => ({ title: '' }),
     },
-    {
-      path: '/converter',
-      component: 'src/pages/converter',
-      getData: () => ({ title: '' }),
-    },
   ],
   paths: REACT_STATIC_PATHS,
   plugins: [
