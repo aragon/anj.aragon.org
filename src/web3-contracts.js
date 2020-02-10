@@ -7,7 +7,7 @@ import Web3EthContract from 'web3-eth-contract'
 import { bigNum, useUniswapTokenRate } from './utils'
 import { fromWei, toWei } from 'web3-utils'
 
-const PRESALE_ADDR = '0xf89c8752d82972f94a4d1331e010ed6593e8ec49'
+const NETWORK_AGENT_ADDR = '0x5E8c17A6065C35b172B10E80493D2266e2947DF4'
 const contractsCache = new Map()
 
 export function useContract(address, abi, signer = true) {
@@ -353,7 +353,7 @@ export function useAntStaked() {
       Web3EthContract.setProvider('wss://mainnet.eth.aragon.network/ws')
       const ANT_ADDR = getKnownContract('TOKEN_ANT')[0]
       const ant = new Web3EthContract(tokenBalanceOfAbi, ANT_ADDR)
-      const antStaked = await ant.methods.balanceOf(PRESALE_ADDR).call()
+      const antStaked = await ant.methods.balanceOf(NETWORK_AGENT_ADDR).call()
       setAntStaked(String(antStaked))
     }
     fetchAntStaked()
