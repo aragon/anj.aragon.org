@@ -9,6 +9,7 @@ import { fromWei, toWei } from 'web3-utils'
 
 const NETWORK_AGENT_ADDR = '0x5E8c17A6065C35b172B10E80493D2266e2947DF4'
 const NETWORK_RESERVE_ADDR = '0xec0dd1579551964703246becfbf199c27cb84485'
+
 const contractsCache = new Map()
 
 export function useContract(address, abi, signer = true) {
