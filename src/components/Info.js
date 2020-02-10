@@ -18,12 +18,12 @@ function Info() {
         content: (
           <>
             <p className="content">
-              As a juror, you can now access your ANJ by using the{' '}
-              <a className="pink" href="http://court.aragon.org/">
-                {' '}
-                jurors dashboard
+              As a juror, you can now access your ANJ by using the jurors
+              dashboard. You can still check your active balance by connecting
+              your wallet to the{' '}
+              <a className="pink" href="#get-anj">
+                conversion module.
               </a>
-              .
             </p>
             <br />
             <p className="content">
