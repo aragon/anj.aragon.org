@@ -406,10 +406,6 @@ function FormSection() {
           <Anchor href="https://anj.aragon.org/legal/terms-general.pdf">
             court terms
           </Anchor>
-          , the{' '}
-          <Anchor href="https://anj.aragon.org/legal/terms-jurors.pdf">
-            juror terms
-          </Anchor>{' '}
           and the{' '}
           <Anchor href="https://aragon.one/email-collection.md">
             email collection policy
