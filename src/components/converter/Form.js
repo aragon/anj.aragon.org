@@ -128,7 +128,7 @@ function useConvertInputs(symbol, tokenToAntRate, antToTokenRate) {
         event.target.value,
         tokenDecimals,
         anjDecimals,
-        amount => properTokenRate.mul(amount).mul(100)
+        amount => properTokenRate.mul(amount)
       )
 
       if (converted === null) {
@@ -154,7 +154,7 @@ function useConvertInputs(symbol, tokenToAntRate, antToTokenRate) {
         event.target.value,
         anjDecimals,
         tokenDecimals,
-        amount => properTokenRate.mul(amount).div(100)
+        amount => properTokenRate.mul(amount)
       )
 
       if (converted === null) {
