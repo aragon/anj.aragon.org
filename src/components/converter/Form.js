@@ -25,6 +25,8 @@ const options = ['ANT', 'DAI', 'ETH', 'USDC']
 const ANJ_MIN_REQUIRED = bigNum(10)
   .pow(18)
   .mul(10000)
+const SLIPPAGE_LOWER_BOUND = bigNum(toWei('9900'))
+const SLIPPAGE_UPPER_BOUND = bigNum(toWei('10100'))
 
 // Convert an input value (e.g. ANT) into another one (e.g. ANJ).
 function convertInputValue(value, fromDecimals, toDecimals, convert) {
@@ -280,6 +282,7 @@ function FormSection() {
     amountAnj,
     selectedTokenBalance,
   ])
+
   const disabled = Boolean(
     !inputValueToken.trim() ||
       !inputValueAnj.trim() ||
@@ -288,6 +291,14 @@ function FormSection() {
       !/[^@]+@[^@]+/.test(email) ||
       !acceptTerms
   )
+
+  const slippageError = useMemo(() => {
+    const isRegistryBalanceZero = balanceAnj.eq(0)
+    const isAmountCloseToSlippageError =
+      amountAnj.gt(SLIPPAGE_LOWER_BOUND) && amountAnj.lt(SLIPPAGE_UPPER_BOUND)
+    return isRegistryBalanceZero && isAmountCloseToSlippageError
+  }, [amountAnj, balanceAnj])
+
   const handleSelect = useCallback(
     optionIndex => setSelectedOption(optionIndex),
     []
@@ -369,6 +380,11 @@ function FormSection() {
                 </>
               ) : (
                 ' ' // prevent page jumps when selecting a token
+              )}
+              {slippageError && (
+                <span className="error">
+                  Due to a slippage error, this transaction could fail.
+                </span>
               )}
             </Info>
           </InputBox>
