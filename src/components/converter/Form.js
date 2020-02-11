@@ -229,7 +229,7 @@ function FormSection() {
         : CONVERTER_STATUSES.SIGNING
     )
     try {
-      const tx = await convertTokenToAnj(amountToken, amountAnj.div(100))
+      const tx = await convertTokenToAnj(amountToken, amountAnj)
       converterStatus.setStatus(CONVERTER_STATUSES.PENDING)
       await tx.wait(1)
       converterStatus.setStatus(CONVERTER_STATUSES.SUCCESS)
