@@ -17,7 +17,12 @@ function Callout() {
           <Timer date={PREACTIVATION_END} />
         </>
       ) : (
-        <p>Manage your ANJ balance from the dashboard</p>
+        <p>
+          Manage your ANJ balance from the{' '}
+          <a className="pink" href="http://court.aragon.org/">
+            dashboard
+          </a>
+        </p>
       )}
     </CalloutContainer>
   )
@@ -36,6 +41,25 @@ const CalloutContainer = styled.div`
     ${medium('line-height: 38px !important;')};
   }
   ${medium('padding: 20px 40px;')};
+
+  .pink {
+    color: rgba(1, 191, 227);
+    background: linear-gradient(
+      to right,
+      #ff7c7c 20%,
+      #ffc58f 40%,
+      #ffc58f 60%,
+      #ff7c7c 80%
+    );
+    background-size: 200% auto;
+    background-clip: text;
+    text-fill-color: transparent;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+
+    animation: shine 4s linear infinite;
+    ${medium('display: inline;')};
+  }
 `
 
 export default Callout

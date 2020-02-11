@@ -267,16 +267,16 @@ export function useConvertTokenToAnj(selectedToken) {
   const ethToAnjRate = useUniswapTokenRate('ETH')
 
   return useCallback(
-    async (amount, estimatedAnj) => {
+    async (amount, estimatedAnj, activate = true) => {
       if ((!tokenContract && selectedToken !== 'ETH') || !wrapperAddress) {
         throw new Error('Could not get the token and wrapper contract.')
       }
 
       // now + 60s * 120min
       const twoHourExpiry = Math.floor(Date.now() / 1000) + 60 * 120
-      const underestimatedAnj = calculateSlippageAmount(estimatedAnj).toString()
+      const minAnj = calculateSlippageAmount(estimatedAnj).toString()
 
-      const estimatedEth = calculateSlippageAmount(
+      const minEth = calculateSlippageAmount(
         bigNum(
           toWei(
             String(
@@ -290,7 +290,7 @@ export function useConvertTokenToAnj(selectedToken) {
       // If the user has selected ETH, we can just send the ETH to the function
       if (selectedToken === 'ETH') {
         return await wrapperContract.contributeEth(
-          underestimatedAnj,
+          minAnj,
           twoHourExpiry,
           true,
           {
@@ -303,12 +303,12 @@ export function useConvertTokenToAnj(selectedToken) {
       // If the user has selected ANT, we can directly
       // approve and call the wrapper using ANT's approveAndCall
       if (selectedToken === 'ANT') {
-        const encodedActivation = '1'.padStart(64, '0')
-        const encodedMinTokens = bigNum(underestimatedAnj)
+        const encodedActivation = (activate ? '1' : '0').padStart(64, '0')
+        const encodedMinTokens = bigNum(minAnj)
           .toHexString()
           .slice(2)
           .padStart(64, '0')
-        const encodedMinEth = estimatedEth
+        const encodedMinEth = minEth
           .toHexString()
           .slice(2)
           .padStart(64, '0')
@@ -320,6 +320,7 @@ export function useConvertTokenToAnj(selectedToken) {
           gasLimit: 1000000,
         })
       }
+
       // else, we may need two transactions:
       //   1. the approval if we don't have enough allowance,
       //   2. the token contribution
@@ -338,8 +339,8 @@ export function useConvertTokenToAnj(selectedToken) {
       return await wrapperContract.contributeExternalToken(
         tokenAddress,
         amount,
-        underestimatedAnj,
-        estimatedEth,
+        minAnj,
+        minEth,
         twoHourExpiry,
         true,
         {

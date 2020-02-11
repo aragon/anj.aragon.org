@@ -184,7 +184,4 @@ export const CSS_UNSELECTABLE = `
 
 export const FIRST_TERM = new Date('February 10, 2020 16:00:00 GMT+0000')
 export const PREACTIVATION_END = new Date('February 10, 2020 00:00:00 GMT+0000')
-export const PREACTIVATION_LOCKED = new Date(
-  PREACTIVATION_END.getTime() - 15 * 1000
-) // 15s before end
 export const PREACTIVATION_START = new Date('January 7, 2020 18:00:00 GMT+0000')

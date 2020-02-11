@@ -232,7 +232,7 @@ function FormSection() {
         : CONVERTER_STATUSES.SIGNING
     )
     try {
-      const tx = await convertTokenToAnj(amountToken, amountAnj.div(100))
+      const tx = await convertTokenToAnj(amountToken, amountAnj)
       converterStatus.setStatus(CONVERTER_STATUSES.PENDING)
       await tx.wait(1)
       converterStatus.setStatus(CONVERTER_STATUSES.SUCCESS)
@@ -250,10 +250,10 @@ function FormSection() {
     options[selectedOption] === 'ETH' ? ethBalance : tokenBalance
 
   useEffect(() => {
-    if (balanceAnj && balanceAnj.gte(bigNum(String(10000)))) {
+    if (balanceAnj && balanceAnj.gte(bigNum('10000'))) {
       setPlaceholder('')
     } else {
-      setPlaceholder('Min. 100 ANT')
+      setPlaceholder('Min. 10,000 ANJ')
     }
   }, [balanceAnj])
 
@@ -295,7 +295,7 @@ function FormSection() {
       !acceptTerms
   )
 
-  const slippageError = useMemo(() => {
+  const slippageWarning = useMemo(() => {
     const totalAmount = balanceAnj.add(amountAnj)
     const slippageWarning =
       totalAmount.gt(ANJ_MIN_REQUIRED) &&
@@ -340,7 +340,6 @@ function FormSection() {
             onFocus={() => setEditModeToken(true)}
             onSelect={handleSelect}
             selectedOption={selectedOption}
-            placeholder={placeholder}
           />
           <Info>
             <span>Balance:{` ${formattedTokenBalance}`}</span>
@@ -358,15 +357,22 @@ function FormSection() {
                 onChange={handleAnjChange}
                 onBlur={() => setEditModeAnj(false)}
                 onFocus={() => setEditModeAnj(true)}
+                placeholder={placeholder}
               />
               <Adornment>
                 <Token symbol="ANJ" />
               </Adornment>
             </AdornmentBox>
-            <Info>
-              {options[selectedOption] !== 'ANT' ? (
+            <Info style={{ minHeight: '24px' }}>
+              {amountToken.gt(0) && (
                 <>
-                  This amount is an approximation.
+                  {slippageWarning ? (
+                    <span className="warning">
+                      The transaction may fail if the price of ANJ increases.
+                    </span>
+                  ) : (
+                    'This amount is an approximation.'
+                  )}
                   <OverlayTrigger
                     show="true"
                     placement="top"
@@ -375,20 +381,21 @@ function FormSection() {
                       <Tooltip {...props} show="true">
                         As this transaction will use an external, decentralized
                         exchange, we will not know the final exchange rate until
-                        your transaction is mined.
+                        your transaction is mined.{' '}
+                        {slippageWarning && (
+                          <p>
+                            If the price of ANJ increases before you transaction
+                            is mined, you will not reach the required 10,000 ANJ
+                            to successfully activate as a juror and the
+                            transaction will fail.
+                          </p>
+                        )}
                       </Tooltip>
                     )}
                   >
                     <span className="insight"> Why?</span>
                   </OverlayTrigger>
                 </>
-              ) : (
-                ' ' // prevent page jumps when selecting a token
-              )}
-              {slippageError && (
-                <span className="warning">
-                  Due to a slippage error, this transaction could fail.
-                </span>
               )}
             </Info>
           </InputBox>
@@ -399,9 +406,9 @@ function FormSection() {
           overlay={props => (
             <Tooltip {...props} show="true">
               By entering your email address, we will notify you directly about
-              necessary actions you'll need to take and how you can participate
-              in upcoming court cases. Since there are financial penalties for
-              not participating in cases you are drafted in, we would like all
+              any necessary actions you'll need to take as a juror in upcoming
+              court cases. Since there are financial penalties for not
+              participating in cases you are drafted in, we would like all
               jurors to sign up for court notifications via email.
             </Tooltip>
           )}
