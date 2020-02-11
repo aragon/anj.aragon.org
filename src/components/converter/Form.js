@@ -292,7 +292,7 @@ function FormSection() {
       !acceptTerms
   )
 
-  const slippageError = useMemo(() => {
+  const slippageWarning = useMemo(() => {
     const isRegistryBalanceZero = balanceAnj.eq(0)
     const isAmountCloseToSlippageError =
       amountAnj.gt(SLIPPAGE_LOWER_BOUND) && amountAnj.lt(SLIPPAGE_UPPER_BOUND)
@@ -359,10 +359,16 @@ function FormSection() {
                 <Token symbol="ANJ" />
               </Adornment>
             </AdornmentBox>
-            <Info>
-              {options[selectedOption] !== 'ANT' ? (
+            <Info style={{ minHeight: '24px' }}>
+              {amountToken.gt(0) && (
                 <>
-                  This amount is an approximation.
+                  {slippageWarning ? (
+                    <span className="warning">
+                      The transaction may fail if the price of ANJ increases.
+                    </span>
+                  ) : (
+                    'This amount is an approximation.'
+                  )}
                   <OverlayTrigger
                     show="true"
                     placement="top"
@@ -371,20 +377,21 @@ function FormSection() {
                       <Tooltip {...props} show="true">
                         As this transaction will use an external, decentralized
                         exchange, we will not know the final exchange rate until
-                        your transaction is mined.
+                        your transaction is mined.{' '}
+                        {slippageWarning && (
+                          <p>
+                            If the price of ANJ increases before you transaction
+                            is mined, you will not reach the required 10,000 ANJ
+                            to successfully activate as a juror and the
+                            transaction will fail.
+                          </p>
+                        )}
                       </Tooltip>
                     )}
                   >
                     <span className="insight"> Why?</span>
                   </OverlayTrigger>
                 </>
-              ) : (
-                ' ' // prevent page jumps when selecting a token
-              )}
-              {slippageError && (
-                <span className="warning">
-                  Due to a slippage error, this transaction could fail.
-                </span>
               )}
             </Info>
           </InputBox>
