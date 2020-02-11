@@ -402,9 +402,9 @@ function FormSection() {
           overlay={props => (
             <Tooltip {...props} show="true">
               By entering your email address, we will notify you directly about
-              necessary actions you'll need to take and how you can participate
-              in upcoming court cases. Since there are financial penalties for
-              not participating in cases you are drafted in, we would like all
+              any necessary actions you'll need to take as a juror in upcoming
+              court cases. Since there are financial penalties for not
+              participating in cases you are drafted in, we would like all
               jurors to sign up for court notifications via email.
             </Tooltip>
           )}
