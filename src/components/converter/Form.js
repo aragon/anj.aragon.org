@@ -10,7 +10,12 @@ import {
   useJurorRegistryAnjBalance,
   useEthBalance,
 } from '../../web3-contracts'
-import { bigNum, usePostEmail, useUniswapTokenRate } from '../../utils'
+import {
+  bigNum,
+  calculateSlippageAmount,
+  usePostEmail,
+  useUniswapTokenRate,
+} from '../../utils'
 import { breakpoint, GU } from '../../microsite-logic'
 import { formatUnits, parseUnits } from '../../web3-utils'
 import { useConverterStatus, CONVERTER_STATUSES } from './converter-status'
@@ -25,8 +30,6 @@ const options = ['ANT', 'DAI', 'ETH', 'USDC']
 const ANJ_MIN_REQUIRED = bigNum(10)
   .pow(18)
   .mul(10000)
-const SLIPPAGE_LOWER_BOUND = bigNum(toWei('9900'))
-const SLIPPAGE_UPPER_BOUND = bigNum(toWei('10100'))
 
 // Convert an input value (e.g. ANT) into another one (e.g. ANJ).
 function convertInputValue(value, fromDecimals, toDecimals, convert) {
@@ -293,10 +296,11 @@ function FormSection() {
   )
 
   const slippageError = useMemo(() => {
-    const isRegistryBalanceZero = balanceAnj.eq(0)
-    const isAmountCloseToSlippageError =
-      amountAnj.gt(SLIPPAGE_LOWER_BOUND) && amountAnj.lt(SLIPPAGE_UPPER_BOUND)
-    return isRegistryBalanceZero && isAmountCloseToSlippageError
+    const totalAmount = balanceAnj.add(amountAnj)
+    const slippageWarning =
+      totalAmount.gt(ANJ_MIN_REQUIRED) &&
+      calculateSlippageAmount(totalAmount).lt(ANJ_MIN_REQUIRED)
+    return slippageWarning
   }, [amountAnj, balanceAnj])
 
   const handleSelect = useCallback(
@@ -482,7 +486,7 @@ const Info = styled.div`
     color: #ff6969;
   }
   .warning {
-    color: #ffb36e;
+    color: #f5a623;
   }
   .insight {
     color: #516dff;

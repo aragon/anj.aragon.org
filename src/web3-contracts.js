@@ -4,7 +4,7 @@ import { getKnownContract } from './known-contracts'
 import tokenBalanceOfAbi from './token-balanceof.json'
 import { useWeb3Connect } from './web3-connect'
 import Web3EthContract from 'web3-eth-contract'
-import { bigNum, useUniswapTokenRate } from './utils'
+import { calculateSlippageAmount, bigNum, useUniswapTokenRate } from './utils'
 import { fromWei, toWei } from 'web3-utils'
 
 const NETWORK_AGENT_ADDR = '0x5E8c17A6065C35b172B10E80493D2266e2947DF4'
@@ -274,20 +274,18 @@ export function useConvertTokenToAnj(selectedToken) {
 
       // now + 60s * 120min
       const twoHourExpiry = Math.floor(Date.now() / 1000) + 60 * 120
-      const underestimatedAnj = estimatedAnj
-        .mul(95)
-        .div(100)
-        .toString()
-      const estimatedEth = bigNum(
-        toWei(
-          String(
-            parseFloat(ethToAnjRate.rateInverted.toString()) *
-              parseFloat(fromWei(estimatedAnj.toString(), 'ether'))
+      const underestimatedAnj = calculateSlippageAmount(estimatedAnj).toString()
+
+      const estimatedEth = calculateSlippageAmount(
+        bigNum(
+          toWei(
+            String(
+              parseFloat(ethToAnjRate.rateInverted.toString()) *
+                parseFloat(fromWei(estimatedAnj.toString(), 'ether'))
+            )
           )
         )
       )
-        .mul(95)
-        .div(100)
 
       // If the user has selected ETH, we can just send the ETH to the function
       if (selectedToken === 'ETH') {
@@ -305,16 +303,19 @@ export function useConvertTokenToAnj(selectedToken) {
       // If the user has selected ANT, we can directly
       // approve and call the wrapper using ANT's approveAndCall
       if (selectedToken === 'ANT') {
-        const encodedActivation = ethers.utils.hexlify(bigNum(1)).split('0x')[1]
-        const encodedMinTokens = ethers.utils
-          .hexlify(underestimatedAnj)
-          .split('0x')[1]
-        const encodedMinEth = ethers.utils.hexlify(estimatedEth).split('0x')[1]
-        const encodedDeadline = ethers.utils
-          .hexlify(twoHourExpiry)
-          .split('0x')[1]
+        const encodedActivation = '1'.padStart(64, '0')
+        const encodedMinTokens = bigNum(underestimatedAnj)
+          .toHexString()
+          .slice(2)
+          .padStart(64, '0')
+        const encodedMinEth = estimatedEth
+          .toHexString()
+          .slice(2)
+          .padStart(64, '0')
+        const encodedDeadline = twoHourExpiry.toString(16).padStart(64, '0')
 
         const data = `0x${encodedActivation}${encodedMinTokens}${encodedMinEth}${encodedDeadline}`
+
         return tokenContract.approveAndCall(wrapperAddress, amount, data, {
           gasLimit: 1000000,
         })

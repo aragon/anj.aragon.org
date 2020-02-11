@@ -11,6 +11,7 @@ import { getKnownContract } from './known-contracts'
 const GQL_ENDPOINT =
   'https://api.thegraph.com/subgraphs/name/aragon/aragon-court'
 
+const SLIPPAGE_PERCENTAGE = bigNum(95)
 const FETCH_RETRY_DELAY = 1000
 const DEFAULT_RATE_STATE = {
   rate: bigNum(0),
@@ -21,6 +22,14 @@ export function noop() {}
 
 export function bigNum(value) {
   return new EthersUtils.BigNumber(value)
+}
+
+export function getSlippagePercentage() {
+  return SLIPPAGE_PERCENTAGE
+}
+
+export function calculateSlippageAmount(value) {
+  return value.mul(SLIPPAGE_PERCENTAGE).div(100)
 }
 
 export function useAnJurors() {
