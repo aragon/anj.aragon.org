@@ -73,7 +73,7 @@ function convertInputValue(value, fromDecimals, toDecimals, convert) {
 }
 
 // Convert the two input values as the user types
-function useConvertInputs(symbol, tokenToAntRate, antToTokenRate) {
+function useConvertInputs(symbol, tokenToAnjRate, anjToTokenRate) {
   const [inputValueAnj, setInputValueAnj] = useState('')
   const [inputValueToken, setInputValueToken] = useState('')
   const [amountAnj, setAmountAnj] = useState(bigNum(0))
@@ -93,7 +93,7 @@ function useConvertInputs(symbol, tokenToAntRate, antToTokenRate) {
     setInputValueAnj('')
     setAmountAnj(bigNum(0))
     setAmountToken(bigNum(0))
-  }, [tokenToAntRate])
+  }, [tokenToAnjRate])
 
   // Alternate the comma-separated format, based on the fields focus state.
   const setEditModeToken = useCallback(
@@ -125,7 +125,7 @@ function useConvertInputs(symbol, tokenToAntRate, antToTokenRate) {
         return
       }
 
-      const properTokenRate = bigNum(toWei(tokenToAntRate.toString()))
+      const properTokenRate = bigNum(toWei(tokenToAnjRate.toString()))
       const converted = convertInputValue(
         event.target.value,
         tokenDecimals,
@@ -142,7 +142,7 @@ function useConvertInputs(symbol, tokenToAntRate, antToTokenRate) {
       setAmountToken(converted.fromAmount)
       setAmountAnj(converted.toAmount)
     },
-    [tokenDecimals, anjDecimals, tokenToAntRate]
+    [tokenDecimals, anjDecimals, tokenToAnjRate]
   )
 
   const handleAnjChange = useCallback(
@@ -151,7 +151,7 @@ function useConvertInputs(symbol, tokenToAntRate, antToTokenRate) {
         return
       }
 
-      const properTokenRate = bigNum(toWei(antToTokenRate.toString()))
+      const properTokenRate = bigNum(toWei(anjToTokenRate.toString()))
       const converted = convertInputValue(
         event.target.value,
         anjDecimals,
@@ -168,7 +168,7 @@ function useConvertInputs(symbol, tokenToAntRate, antToTokenRate) {
       setAmountAnj(converted.fromAmount)
       setAmountToken(converted.toAmount)
     },
-    [tokenDecimals, anjDecimals, antToTokenRate]
+    [tokenDecimals, anjDecimals, anjToTokenRate]
   )
 
   return {
@@ -394,17 +394,16 @@ function FormSection() {
           delay={{ hide: 400 }}
           overlay={props => (
             <Tooltip {...props} show="true">
-              By entering your email address, we will notify you directly when
-              the court is live and how you can participate in upcoming court
-              cases. Since there are financial penalties for not participating
-              in cases you are drafted in, we would like all jurors to sign up
-              for court notifications via email.
+              By entering your email address, we will notify you directly about
+              necessary actions you'll need to take and how you can participate
+              in upcoming court cases. Since there are financial penalties for
+              not participating in cases you are drafted in, we would like all
+              jurors to sign up for court notifications via email.
             </Tooltip>
           )}
         >
           <Label>
-            {/* TODO: update to "Notify me about actions I need to take as a juror" */}
-            Notify me when the Court is live
+            Notify me about actions I need to take as a juror
             <img src={question} alt="" />
           </Label>
         </OverlayTrigger>
