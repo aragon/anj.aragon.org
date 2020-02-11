@@ -382,7 +382,7 @@ function FormSection() {
                 ' ' // prevent page jumps when selecting a token
               )}
               {slippageError && (
-                <span className="error">
+                <span className="warning">
                   Due to a slippage error, this transaction could fail.
                 </span>
               )}
@@ -480,6 +480,9 @@ const Info = styled.div`
   color: #212b36;
   .error {
     color: #ff6969;
+  }
+  .warning {
+    color: #ffb36e;
   }
   .insight {
     color: #516dff;

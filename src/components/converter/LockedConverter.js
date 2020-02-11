@@ -10,8 +10,8 @@ import contentMobile from '../assets/convert-module-mobile.png'
 
 const medium = css => breakpoint('medium', css)
 
-const LockedConventer = () => (
-  <LockedConventerSection id="get-anj">
+const LockedConverter = () => (
+  <LockedConverterSection id="get-anj">
     <Content className="medium" src={content} />
     <Content className="mobile" src={contentMobile} />
     <a href="#how-it-works">
@@ -21,10 +21,10 @@ const LockedConventer = () => (
         <Timer date={FIRST_TERM} />
       </div>
     </a>
-  </LockedConventerSection>
+  </LockedConverterSection>
 )
 
-const LockedConventerSection = styled.section`
+const LockedConverterSection = styled.section`
   background: linear-gradient(
     to top,
     #fff 0%,
@@ -89,4 +89,4 @@ const Content = styled.img`
   ${medium('max-width: calc(80% + 30px);')};
 `
 
-export default LockedConventer
+export default LockedConverter
