@@ -250,7 +250,7 @@ function FormSection() {
     if (balanceAnj && balanceAnj.gte(bigNum(String(10000)))) {
       setPlaceholder('')
     } else {
-      setPlaceholder('Min. 100 ANT')
+      setPlaceholder('Min. 10,000 ANJ')
     }
   }, [balanceAnj])
 
@@ -336,7 +336,6 @@ function FormSection() {
             onFocus={() => setEditModeToken(true)}
             onSelect={handleSelect}
             selectedOption={selectedOption}
-            placeholder={placeholder}
           />
           <Info>
             <span>Balance:{` ${formattedTokenBalance}`}</span>
@@ -354,6 +353,7 @@ function FormSection() {
                 onChange={handleAnjChange}
                 onBlur={() => setEditModeAnj(false)}
                 onFocus={() => setEditModeAnj(true)}
+                placeholder={placeholder}
               />
               <Adornment>
                 <Token symbol="ANJ" />
