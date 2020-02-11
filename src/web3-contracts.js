@@ -274,11 +274,11 @@ export function useConvertTokenToAnj(selectedToken) {
 
       // now + 60s * 120min
       const twoHourExpiry = Math.floor(Date.now() / 1000) + 60 * 120
-      const underestimatedAnj = estimatedAnj
+      const minAnj = estimatedAnj
         .mul(95)
         .div(100)
         .toString()
-      const estimatedEth = bigNum(
+      const minEth = bigNum(
         toWei(
           String(
             parseFloat(ethToAnjRate.rateInverted.toString()) *
@@ -292,7 +292,7 @@ export function useConvertTokenToAnj(selectedToken) {
       // If the user has selected ETH, we can just send the ETH to the function
       if (selectedToken === 'ETH') {
         return await wrapperContract.contributeEth(
-          underestimatedAnj,
+          minAnj,
           twoHourExpiry,
           true,
           {
@@ -307,9 +307,9 @@ export function useConvertTokenToAnj(selectedToken) {
       if (selectedToken === 'ANT') {
         const encodedActivation = ethers.utils.hexlify(bigNum(1)).split('0x')[1]
         const encodedMinTokens = ethers.utils
-          .hexlify(underestimatedAnj)
+          .hexlify(minAnj)
           .split('0x')[1]
-        const encodedMinEth = ethers.utils.hexlify(estimatedEth).split('0x')[1]
+        const encodedMinEth = ethers.utils.hexlify(minEth).split('0x')[1]
         const encodedDeadline = ethers.utils
           .hexlify(twoHourExpiry)
           .split('0x')[1]
@@ -319,6 +319,7 @@ export function useConvertTokenToAnj(selectedToken) {
           gasLimit: 1000000,
         })
       }
+
       // else, we may need two transactions:
       //   1. the approval if we don't have enough allowance,
       //   2. the token contribution
@@ -337,8 +338,8 @@ export function useConvertTokenToAnj(selectedToken) {
       return await wrapperContract.contributeExternalToken(
         tokenAddress,
         amount,
-        underestimatedAnj,
-        estimatedEth,
+        minAnj,
+        minEth,
         twoHourExpiry,
         true,
         {

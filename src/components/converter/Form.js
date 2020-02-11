@@ -247,7 +247,7 @@ function FormSection() {
     options[selectedOption] === 'ETH' ? ethBalance : tokenBalance
 
   useEffect(() => {
-    if (balanceAnj && balanceAnj.gte(bigNum(String(10000)))) {
+    if (balanceAnj && balanceAnj.gte(bigNum('10000'))) {
       setPlaceholder('')
     } else {
       setPlaceholder('Min. 10,000 ANJ')
