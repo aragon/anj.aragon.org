@@ -10,7 +10,12 @@ import {
   useJurorRegistryAnjBalance,
   useEthBalance,
 } from '../../web3-contracts'
-import { bigNum, usePostEmail, useUniswapTokenRate } from '../../utils'
+import {
+  bigNum,
+  calculateSlippageAmount,
+  usePostEmail,
+  useUniswapTokenRate,
+} from '../../utils'
 import { breakpoint, GU } from '../../microsite-logic'
 import { formatUnits, parseUnits } from '../../web3-utils'
 import { useConverterStatus, CONVERTER_STATUSES } from './converter-status'
@@ -71,7 +76,7 @@ function convertInputValue(value, fromDecimals, toDecimals, convert) {
 }
 
 // Convert the two input values as the user types
-function useConvertInputs(symbol, tokenToAntRate, antToTokenRate) {
+function useConvertInputs(symbol, tokenToAnjRate, anjToTokenRate) {
   const [inputValueAnj, setInputValueAnj] = useState('')
   const [inputValueToken, setInputValueToken] = useState('')
   const [amountAnj, setAmountAnj] = useState(bigNum(0))
@@ -91,7 +96,7 @@ function useConvertInputs(symbol, tokenToAntRate, antToTokenRate) {
     setInputValueAnj('')
     setAmountAnj(bigNum(0))
     setAmountToken(bigNum(0))
-  }, [tokenToAntRate])
+  }, [tokenToAnjRate])
 
   // Alternate the comma-separated format, based on the fields focus state.
   const setEditModeToken = useCallback(
@@ -123,12 +128,12 @@ function useConvertInputs(symbol, tokenToAntRate, antToTokenRate) {
         return
       }
 
-      const properTokenRate = bigNum(toWei(tokenToAntRate.toString()))
+      const properTokenRate = bigNum(toWei(tokenToAnjRate.toString()))
       const converted = convertInputValue(
         event.target.value,
         tokenDecimals,
         anjDecimals,
-        amount => properTokenRate.mul(amount).mul(100)
+        amount => properTokenRate.mul(amount)
       )
 
       if (converted === null) {
@@ -140,7 +145,7 @@ function useConvertInputs(symbol, tokenToAntRate, antToTokenRate) {
       setAmountToken(converted.fromAmount)
       setAmountAnj(converted.toAmount)
     },
-    [tokenDecimals, anjDecimals, tokenToAntRate]
+    [tokenDecimals, anjDecimals, tokenToAnjRate]
   )
 
   const handleAnjChange = useCallback(
@@ -149,12 +154,12 @@ function useConvertInputs(symbol, tokenToAntRate, antToTokenRate) {
         return
       }
 
-      const properTokenRate = bigNum(toWei(antToTokenRate.toString()))
+      const properTokenRate = bigNum(toWei(anjToTokenRate.toString()))
       const converted = convertInputValue(
         event.target.value,
         anjDecimals,
         tokenDecimals,
-        amount => properTokenRate.mul(amount).div(100)
+        amount => properTokenRate.mul(amount)
       )
 
       if (converted === null) {
@@ -166,7 +171,7 @@ function useConvertInputs(symbol, tokenToAntRate, antToTokenRate) {
       setAmountAnj(converted.fromAmount)
       setAmountToken(converted.toAmount)
     },
-    [tokenDecimals, anjDecimals, antToTokenRate]
+    [tokenDecimals, anjDecimals, anjToTokenRate]
   )
 
   return {
@@ -227,7 +232,7 @@ function FormSection() {
         : CONVERTER_STATUSES.SIGNING
     )
     try {
-      const tx = await convertTokenToAnj(amountToken, amountAnj.div(100))
+      const tx = await convertTokenToAnj(amountToken, amountAnj)
       converterStatus.setStatus(CONVERTER_STATUSES.PENDING)
       await tx.wait(1)
       converterStatus.setStatus(CONVERTER_STATUSES.SUCCESS)
@@ -245,10 +250,10 @@ function FormSection() {
     options[selectedOption] === 'ETH' ? ethBalance : tokenBalance
 
   useEffect(() => {
-    if (balanceAnj && balanceAnj.gte(bigNum(String(10000)))) {
+    if (balanceAnj && balanceAnj.gte(bigNum('10000'))) {
       setPlaceholder('')
     } else {
-      setPlaceholder('Min. 100 ANT')
+      setPlaceholder('Min. 10,000 ANJ')
     }
   }, [balanceAnj])
 
@@ -280,6 +285,7 @@ function FormSection() {
     amountAnj,
     selectedTokenBalance,
   ])
+
   const disabled = Boolean(
     !inputValueToken.trim() ||
       !inputValueAnj.trim() ||
@@ -288,6 +294,15 @@ function FormSection() {
       !/[^@]+@[^@]+/.test(email) ||
       !acceptTerms
   )
+
+  const slippageWarning = useMemo(() => {
+    const totalAmount = balanceAnj.add(amountAnj)
+    const slippageWarning =
+      totalAmount.gt(ANJ_MIN_REQUIRED) &&
+      calculateSlippageAmount(totalAmount).lt(ANJ_MIN_REQUIRED)
+    return slippageWarning
+  }, [amountAnj, balanceAnj])
+
   const handleSelect = useCallback(
     optionIndex => setSelectedOption(optionIndex),
     []
@@ -325,7 +340,6 @@ function FormSection() {
             onFocus={() => setEditModeToken(true)}
             onSelect={handleSelect}
             selectedOption={selectedOption}
-            placeholder={placeholder}
           />
           <Info>
             <span>Balance:{` ${formattedTokenBalance}`}</span>
@@ -343,15 +357,22 @@ function FormSection() {
                 onChange={handleAnjChange}
                 onBlur={() => setEditModeAnj(false)}
                 onFocus={() => setEditModeAnj(true)}
+                placeholder={placeholder}
               />
               <Adornment>
                 <Token symbol="ANJ" />
               </Adornment>
             </AdornmentBox>
-            <Info>
-              {options[selectedOption] !== 'ANT' ? (
+            <Info style={{ minHeight: '24px' }}>
+              {amountToken.gt(0) && (
                 <>
-                  This amount is an approximation.
+                  {slippageWarning ? (
+                    <span className="warning">
+                      The transaction may fail if the price of ANJ increases.
+                    </span>
+                  ) : (
+                    'This amount is an approximation.'
+                  )}
                   <OverlayTrigger
                     show="true"
                     placement="top"
@@ -360,15 +381,21 @@ function FormSection() {
                       <Tooltip {...props} show="true">
                         As this transaction will use an external, decentralized
                         exchange, we will not know the final exchange rate until
-                        your transaction is mined.
+                        your transaction is mined.{' '}
+                        {slippageWarning && (
+                          <p>
+                            If the price of ANJ increases before you transaction
+                            is mined, you will not reach the required 10,000 ANJ
+                            to successfully activate as a juror and the
+                            transaction will fail.
+                          </p>
+                        )}
                       </Tooltip>
                     )}
                   >
                     <span className="insight"> Why?</span>
                   </OverlayTrigger>
                 </>
-              ) : (
-                ' ' // prevent page jumps when selecting a token
               )}
             </Info>
           </InputBox>
@@ -378,17 +405,16 @@ function FormSection() {
           delay={{ hide: 400 }}
           overlay={props => (
             <Tooltip {...props} show="true">
-              By entering your email address, we will notify you directly when
-              the court is live and how you can participate in upcoming court
-              cases. Since there are financial penalties for not participating
-              in cases you are drafted in, we would like all jurors to sign up
-              for court notifications via email.
+              By entering your email address, we will notify you directly about
+              any necessary actions you'll need to take as a juror in upcoming
+              court cases. Since there are financial penalties for not
+              participating in cases you are drafted in, we would like all
+              jurors to sign up for court notifications via email.
             </Tooltip>
           )}
         >
           <Label>
-            {/* TODO: update to "Notify me about actions I need to take as a juror" */}
-            Notify me when the Court is live
+            Notify me about actions I need to take as a juror
             <img src={question} alt="" />
           </Label>
         </OverlayTrigger>
@@ -405,7 +431,7 @@ function FormSection() {
           By clicking on “Become a juror”, you are accepting the{' '}
           <Anchor href="https://anj.aragon.org/legal/terms-general.pdf">
             court terms
-          </Anchor>
+          </Anchor>{' '}
           and the{' '}
           <Anchor href="https://aragon.one/email-collection.md">
             email collection policy
@@ -465,6 +491,9 @@ const Info = styled.div`
   color: #212b36;
   .error {
     color: #ff6969;
+  }
+  .warning {
+    color: #f5a623;
   }
   .insight {
     color: #516dff;

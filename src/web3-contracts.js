@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
-import { Contract as EthersContract } from 'ethers'
+import { ethers, Contract as EthersContract } from 'ethers'
 import { getKnownContract } from './known-contracts'
 import tokenBalanceOfAbi from './token-balanceof.json'
 import { useWeb3Connect } from './web3-connect'
 import Web3EthContract from 'web3-eth-contract'
-import { bigNum, useUniswapTokenRate } from './utils'
+import { calculateSlippageAmount, bigNum, useUniswapTokenRate } from './utils'
 import { fromWei, toWei } from 'web3-utils'
 
 const NETWORK_AGENT_ADDR = '0x5E8c17A6065C35b172B10E80493D2266e2947DF4'
@@ -264,29 +264,37 @@ export function useConvertTokenToAnj(selectedToken) {
   const wrapperContract = useKnownContract(`WRAPPER`)
   const [tokenAddress] = getKnownContract(`TOKEN_${selectedToken}`)
   const [wrapperAddress] = getKnownContract('WRAPPER')
-  const ethToAntRate = useUniswapTokenRate('ETH')
+  const ethToAnjRate = useUniswapTokenRate('ETH')
 
   return useCallback(
-    async (amount, estimatedAnt) => {
+    async (amount, estimatedAnj, activate = true) => {
       if ((!tokenContract && selectedToken !== 'ETH') || !wrapperAddress) {
         throw new Error('Could not get the token and wrapper contract.')
       }
 
       // now + 60s * 120min
       const twoHourExpiry = Math.floor(Date.now() / 1000) + 60 * 120
-      const underestimatedAnt = estimatedAnt
-        .mul(95)
-        .div(100)
-        .toString()
+      const minAnj = calculateSlippageAmount(estimatedAnj).toString()
+
+      const minEth = calculateSlippageAmount(
+        bigNum(
+          toWei(
+            String(
+              parseFloat(ethToAnjRate.rateInverted.toString()) *
+                parseFloat(fromWei(estimatedAnj.toString(), 'ether'))
+            )
+          )
+        )
+      )
 
       // If the user has selected ETH, we can just send the ETH to the function
       if (selectedToken === 'ETH') {
         return await wrapperContract.contributeEth(
-          underestimatedAnt,
+          minAnj,
           twoHourExpiry,
           true,
           {
-            gasLimit: 1000000,
+            gasLimit: 650000,
             value: amount,
           }
         )
@@ -295,10 +303,31 @@ export function useConvertTokenToAnj(selectedToken) {
       // If the user has selected ANT, we can directly
       // approve and call the wrapper using ANT's approveAndCall
       if (selectedToken === 'ANT') {
-        return tokenContract.approveAndCall(wrapperAddress, amount, '0x00', {
-          gasLimit: 1000000,
+        // We're padding to 64 as we want to create a 32-byte word.
+        const encodedActivation = (activate ? '1' : '0').padStart(64, '0')
+        // bigNumbers can be converted to hex strings directly;
+        // however, as they're returned with '0x' appended at the start,
+        // we shave off the first two characters with '.slice(2)'
+        const encodedMinTokens = bigNum(minAnj)
+          .toHexString()
+          .slice(2)
+          .padStart(64, '0')
+        const encodedMinEth = minEth
+          .toHexString()
+          .slice(2)
+          .padStart(64, '0')
+        // .toString() has an optional parameter to set the base for representing the number;
+        // As we need a hexadecimal string, we set it to base 16.
+        // Note that this method does not append 0x.
+        const encodedDeadline = twoHourExpiry.toString(16).padStart(64, '0')
+
+        const data = `0x${encodedActivation}${encodedMinTokens}${encodedMinEth}${encodedDeadline}`
+
+        return tokenContract.approveAndCall(wrapperAddress, amount, data, {
+          gasLimit: 650000,
         })
       }
+
       // else, we may need two transactions:
       //   1. the approval if we don't have enough allowance,
       //   2. the token contribution
@@ -314,25 +343,15 @@ export function useConvertTokenToAnj(selectedToken) {
         }
       }
 
-      const estimatedEth = bigNum(
-        toWei(
-          String(
-            parseFloat(ethToAntRate.rateInverted.toString()) *
-              parseFloat(fromWei(estimatedAnt.toString(), 'ether'))
-          )
-        )
-      )
-        .mul(95)
-        .div(100)
       return await wrapperContract.contributeExternalToken(
-        tokenAddress,
         amount,
-        underestimatedAnt,
-        estimatedEth,
+        tokenAddress,
+        minAnj,
+        minEth,
         twoHourExpiry,
-        true,
+        activate,
         {
-          gasLimit: 1000000,
+          gasLimit: 650000,
         }
       )
     },
@@ -343,7 +362,7 @@ export function useConvertTokenToAnj(selectedToken) {
       wrapperAddress,
       wrapperContract,
       account,
-      ethToAntRate,
+      ethToAnjRate,
     ]
   )
 }
