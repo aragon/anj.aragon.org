@@ -294,7 +294,7 @@ export function useConvertTokenToAnj(selectedToken) {
           twoHourExpiry,
           true,
           {
-            gasLimit: 1000000,
+            gasLimit: 650000,
             value: amount,
           }
         )
@@ -324,7 +324,7 @@ export function useConvertTokenToAnj(selectedToken) {
         const data = `0x${encodedActivation}${encodedMinTokens}${encodedMinEth}${encodedDeadline}`
 
         return tokenContract.approveAndCall(wrapperAddress, amount, data, {
-          gasLimit: 1000000,
+          gasLimit: 650000,
         })
       }
 
@@ -344,14 +344,14 @@ export function useConvertTokenToAnj(selectedToken) {
       }
 
       return await wrapperContract.contributeExternalToken(
-        tokenAddress,
         amount,
+        tokenAddress,
         minAnj,
         minEth,
         twoHourExpiry,
-        true,
+        activate,
         {
-          gasLimit: 1000000,
+          gasLimit: 650000,
         }
       )
     },
