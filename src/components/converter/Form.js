@@ -431,7 +431,7 @@ function FormSection() {
           By clicking on “Become a juror”, you are accepting the{' '}
           <Anchor href="https://anj.aragon.org/legal/terms-general.pdf">
             court terms
-          </Anchor>
+          </Anchor>{' '}
           and the{' '}
           <Anchor href="https://aragon.one/email-collection.md">
             email collection policy
