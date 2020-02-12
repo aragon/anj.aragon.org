@@ -1,10 +1,12 @@
 import React from 'react'
 import styled from 'styled-components'
+import { formatUnits } from '../../web3-utils'
 import { PREACTIVATION_END } from '../../utils'
-import { useTokenBalance } from '../../web3-contracts'
+import { useTokenBalance, useTokenDecimals } from '../../web3-contracts'
 
 function Info() {
   const balanceAnj = useTokenBalance('ANJ')
+  const anjDecimals = useTokenDecimals('ANJ')
   const preactivationActive = new Date() < PREACTIVATION_END
 
   return (
@@ -12,7 +14,13 @@ function Info() {
       <h1>Please read</h1>
       <ul>
         <li>
-          You currently have {balanceAnj.eq(-1) ? '0' : balanceAnj.toString()}{' '}
+          You currently have{' '}
+          {balanceAnj.eq(-1)
+            ? '0'
+            : formatUnits(balanceAnj, {
+                digits: anjDecimals,
+                truncateToDecimalPlace: 2,
+              })}{' '}
           ANJ in your wallet.
         </li>
         <li>Minimum 10,000 ANJ is required to become a juror.</li>

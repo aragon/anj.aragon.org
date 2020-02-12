@@ -324,7 +324,7 @@ export function useConvertTokenToAnj(selectedToken) {
         const data = `0x${encodedActivation}${encodedMinTokens}${encodedMinEth}${encodedDeadline}`
 
         return tokenContract.approveAndCall(wrapperAddress, amount, data, {
-          gasLimit: 650000,
+          gasLimit: 1000000,
         })
       }
 
