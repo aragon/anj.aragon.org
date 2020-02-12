@@ -303,7 +303,11 @@ export function useConvertTokenToAnj(selectedToken) {
       // If the user has selected ANT, we can directly
       // approve and call the wrapper using ANT's approveAndCall
       if (selectedToken === 'ANT') {
+        // We're padding to 64 as we want to create a 32-byte word.
         const encodedActivation = (activate ? '1' : '0').padStart(64, '0')
+        // bigNumbers can be converted to hex strings directly;
+        // however, as they're returned with '0x' appended at the start,
+        // we shave off the first two characters with '.slice(2)'
         const encodedMinTokens = bigNum(minAnj)
           .toHexString()
           .slice(2)
@@ -312,6 +316,9 @@ export function useConvertTokenToAnj(selectedToken) {
           .toHexString()
           .slice(2)
           .padStart(64, '0')
+        // .toString() has an optional parameter to set the base for representing the number;
+        // As we need a hexadecimal string, we set it to base 16.
+        // Note that this method does not append 0x.
         const encodedDeadline = twoHourExpiry.toString(16).padStart(64, '0')
 
         const data = `0x${encodedActivation}${encodedMinTokens}${encodedMinEth}${encodedDeadline}`

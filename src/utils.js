@@ -24,10 +24,6 @@ export function bigNum(value) {
   return new EthersUtils.BigNumber(value)
 }
 
-export function getSlippagePercentage() {
-  return SLIPPAGE_PERCENTAGE
-}
-
 export function calculateSlippageAmount(value) {
   return value.mul(SLIPPAGE_PERCENTAGE).div(100)
 }
