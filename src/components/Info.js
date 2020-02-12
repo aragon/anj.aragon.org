@@ -21,7 +21,7 @@ function Info() {
               As a juror, you can now access your ANJ by using the{' '}
               <a className="pink" href="http://court.aragon.org/">
                 jurors
-              </a>
+              </a>{' '}
               dashboard. You can still check your active balance by connecting
               your wallet to the conversion module.
             </p>
