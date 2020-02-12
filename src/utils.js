@@ -11,7 +11,6 @@ import { getKnownContract } from './known-contracts'
 const GQL_ENDPOINT =
   'https://api.thegraph.com/subgraphs/name/aragon/aragon-court'
 
-const SLIPPAGE_PERCENTAGE = bigNum(95)
 const FETCH_RETRY_DELAY = 1000
 const DEFAULT_RATE_STATE = {
   rate: bigNum(0),
@@ -22,10 +21,6 @@ export function noop() {}
 
 export function bigNum(value) {
   return new EthersUtils.BigNumber(value)
-}
-
-export function calculateSlippageAmount(value) {
-  return value.mul(SLIPPAGE_PERCENTAGE).div(100)
 }
 
 export function useAnJurors() {
@@ -94,7 +89,7 @@ export function useNow(updateEvery = 1000) {
 export function useUniswapTokenRate(symbol) {
   const [tokenRates, setTokenRates] = useState(DEFAULT_RATE_STATE)
   const [tokenAddress] = getKnownContract(`TOKEN_${symbol}`)
-  const [anjAddress] = getKnownContract(`TOKEN_ANJ`)
+  const [antAddress] = getKnownContract(`TOKEN_ANT`)
 
   useEffect(() => {
     let retryTimer
@@ -102,18 +97,18 @@ export function useUniswapTokenRate(symbol) {
     async function getUniswapRates() {
       let response
       try {
-        const [tokenData, anjData] = await Promise.all(
-          [tokenAddress, anjAddress].map(async address => {
+        const [tokenData, antData] = await Promise.all(
+          [tokenAddress, antAddress].map(async address => {
             if (symbol === 'ETH' && !address) {
               return undefined
             }
             return await getTokenReserves(address, Number(env('CHAIN_ID')))
           })
         )
-        if ((!tokenData && symbol !== 'ETH') || !anjData) {
+        if ((!tokenData && symbol !== 'ETH') || !antData) {
           throw new Error('Could not fetch reserves')
         }
-        response = getMarketDetails(tokenData, anjData)
+        response = getMarketDetails(tokenData, antData)
         setTokenRates({ ...response.marketRate })
       } catch (err) {
         retryTimer = setTimeout(getUniswapRates, FETCH_RETRY_DELAY)
@@ -126,7 +121,7 @@ export function useUniswapTokenRate(symbol) {
     return () => {
       clearTimeout(retryTimer)
     }
-  }, [tokenAddress, anjAddress, symbol])
+  }, [tokenAddress, antAddress, symbol])
 
   return tokenRates
 }
@@ -180,4 +175,5 @@ export const CSS_UNSELECTABLE = `
 
 export const FIRST_TERM = new Date('February 10, 2020 16:00:00 GMT+0000')
 export const PREACTIVATION_END = new Date('February 10, 2020 00:00:00 GMT+0000')
+export const PREACTIVATION_LOCKED = new Date(PREACTIVATION_END.getTime() - 15 * 1000) // 15s before end
 export const PREACTIVATION_START = new Date('January 7, 2020 18:00:00 GMT+0000')

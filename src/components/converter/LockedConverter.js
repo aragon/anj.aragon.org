@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { breakpoint } from '../../microsite-logic'
-import { FIRST_TERM } from '../../utils'
+import { useNow, FIRST_TERM } from '../../utils'
 import Timer from '../Timer'
 
 import content from '../assets/convert-module.png'
@@ -10,21 +10,39 @@ import contentMobile from '../assets/convert-module-mobile.png'
 
 const medium = css => breakpoint('medium', css)
 
-const LockedConverter = () => (
-  <LockedConverterSection id="get-anj">
-    <Content className="medium" src={content} />
-    <Content className="mobile" src={contentMobile} />
-    <a href="#how-it-works">
-      <img src={lock} alt="" />
-      <div>
-        <p>The world's first digital jurisdiction opens in </p>
-        <Timer date={FIRST_TERM} />
-      </div>
-    </a>
-  </LockedConverterSection>
-)
+function LockedConventer() {
+  const now = useNow()
 
-const LockedConverterSection = styled.section`
+  return (
+    <LockedConventerSection id="get-anj">
+      <Content className="medium" src={content} />
+      <Content className="mobile" src={contentMobile} />
+      {now <= FIRST_TERM ? (
+        <a href="#how-it-works">
+          <img src={lock} alt="" />
+          <div>
+            <p>The world’s first digital jurisdiction opens in </p>
+            <Timer date={FIRST_TERM} />
+          </div>
+        </a>
+      ) : (
+        <>
+          <a href="http://court.aragon.org/">
+            <div style={{ padding: '0 15px' }}>
+              <p style={{ display: 'block' }}>
+                Jurors, your dashboard is now available at{' '}
+                <span className="pink">court.aragon.org</span>!
+              </p>
+            </div>
+          </a>
+          <p className="subtitle">The market for ANJ will be reopening soon.</p>
+        </>
+      )}
+    </LockedConventerSection>
+  )
+}
+
+const LockedConventerSection = styled.section`
   background: linear-gradient(
     to top,
     #fff 0%,
@@ -82,6 +100,31 @@ const LockedConverterSection = styled.section`
     display: none;
     ${medium('display: inline;')};
   }
+
+  .subtitle {
+    position: absolute;
+    color: #637380;
+    bottom: 20%;
+  }
+
+  .pink {
+    color: rgba(1, 191, 227);
+    background: linear-gradient(
+      to right,
+      #ff7c7c 20%,
+      #ffc58f 40%,
+      #ffc58f 60%,
+      #ff7c7c 80%
+    );
+    background-size: 200% auto;
+    background-clip: text;
+    text-fill-color: transparent;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+
+    animation: shine 4s linear infinite;
+    ${medium('display: inline;')};
+  }
 `
 const Content = styled.img`
   margin: 0 auto;
@@ -89,4 +132,4 @@ const Content = styled.img`
   ${medium('max-width: calc(80% + 30px);')};
 `
 
-export default LockedConverter
+export default LockedConventer

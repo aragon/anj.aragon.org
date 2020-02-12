@@ -1,20 +1,13 @@
 import React from 'react'
 import styled from 'styled-components'
 import { PREACTIVATION_END } from '../../utils'
-import { useTokenBalance } from '../../web3-contracts'
 
 function Info() {
-  const balanceAnj = useTokenBalance('ANJ')
   const preactivationActive = new Date() < PREACTIVATION_END
-
   return (
     <InfoIn>
       <h1>Please read</h1>
       <ul>
-        <li>
-          You currently have {balanceAnj.eq(-1) ? '0' : balanceAnj.toString()}{' '}
-          ANJ in your wallet.
-        </li>
         <li>Minimum 10,000 ANJ is required to become a juror.</li>
         <li>
           The pre-activation period {preactivationActive ? 'ends' : 'ended'}{' '}
