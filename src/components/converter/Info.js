@@ -19,6 +19,7 @@ function Info() {
             ? '0'
             : formatUnits(balanceAnj, {
                 digits: anjDecimals,
+                replaceZeroBy: '0',
                 truncateToDecimalPlace: 2,
               })}{' '}
           ANJ in your wallet.
