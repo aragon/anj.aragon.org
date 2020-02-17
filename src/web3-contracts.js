@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
-import { ethers, Contract as EthersContract } from 'ethers'
+import { Contract as EthersContract } from 'ethers'
 import { getKnownContract } from './known-contracts'
 import tokenBalanceOfAbi from './token-balanceof.json'
 import { useWeb3Connect } from './web3-connect'
@@ -294,7 +294,7 @@ export function useConvertTokenToAnj(selectedToken) {
           twoHourExpiry,
           true,
           {
-            gasLimit: 650000,
+            gasLimit: 850000,
             value: amount,
           }
         )
@@ -351,7 +351,7 @@ export function useConvertTokenToAnj(selectedToken) {
         twoHourExpiry,
         activate,
         {
-          gasLimit: 650000,
+          gasLimit: 850000,
         }
       )
     },
