@@ -294,6 +294,7 @@ export function useConvertTokenToAnj(selectedToken) {
           twoHourExpiry,
           true,
           {
+            gasLimit: 850000,
             value: amount,
           }
         )
@@ -322,7 +323,9 @@ export function useConvertTokenToAnj(selectedToken) {
 
         const data = `0x${encodedActivation}${encodedMinTokens}${encodedMinEth}${encodedDeadline}`
 
-        return tokenContract.approveAndCall(wrapperAddress, amount, data)
+        return tokenContract.approveAndCall(wrapperAddress, amount, data, {
+          gasLimit: 1000000,
+        })
       }
 
       // else, we may need two transactions:
