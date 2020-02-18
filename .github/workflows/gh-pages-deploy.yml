@@ -24,7 +24,6 @@ jobs:
         SITE_ROOT: 'https://anj.aragon.org/'
         SENTRY_DSN: ${{ secrets.GH_PAGES_SENTRY_DSN }}
         PORTIS_DAPP_ID: ${{ secrets.GH_PAGES_PORTIS_DAPP_ID }}
-        FORTMATIC_SITE_VERIFICATION: ${{ secrets. GH_PAGES_FORTMATIC_SITE_VERIFICATION }}
         FORTMATIC_API_KEY: ${{ secrets.GH_PAGES_FORTMATIC_API_KEY }}
     - name: push to gh-pages
       uses: peaceiris/actions-gh-pages@v2
