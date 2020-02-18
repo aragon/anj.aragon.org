@@ -56,8 +56,6 @@ export default {
     }
     render() {
       const { Html, Head, Body, children, renderMeta } = this.props
-      const fortmaticVerification =
-        process.env.FORTMATIC_SITE_VERIFICATION || null
       return (
         <Html>
           <Head>
@@ -66,12 +64,6 @@ export default {
               name="viewport"
               content="width=device-width, initial-scale=1"
             />
-            {fortmaticVerification && (
-              <meta
-                name="fortmatic-site-verification"
-                content={fortmaticVerification}
-              />
-            )}
             <title>Aragon Court</title>
             <link rel="icon" href="/favicon.png" />
             <link
