@@ -298,7 +298,7 @@ function FormSection() {
   const slippageWarning = useMemo(() => {
     const totalAmount = balanceAnj.add(amountAnj)
     const slippageWarning =
-      totalAmount.gt(ANJ_MIN_REQUIRED) &&
+      totalAmount.gte(ANJ_MIN_REQUIRED) &&
       calculateSlippageAmount(totalAmount).lt(ANJ_MIN_REQUIRED)
     return slippageWarning
   }, [amountAnj, balanceAnj])
