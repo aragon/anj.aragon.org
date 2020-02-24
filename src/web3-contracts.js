@@ -294,7 +294,7 @@ export function useConvertTokenToAnj(selectedToken) {
         ethToAnjAmount
           .multipliedBy(
             new BigNumber('1').minus(
-              ethUniswapSlippage.dividedBy(BASIS_TO_PERCENTAGE)
+              ethUniswapSlippage.dividedBy(BASIS_TO_PERCENTAGE).toPrecision(2)
             )
           )
           .toPrecision(18),
