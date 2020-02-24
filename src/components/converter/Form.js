@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
+import { getTradeDetails, TRADE_EXACT } from '@uniswap/sdk'
 import * as Sentry from '@sentry/browser'
 import { OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { toWei } from 'web3-utils'
@@ -14,7 +15,7 @@ import {
   bigNum,
   calculateSlippageAmount,
   usePostEmail,
-  useUniswapTokenRate,
+  useUniswapMarketDetails,
 } from '../../utils'
 import { breakpoint, GU } from '../../microsite-logic'
 import { formatUnits, parseUnits } from '../../web3-utils'
@@ -76,7 +77,7 @@ function convertInputValue(value, fromDecimals, toDecimals, convert) {
 }
 
 // Convert the two input values as the user types
-function useConvertInputs(symbol, tokenToAnjRate, anjToTokenRate) {
+function useConvertInputs(symbol, marketDetails) {
   const [inputValueAnj, setInputValueAnj] = useState('')
   const [inputValueToken, setInputValueToken] = useState('')
   const [amountAnj, setAmountAnj] = useState(bigNum(0))
@@ -96,7 +97,7 @@ function useConvertInputs(symbol, tokenToAnjRate, anjToTokenRate) {
     setInputValueAnj('')
     setAmountAnj(bigNum(0))
     setAmountToken(bigNum(0))
-  }, [tokenToAnjRate])
+  }, [symbol])
 
   // Alternate the comma-separated format, based on the fields focus state.
   const setEditModeToken = useCallback(
@@ -127,8 +128,16 @@ function useConvertInputs(symbol, tokenToAnjRate, anjToTokenRate) {
       if (tokenDecimals === -1 || anjDecimals === -1) {
         return
       }
-
-      const properTokenRate = bigNum(toWei(tokenToAnjRate.toString()))
+      const executionRate = getTradeDetails(
+        TRADE_EXACT.INPUT,
+        event.target.value ? toWei(event.target.value) : '0',
+        marketDetails
+      ).executionRate
+      const rateToConvert =
+        !executionRate.rate.isNaN() && executionRate.rate.isFinite()
+          ? executionRate.rate.toString()
+          : '0'
+      const properTokenRate = bigNum(toWei(rateToConvert))
       const converted = convertInputValue(
         event.target.value,
         tokenDecimals,
@@ -145,7 +154,7 @@ function useConvertInputs(symbol, tokenToAnjRate, anjToTokenRate) {
       setAmountToken(converted.fromAmount)
       setAmountAnj(converted.toAmount)
     },
-    [tokenDecimals, anjDecimals, tokenToAnjRate]
+    [tokenDecimals, anjDecimals, marketDetails]
   )
 
   const handleAnjChange = useCallback(
@@ -153,8 +162,17 @@ function useConvertInputs(symbol, tokenToAnjRate, anjToTokenRate) {
       if (tokenDecimals === -1 || anjDecimals === -1) {
         return
       }
-
-      const properTokenRate = bigNum(toWei(anjToTokenRate.toString()))
+      const executionRate = getTradeDetails(
+        TRADE_EXACT.OUTPUT,
+        event.target.value ? toWei(event.target.value) : '0',
+        marketDetails
+      ).executionRate
+      const rateToConvert =
+        !executionRate.rateInverted.isNaN() &&
+        executionRate.rateInverted.isFinite()
+          ? executionRate.rateInverted.toString()
+          : '0'
+      const properTokenRate = bigNum(toWei(rateToConvert))
       const converted = convertInputValue(
         event.target.value,
         anjDecimals,
@@ -171,7 +189,7 @@ function useConvertInputs(symbol, tokenToAnjRate, anjToTokenRate) {
       setAmountAnj(converted.fromAmount)
       setAmountToken(converted.toAmount)
     },
-    [tokenDecimals, anjDecimals, anjToTokenRate]
+    [tokenDecimals, anjDecimals, marketDetails]
   )
 
   return {
@@ -190,7 +208,7 @@ function FormSection() {
   const [selectedOption, setSelectedOption] = useState(0)
   const tokenBalance = useTokenBalance(options[selectedOption])
   const ethBalance = useEthBalance()
-  const tokenRate = useUniswapTokenRate(options[selectedOption])
+  const tokenMarketDetails = useUniswapMarketDetails(options[selectedOption])
   const {
     amountAnj,
     amountToken,
@@ -200,11 +218,7 @@ function FormSection() {
     handleInputTokenChange,
     inputValueAnj,
     inputValueToken,
-  } = useConvertInputs(
-    options[selectedOption],
-    tokenRate.rate,
-    tokenRate.rateInverted
-  )
+  } = useConvertInputs(options[selectedOption], tokenMarketDetails)
 
   const convertTokenToAnj = useConvertTokenToAnj(options[selectedOption])
   const postEmail = usePostEmail()

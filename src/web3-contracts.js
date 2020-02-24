@@ -8,8 +8,7 @@ import Web3EthContract from 'web3-eth-contract'
 import {
   calculateSlippageAmount,
   bigNum,
-  useUniswapTokenRate,
-  getUniswapSlippage,
+  useUniswapMarketDetails,
 } from './utils'
 import { fromWei, toWei } from 'web3-utils'
 
@@ -270,9 +269,7 @@ export function useConvertTokenToAnj(selectedToken) {
   const tokenContract = useKnownContract(`TOKEN_${selectedToken}`)
   const wrapperContract = useKnownContract(`WRAPPER`)
   const [tokenAddress] = getKnownContract(`TOKEN_${selectedToken}`)
-  const [anjAddress] = getKnownContract(`TOKEN_ANJ`)
   const [wrapperAddress] = getKnownContract('WRAPPER')
-  const ethToAnjRate = useUniswapTokenRate('ETH')
 
   return useCallback(
     async (amount, estimatedAnj, activate = true) => {
@@ -282,43 +279,9 @@ export function useConvertTokenToAnj(selectedToken) {
 
       // now + 60s * 120min
       const twoHourExpiry = Math.floor(Date.now() / 1000) + 60 * 120
-      const ethToAnjAmount = new BigNumber(
-        fromWei(estimatedAnj.toString(), 'ether')
-      ).multipliedBy(ethToAnjRate.rateInverted)
-      const ethUniswapSlippage = await getUniswapSlippage(
-        undefined,
-        anjAddress,
-        toWei(ethToAnjAmount.precision(6).toString(), 'ether')
-      )
-      const minEth = toWei(
-        ethToAnjAmount
-          .multipliedBy(
-            new BigNumber('1').minus(
-              ethUniswapSlippage.dividedBy(BASIS_TO_PERCENTAGE)
-            )
-          )
-          // As we're getting the ether value here, we can throw away some decimals that
-          // won't affect the price
-          .toPrecision(15),
-        'ether'
-      )
-      const anjUniswapSlippage = await getUniswapSlippage(
-        tokenAddress,
-        anjAddress,
-        amount
-      )
-      const minAnj = toWei(
-        new BigNumber(fromWei(estimatedAnj.toString(), 'ether'))
-          .multipliedBy(
-            new BigNumber('1').minus(
-              anjUniswapSlippage.dividedBy(BASIS_TO_PERCENTAGE).toPrecision(2)
-            )
-          )
-          // Same as above
-          .toPrecision(15)
-          .toString(),
-        'ether'
-      )
+      const minAnj = calculateSlippageAmount(estimatedAnj).toString()
+
+      const minEth = '1'
       // If the user has selected ETH, we can just send the ETH to the function
       if (selectedToken === 'ETH') {
         return await wrapperContract.contributeEth(
@@ -394,8 +357,6 @@ export function useConvertTokenToAnj(selectedToken) {
       wrapperAddress,
       wrapperContract,
       account,
-      ethToAnjRate,
-      anjAddress,
     ]
   )
 }

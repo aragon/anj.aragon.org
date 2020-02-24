@@ -1,12 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { utils as EthersUtils } from 'ethers'
-import BigNumber from 'bignumber.js'
-import {
-  getTokenReserves,
-  getMarketDetails,
-  getTradeDetails,
-  TRADE_EXACT,
-} from '@uniswap/sdk'
+import { getTokenReserves, getMarketDetails } from '@uniswap/sdk'
 import * as Sentry from '@sentry/browser'
 import { request } from 'graphql-request'
 import { toBN } from 'web3-utils'
@@ -19,10 +13,7 @@ const GQL_ENDPOINT =
 
 const SLIPPAGE_PERCENTAGE = bigNum(95)
 const FETCH_RETRY_DELAY = 1000
-const DEFAULT_RATE_STATE = {
-  rate: bigNum(0),
-  rateInverted: bigNum(0),
-}
+const DEFAULT_MARKET_STATE = null 
 
 export function noop() {}
 
@@ -32,27 +23,6 @@ export function bigNum(value) {
 
 export function calculateSlippageAmount(value) {
   return value.mul(SLIPPAGE_PERCENTAGE).div(100)
-}
-
-export async function getUniswapSlippage(
-  fromTokenAddress,
-  toTokenAddress,
-  fromTokenAmount
-) {
-  if (!fromTokenAddress && !toTokenAddress) {
-    throw new Error(
-      'Both addresses cannot be undefined; you cannot convert from ETH to ETH.'
-    )
-  }
-  const fromTokenData = fromTokenAddress
-    ? await getTokenReserves(fromTokenAddress)
-    : undefined
-  const toTokenData = toTokenAddress
-    ? await getTokenReserves(toTokenAddress)
-    : undefined
-  const marketDetails = getMarketDetails(fromTokenData, toTokenData)
-  return getTradeDetails(TRADE_EXACT.INPUT, fromTokenAmount, marketDetails)
-    .executionRateSlippage
 }
 
 export function useAnJurors() {
@@ -118,8 +88,8 @@ export function useNow(updateEvery = 1000) {
   return now
 }
 
-export function useUniswapTokenRate(symbol) {
-  const [tokenRates, setTokenRates] = useState(DEFAULT_RATE_STATE)
+export function useUniswapMarketDetails(symbol) {
+  const [marketDetails, setMarketDetails] = useState(DEFAULT_MARKET_STATE)
   const [tokenAddress] = getKnownContract(`TOKEN_${symbol}`)
   const [anjAddress] = getKnownContract(`TOKEN_ANJ`)
 
@@ -141,7 +111,7 @@ export function useUniswapTokenRate(symbol) {
           throw new Error('Could not fetch reserves')
         }
         response = getMarketDetails(tokenData, anjData)
-        setTokenRates({ ...response.marketRate })
+        setMarketDetails(response)
       } catch (err) {
         retryTimer = setTimeout(getUniswapRates, FETCH_RETRY_DELAY)
         return
@@ -155,7 +125,7 @@ export function useUniswapTokenRate(symbol) {
     }
   }, [tokenAddress, anjAddress, symbol])
 
-  return tokenRates
+  return marketDetails
 }
 
 export function usePostEmail() {
