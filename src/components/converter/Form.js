@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
+import BigNumber from 'bignumber.js'
 import { getTradeDetails, TRADE_EXACT } from '@uniswap/sdk'
 import * as Sentry from '@sentry/browser'
 import { OverlayTrigger, Tooltip } from 'react-bootstrap'
@@ -128,9 +129,15 @@ function useConvertInputs(symbol, marketDetails) {
       if (tokenDecimals === -1 || anjDecimals === -1) {
         return
       }
+      let value = '0'
+      if (event.target.value && symbol === 'USDC') {
+        value = new BigNumber(event.target.value).multipliedBy(10 ** 6).toFixed(6)
+      } else if (event.target.value) {
+        value = new BigNumber(event.target.value).multipliedBy(10 ** 18).toFixed(18)
+      }
       const executionRate = getTradeDetails(
         TRADE_EXACT.INPUT,
-        event.target.value ? toWei(event.target.value) : '0',
+        value,
         marketDetails
       ).executionRate
       const rateToConvert =
@@ -154,7 +161,7 @@ function useConvertInputs(symbol, marketDetails) {
       setAmountToken(converted.fromAmount)
       setAmountAnj(converted.toAmount)
     },
-    [tokenDecimals, anjDecimals, marketDetails]
+    [tokenDecimals, anjDecimals, marketDetails, symbol]
   )
 
   const handleAnjChange = useCallback(
