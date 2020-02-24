@@ -294,10 +294,12 @@ export function useConvertTokenToAnj(selectedToken) {
         ethToAnjAmount
           .multipliedBy(
             new BigNumber('1').minus(
-              ethUniswapSlippage.dividedBy(BASIS_TO_PERCENTAGE).toPrecision(2)
+              ethUniswapSlippage.dividedBy(BASIS_TO_PERCENTAGE)
             )
           )
-          .toPrecision(18),
+          // As we're getting the ether value here, we can throw away some decimals that
+          // won't affect the price
+          .toPrecision(15),
         'ether'
       )
       const anjUniswapSlippage = await getUniswapSlippage(
@@ -312,7 +314,8 @@ export function useConvertTokenToAnj(selectedToken) {
               anjUniswapSlippage.dividedBy(BASIS_TO_PERCENTAGE).toPrecision(2)
             )
           )
-          .toPrecision(18)
+          // Same as above
+          .toPrecision(15)
           .toString(),
         'ether'
       )
