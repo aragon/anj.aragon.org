@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
-import BigNumber from 'bignumber.js'
 import { Contract as EthersContract } from 'ethers'
 import { getKnownContract } from './known-contracts'
 import tokenBalanceOfAbi from './token-balanceof.json'
@@ -8,13 +7,10 @@ import Web3EthContract from 'web3-eth-contract'
 import {
   calculateSlippageAmount,
   bigNum,
-  useUniswapMarketDetails,
 } from './utils'
-import { fromWei, toWei } from 'web3-utils'
 
 const NETWORK_AGENT_ADDR = '0x5E8c17A6065C35b172B10E80493D2266e2947DF4'
 const NETWORK_RESERVE_ADDR = '0xec0dd1579551964703246becfbf199c27cb84485'
-const BASIS_TO_PERCENTAGE = '10000'
 
 const contractsCache = new Map()
 
