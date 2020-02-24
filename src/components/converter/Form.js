@@ -131,9 +131,13 @@ function useConvertInputs(symbol, marketDetails) {
       }
       let value = '0'
       if (event.target.value && symbol === 'USDC') {
-        value = new BigNumber(event.target.value).multipliedBy(10 ** 6).toFixed(6)
+        value = new BigNumber(event.target.value)
+          .multipliedBy(10 ** 6)
+          .toFixed(6)
       } else if (event.target.value) {
-        value = new BigNumber(event.target.value).multipliedBy(10 ** 18).toFixed(18)
+        value = new BigNumber(event.target.value)
+          .multipliedBy(10 ** 18)
+          .toFixed(18)
       }
       const executionRate = getTradeDetails(
         TRADE_EXACT.INPUT,
@@ -142,7 +146,7 @@ function useConvertInputs(symbol, marketDetails) {
       ).executionRate
       const rateToConvert =
         !executionRate.rate.isNaN() && executionRate.rate.isFinite()
-          ? executionRate.rate.toString()
+          ? executionRate.rate.toFixed(18)
           : '0'
       const properTokenRate = bigNum(toWei(rateToConvert))
       const converted = convertInputValue(
@@ -169,15 +173,21 @@ function useConvertInputs(symbol, marketDetails) {
       if (tokenDecimals === -1 || anjDecimals === -1) {
         return
       }
+      let value = '0'
+      if (event.target.value) {
+        value = new BigNumber(event.target.value)
+          .multipliedBy(10 ** 18)
+          .toFixed(18)
+      }
       const executionRate = getTradeDetails(
         TRADE_EXACT.OUTPUT,
-        event.target.value ? toWei(event.target.value) : '0',
+        value,
         marketDetails
       ).executionRate
       const rateToConvert =
         !executionRate.rateInverted.isNaN() &&
         executionRate.rateInverted.isFinite()
-          ? executionRate.rateInverted.toString()
+          ? executionRate.rateInverted.toFixed(symbol === 'USDC' ? 6 : 18)
           : '0'
       const properTokenRate = bigNum(toWei(rateToConvert))
       const converted = convertInputValue(
@@ -196,7 +206,7 @@ function useConvertInputs(symbol, marketDetails) {
       setAmountAnj(converted.fromAmount)
       setAmountToken(converted.toAmount)
     },
-    [tokenDecimals, anjDecimals, marketDetails]
+    [tokenDecimals, anjDecimals, marketDetails, symbol]
   )
 
   return {
