@@ -408,11 +408,9 @@ export function useAntStaked() {
       const antInVault = await ant.methods
         .balanceOf(NETWORK_RESERVE_ADDR)
         .call()
-      console.log('boom', antInAgent, antInVault)
       const antStakedInAgent = bigNum(antInAgent)
       const antStakedInVault = bigNum(antInVault)
-      console.log(antStakedInAgent.toString(), antStakedInVault.toString())
-      const totalAntStaked = antStakedInAgent.plus(antStakedInVault).toString()
+      const totalAntStaked = antStakedInAgent.add(antStakedInVault).toString()
       setAntStaked(totalAntStaked)
     }
     fetchAntStaked()
