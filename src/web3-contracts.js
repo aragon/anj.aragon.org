@@ -1,14 +1,21 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
+import BigNumber from 'bignumber.js'
 import { Contract as EthersContract } from 'ethers'
 import { getKnownContract } from './known-contracts'
 import tokenBalanceOfAbi from './token-balanceof.json'
 import { useWeb3Connect } from './web3-connect'
 import Web3EthContract from 'web3-eth-contract'
-import { calculateSlippageAmount, bigNum, useUniswapTokenRate } from './utils'
+import {
+  calculateSlippageAmount,
+  bigNum,
+  useUniswapTokenRate,
+  getUniswapSlippage,
+} from './utils'
 import { fromWei, toWei } from 'web3-utils'
 
 const NETWORK_AGENT_ADDR = '0x5E8c17A6065C35b172B10E80493D2266e2947DF4'
 const NETWORK_RESERVE_ADDR = '0xec0dd1579551964703246becfbf199c27cb84485'
+const BASIS_TO_PERCENTAGE = '10000'
 
 const contractsCache = new Map()
 
@@ -263,6 +270,7 @@ export function useConvertTokenToAnj(selectedToken) {
   const tokenContract = useKnownContract(`TOKEN_${selectedToken}`)
   const wrapperContract = useKnownContract(`WRAPPER`)
   const [tokenAddress] = getKnownContract(`TOKEN_${selectedToken}`)
+  const [anjAddress] = getKnownContract(`TOKEN_ANJ`)
   const [wrapperAddress] = getKnownContract('WRAPPER')
   const ethToAnjRate = useUniswapTokenRate('ETH')
 
@@ -274,19 +282,40 @@ export function useConvertTokenToAnj(selectedToken) {
 
       // now + 60s * 120min
       const twoHourExpiry = Math.floor(Date.now() / 1000) + 60 * 120
-      const minAnj = calculateSlippageAmount(estimatedAnj).toString()
-
-      const minEth = calculateSlippageAmount(
-        bigNum(
-          toWei(
-            String(
-              parseFloat(ethToAnjRate.rateInverted.toString()) *
-                parseFloat(fromWei(estimatedAnj.toString(), 'ether'))
+      const ethToAnjAmount = new BigNumber(
+        fromWei(estimatedAnj.toString(), 'ether')
+      ).multipliedBy(ethToAnjRate.rateInverted)
+      const ethUniswapSlippage = await getUniswapSlippage(
+        undefined,
+        anjAddress,
+        toWei(ethToAnjAmount.precision(6).toString(), 'ether')
+      )
+      const minEth = toWei(
+        ethToAnjAmount
+          .multipliedBy(
+            new BigNumber('1').minus(
+              ethUniswapSlippage.dividedBy(BASIS_TO_PERCENTAGE)
             )
           )
-        )
+          .toPrecision(18),
+        'ether'
       )
-
+      const anjUniswapSlippage = await getUniswapSlippage(
+        tokenAddress,
+        anjAddress,
+        amount
+      )
+      const minAnj = toWei(
+        new BigNumber(fromWei(estimatedAnj.toString(), 'ether'))
+          .multipliedBy(
+            new BigNumber('1').minus(
+              anjUniswapSlippage.dividedBy(BASIS_TO_PERCENTAGE).toPrecision(2)
+            )
+          )
+          .toPrecision(18)
+          .toString(),
+        'ether'
+      )
       // If the user has selected ETH, we can just send the ETH to the function
       if (selectedToken === 'ETH') {
         return await wrapperContract.contributeEth(
@@ -363,6 +392,7 @@ export function useConvertTokenToAnj(selectedToken) {
       wrapperContract,
       account,
       ethToAnjRate,
+      anjAddress,
     ]
   )
 }
@@ -374,13 +404,15 @@ export function useAntStaked() {
       Web3EthContract.setProvider('wss://mainnet.eth.aragon.network/ws')
       const ANT_ADDR = getKnownContract('TOKEN_ANT')[0]
       const ant = new Web3EthContract(tokenBalanceOfAbi, ANT_ADDR)
-      const antStakedInAgent = bigNum(
-        await ant.methods.balanceOf(NETWORK_AGENT_ADDR).call()
-      )
-      const antStakedInVault = bigNum(
-        await ant.methods.balanceOf(NETWORK_RESERVE_ADDR).call()
-      )
-      const totalAntStaked = antStakedInAgent.add(antStakedInVault).toString()
+      const antInAgent = await ant.methods.balanceOf(NETWORK_AGENT_ADDR).call()
+      const antInVault = await ant.methods
+        .balanceOf(NETWORK_RESERVE_ADDR)
+        .call()
+      console.log('boom', antInAgent, antInVault)
+      const antStakedInAgent = bigNum(antInAgent)
+      const antStakedInVault = bigNum(antInVault)
+      console.log(antStakedInAgent.toString(), antStakedInVault.toString())
+      const totalAntStaked = antStakedInAgent.plus(antStakedInVault).toString()
       setAntStaked(totalAntStaked)
     }
     fetchAntStaked()

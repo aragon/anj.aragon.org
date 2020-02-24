@@ -1,6 +1,12 @@
 import { useState, useEffect, useCallback } from 'react'
 import { utils as EthersUtils } from 'ethers'
-import { getTokenReserves, getMarketDetails } from '@uniswap/sdk'
+import BigNumber from 'bignumber.js'
+import {
+  getTokenReserves,
+  getMarketDetails,
+  getTradeDetails,
+  TRADE_EXACT,
+} from '@uniswap/sdk'
 import * as Sentry from '@sentry/browser'
 import { request } from 'graphql-request'
 import { toBN } from 'web3-utils'
@@ -26,6 +32,27 @@ export function bigNum(value) {
 
 export function calculateSlippageAmount(value) {
   return value.mul(SLIPPAGE_PERCENTAGE).div(100)
+}
+
+export async function getUniswapSlippage(
+  fromTokenAddress,
+  toTokenAddress,
+  fromTokenAmount
+) {
+  if (!fromTokenAddress && !toTokenAddress) {
+    throw new Error(
+      'Both addresses cannot be undefined; you cannot convert from ETH to ETH.'
+    )
+  }
+  const fromTokenData = fromTokenAddress
+    ? await getTokenReserves(fromTokenAddress)
+    : undefined
+  const toTokenData = toTokenAddress
+    ? await getTokenReserves(toTokenAddress)
+    : undefined
+  const marketDetails = getMarketDetails(fromTokenData, toTokenData)
+  return getTradeDetails(TRADE_EXACT.INPUT, fromTokenAmount, marketDetails)
+    .executionRateSlippage
 }
 
 export function useAnJurors() {

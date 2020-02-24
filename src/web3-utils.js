@@ -77,7 +77,9 @@ export function useTokenBalanceToUsd(symbol, decimals, balance) {
         const precision = 6
 
         const usdBalance = balance
-          .mul(bigNum(parseInt(price.USD * 10 ** (precision + usdDigits), 10)))
+          .mul(
+            bigNum(parseInt(price.USD * 10 ** (precision + usdDigits), 10))
+          )
           .div(10 ** precision)
           .div(bigNum(10).pow(decimals))
 
@@ -147,7 +149,9 @@ export function formatUnits(
   if (typeof truncateToDecimalPlace === 'number') {
     const [whole = '', dec = ''] = valueBeforeCommas.split('.')
     if (dec) {
-      const truncatedDec = dec.slice(0, truncateToDecimalPlace).replace(/0*$/, '')
+      const truncatedDec = dec
+        .slice(0, truncateToDecimalPlace)
+        .replace(/0*$/, '')
       valueBeforeCommas = truncatedDec ? `${whole}.${truncatedDec}` : whole
     }
   }
