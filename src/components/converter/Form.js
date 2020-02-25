@@ -133,11 +133,11 @@ function useConvertInputs(symbol, marketDetails) {
       if (event.target.value && symbol === 'USDC') {
         value = new BigNumber(event.target.value)
           .multipliedBy(10 ** 6)
-          .toFixed(6)
+          .toFixed(0, 1)
       } else if (event.target.value) {
         value = new BigNumber(event.target.value)
           .multipliedBy(10 ** 18)
-          .toFixed(18)
+          .toFixed(0, 1)
       }
       const executionRate = getTradeDetails(
         TRADE_EXACT.INPUT,
@@ -146,7 +146,7 @@ function useConvertInputs(symbol, marketDetails) {
       ).executionRate
       const rateToConvert =
         !executionRate.rate.isNaN() && executionRate.rate.isFinite()
-          ? executionRate.rate.toFixed(18)
+          ? executionRate.rate.toFixed(0, 1)
           : '0'
       const properTokenRate = bigNum(toWei(rateToConvert))
       const converted = convertInputValue(
@@ -177,7 +177,7 @@ function useConvertInputs(symbol, marketDetails) {
       if (event.target.value) {
         value = new BigNumber(event.target.value)
           .multipliedBy(10 ** 18)
-          .toFixed(18)
+          .toFixed(0, 1)
       }
       const executionRate = getTradeDetails(
         TRADE_EXACT.OUTPUT,
@@ -187,7 +187,7 @@ function useConvertInputs(symbol, marketDetails) {
       const rateToConvert =
         !executionRate.rateInverted.isNaN() &&
         executionRate.rateInverted.isFinite()
-          ? executionRate.rateInverted.toFixed(symbol === 'USDC' ? 6 : 18)
+          ? executionRate.rateInverted.toFixed(0, 1)
           : '0'
       const properTokenRate = bigNum(toWei(rateToConvert))
       const converted = convertInputValue(
