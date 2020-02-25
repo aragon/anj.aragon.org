@@ -186,7 +186,9 @@ export function useUniswapMarketDetails(symbol) {
           throw new Error('Could not fetch reserves')
         }
         response = getMarketDetails(tokenData, anjData)
-        setMarketDetails(response)
+        if (!cancelled) {
+          setMarketDetails(response)
+        }
       } catch (err) {
         retryTimer = setTimeout(getUniswapRates, UNISWAP_MARKET_RETRY_EVERY)
         return
