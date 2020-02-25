@@ -146,7 +146,7 @@ function useConvertInputs(symbol, marketDetails) {
       ).executionRate
       const rateToConvert =
         !executionRate.rate.isNaN() && executionRate.rate.isFinite()
-          ? executionRate.rate.toFixed(0, 1)
+          ? executionRate.rate.toFixed(18)
           : '0'
       const properTokenRate = bigNum(toWei(rateToConvert))
       const converted = convertInputValue(
@@ -187,7 +187,7 @@ function useConvertInputs(symbol, marketDetails) {
       const rateToConvert =
         !executionRate.rateInverted.isNaN() &&
         executionRate.rateInverted.isFinite()
-          ? executionRate.rateInverted.toFixed(0, 1)
+          ? executionRate.rateInverted.toFixed(18)
           : '0'
       const properTokenRate = bigNum(toWei(rateToConvert))
       const converted = convertInputValue(
