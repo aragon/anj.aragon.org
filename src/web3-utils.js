@@ -1,8 +1,13 @@
 import { useEffect, useState } from 'react'
 import { utils as EthersUtils } from 'ethers'
+import { getTokenReserves, getMarketDetails } from '@uniswap/sdk'
+import { getKnownContract } from './known-contracts'
 import { bigNum } from './utils'
+import env from './environment'
 
 const ADDRESS_REGEX = /^0x[0-9a-fA-F]{40}$/
+const DEFAULT_MARKET_STATE = null
+const UNISWAP_MARKET_RETRY_EVERY = 1000
 
 export function isAddress(address) {
   return ADDRESS_REGEX.test(address)
@@ -77,9 +82,7 @@ export function useTokenBalanceToUsd(symbol, decimals, balance) {
         const precision = 6
 
         const usdBalance = balance
-          .mul(
-            bigNum(parseInt(price.USD * 10 ** (precision + usdDigits), 10))
-          )
+          .mul(bigNum(parseInt(price.USD * 10 ** (precision + usdDigits), 10)))
           .div(10 ** precision)
           .div(bigNum(10).pow(decimals))
 
@@ -157,4 +160,46 @@ export function formatUnits(
   }
 
   return commas ? EthersUtils.commify(valueBeforeCommas) : valueBeforeCommas
+}
+
+export function useUniswapMarketDetails(symbol) {
+  const [marketDetails, setMarketDetails] = useState(DEFAULT_MARKET_STATE)
+  const [tokenAddress] = getKnownContract(`TOKEN_${symbol}`)
+  const [anjAddress] = getKnownContract(`TOKEN_ANJ`)
+
+  useEffect(() => {
+    let retryTimer
+    let cancelled = false
+
+    async function getUniswapRates() {
+      let response
+      try {
+        const [tokenData, anjData] = await Promise.all(
+          [tokenAddress, anjAddress].map(async address => {
+            if (symbol === 'ETH' && !address) {
+              return undefined
+            }
+            return await getTokenReserves(address, Number(env('CHAIN_ID')))
+          })
+        )
+        if ((!tokenData && symbol !== 'ETH') || !anjData) {
+          throw new Error('Could not fetch reserves')
+        }
+        response = getMarketDetails(tokenData, anjData)
+        setMarketDetails(response)
+      } catch (err) {
+        retryTimer = setTimeout(getUniswapRates, UNISWAP_MARKET_RETRY_EVERY)
+        return
+      }
+    }
+
+    getUniswapRates()
+
+    return () => {
+      cancelled = true
+      clearTimeout(retryTimer)
+    }
+  }, [tokenAddress, anjAddress, symbol])
+
+  return marketDetails
 }

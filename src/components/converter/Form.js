@@ -5,21 +5,20 @@ import { getTradeDetails, TRADE_EXACT } from '@uniswap/sdk'
 import * as Sentry from '@sentry/browser'
 import { OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { toWei } from 'web3-utils'
+import { bigNum, calculateSlippageAmount, usePostEmail } from '../../utils'
+import { breakpoint, GU } from '../../microsite-logic'
 import {
-  useTokenDecimals,
   useConvertTokenToAnj,
-  useTokenBalance,
-  useJurorRegistryAnjBalance,
   useEthBalance,
+  useJurorRegistryAnjBalance,
+  useTokenBalance,
+  useTokenDecimals,
 } from '../../web3-contracts'
 import {
-  bigNum,
-  calculateSlippageAmount,
-  usePostEmail,
+  formatUnits,
+  parseUnits,
   useUniswapMarketDetails,
-} from '../../utils'
-import { breakpoint, GU } from '../../microsite-logic'
-import { formatUnits, parseUnits } from '../../web3-utils'
+} from '../../web3-utils'
 import { useConverterStatus, CONVERTER_STATUSES } from './converter-status'
 import ComboInput from './ComboInput'
 import Token from './Token'

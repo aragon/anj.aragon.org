@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
 import { utils as EthersUtils } from 'ethers'
-import { getTokenReserves, getMarketDetails } from '@uniswap/sdk'
 import * as Sentry from '@sentry/browser'
 import { request } from 'graphql-request'
 import { toBN } from 'web3-utils'
@@ -13,7 +12,6 @@ const GQL_ENDPOINT =
 
 const SLIPPAGE_PERCENTAGE = bigNum(95)
 const FETCH_RETRY_DELAY = 1000
-const DEFAULT_MARKET_STATE = null 
 
 export function noop() {}
 
@@ -86,46 +84,6 @@ export function useNow(updateEvery = 1000) {
     }
   }, [updateEvery])
   return now
-}
-
-export function useUniswapMarketDetails(symbol) {
-  const [marketDetails, setMarketDetails] = useState(DEFAULT_MARKET_STATE)
-  const [tokenAddress] = getKnownContract(`TOKEN_${symbol}`)
-  const [anjAddress] = getKnownContract(`TOKEN_ANJ`)
-
-  useEffect(() => {
-    let retryTimer
-
-    async function getUniswapRates() {
-      let response
-      try {
-        const [tokenData, anjData] = await Promise.all(
-          [tokenAddress, anjAddress].map(async address => {
-            if (symbol === 'ETH' && !address) {
-              return undefined
-            }
-            return await getTokenReserves(address, Number(env('CHAIN_ID')))
-          })
-        )
-        if ((!tokenData && symbol !== 'ETH') || !anjData) {
-          throw new Error('Could not fetch reserves')
-        }
-        response = getMarketDetails(tokenData, anjData)
-        setMarketDetails(response)
-      } catch (err) {
-        retryTimer = setTimeout(getUniswapRates, FETCH_RETRY_DELAY)
-        return
-      }
-    }
-
-    getUniswapRates()
-
-    return () => {
-      clearTimeout(retryTimer)
-    }
-  }, [tokenAddress, anjAddress, symbol])
-
-  return marketDetails
 }
 
 export function usePostEmail() {
