@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import * as Sentry from '@sentry/browser'
 import { OverlayTrigger, Tooltip } from 'react-bootstrap'
-import { bigNum, calculateSlippageAmount, usePostEmail } from '../../utils'
+import { bigNum, usePostEmail } from '../../utils'
 import { breakpoint, GU } from '../../microsite-logic'
 import {
   useConvertTokenToAnj,
@@ -16,7 +16,7 @@ import {
   formatUnits,
   parseUnits,
   useAnjRate,
-  useTokenReserves,
+  useTokenReserve,
 } from '../../web3-utils'
 import { useConverterStatus, CONVERTER_STATUSES } from './converter-status'
 import ComboInput from './ComboInput'
@@ -234,7 +234,7 @@ function FormSection() {
   const [selectedOption, setSelectedOption] = useState(0)
   const tokenBalance = useTokenBalance(options[selectedOption])
   const ethBalance = useEthBalance()
-  const [anjReserves, loadingAnjReserves] = useTokenReserves('ANJ')
+  const [anjReserve, loadingAnjReserve] = useTokenReserve('ANJ')
 
   const {
     amountAnj,
@@ -339,27 +339,19 @@ function FormSection() {
   const liquidityError = useMemo(() => {
     // Reserves are still loading, so we cannot
     // do any computation yet
-    if (
-      loadingAnjReserves ||
-      !anjReserves ||
-      inputValueAnj.includes('Loading')
-    ) {
+    if (loadingAnjReserve || !anjReserve || inputValueAnj.includes('Loading')) {
       return false
     }
 
-    const reserves = bigNum(
-      anjReserves.tokenReserve.amount.toFixed(0, 1).toString()
-    )
-
-    return reserves.lt(amountAnj)
+    return anjReserve.lt(amountAnj)
       ? `There is not enough liquidity in the market at this time to purchase ${formatUnits(
           amountAnj
         )} ANJ. The maximum amount available for a purchase order at the current price is ${formatUnits(
-          reserves,
+          anjReserve,
           { truncateToDecimalPlace: 3 }
         )} ANJ`
       : ''
-  }, [amountAnj, anjReserves, loadingAnjReserves, inputValueAnj])
+  }, [amountAnj, anjReserve, loadingAnjReserve, inputValueAnj])
 
   const slippageWarning = useMemo(() => {
     const totalAmount = balanceAnj.add(amountAnj)

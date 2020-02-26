@@ -167,37 +167,39 @@ export function formatUnits(
   return commas ? EthersUtils.commify(valueBeforeCommas) : valueBeforeCommas
 }
 
-export function useTokenReserves(tokenSymbol) {
+export function useTokenReserve(tokenSymbol) {
   const [tokenReserves, setTokenReserves] = useState(null)
   const [loading, setLoading] = useState(false)
   useEffect(() => {
     let cancelled = false
     let retryTimer
-    async function fetchTokenReserves() {
+    async function fetchTokenReserve() {
       try {
-        setLoading(true)
         const [tokenAddress] = getKnownContract(`TOKEN_${tokenSymbol}`)
         if (!tokenAddress) {
-          setLoading(false)
           throw new Error(`Unsupported token symbol: ${tokenSymbol}`)
         }
+        setLoading(true)
 
-        const tokenData = await getTokenReserves(
+        const tokenReserves = await getTokenReserves(
           tokenAddress,
           Number(env('CHAIN_ID'))
         )
 
-        if (!tokenData) {
-          setLoading(false)
+        if (!tokenReserves) {
           throw new Error('Could not fetch reserves')
         }
+
         if (!cancelled) {
-          setTokenReserves(tokenData)
+          const reserve = bigNum(
+            tokenReserves.tokenReserve.amount.toFixed(0, 1).toString()
+          )
+          setTokenReserves(reserve)
           setLoading(false)
         }
       } catch (e) {
         setLoading(false)
-        retryTimer = setTimeout(fetchTokenReserves, UNISWAP_MARKET_RETRY_EVERY)
+        retryTimer = setTimeout(fetchTokenReserve, UNISWAP_MARKET_RETRY_EVERY)
       }
 
       return () => {
@@ -206,10 +208,10 @@ export function useTokenReserves(tokenSymbol) {
       }
     }
 
-    fetchTokenReserves()
+    fetchTokenReserve()
   }, [tokenSymbol])
 
-  return [tokenReserves, loading]
+  return useMemo(() => [tokenReserves, loading], [loading, tokenReserves])
 }
 
 // Wraps uniswap’s getMarketDetails() to only require
@@ -226,12 +228,15 @@ async function getAnjMarketDetails(tokenSymbol) {
       if (!tokenAddress) {
         throw new Error(`Unsupported token symbol: ${symbol}`)
       }
-      const tokenData = getTokenReserves(tokenAddress, Number(env('CHAIN_ID')))
+      const tokenReserves = getTokenReserves(
+        tokenAddress,
+        Number(env('CHAIN_ID'))
+      )
 
-      if (!tokenData) {
+      if (!tokenReserves) {
         throw new Error('Could not fetch reserves')
       }
-      return tokenData
+      return tokenReserves
     })
   )
 
