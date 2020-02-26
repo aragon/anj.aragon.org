@@ -16,6 +16,7 @@ import {
   formatUnits,
   parseUnits,
   useAnjRate,
+  useTokenReserves,
 } from '../../web3-utils'
 import { useConverterStatus, CONVERTER_STATUSES } from './converter-status'
 import ComboInput from './ComboInput'
@@ -233,6 +234,7 @@ function FormSection() {
   const [selectedOption, setSelectedOption] = useState(0)
   const tokenBalance = useTokenBalance(options[selectedOption])
   const ethBalance = useEthBalance()
+  const [anjReserves, loadingAnjReserves] = useTokenReserves('ANJ')
 
   const {
     amountAnj,
@@ -334,6 +336,31 @@ function FormSection() {
       !acceptTerms
   )
 
+  const liquidityError = useMemo(() => {
+    // Reserves are still loading, so we cannot
+    // do any computation yet
+    if (
+      loadingAnjReserves ||
+      !anjReserves ||
+      inputValueAnj.includes('Loading')
+    ) {
+      return false
+    }
+
+    const reserves = bigNum(
+      anjReserves.tokenReserve.amount.toFixed(0, 1).toString()
+    )
+
+    return reserves.lt(amountAnj)
+      ? `There is not enough liquidity in the market at this time to purchase ${formatUnits(
+          amountAnj
+        )} ANJ. The maximum amount available for a purchase order at the current price is ${formatUnits(
+          reserves,
+          { truncateToDecimalPlace: 3 }
+        )} ANJ`
+      : ''
+  }, [amountAnj, anjReserves, loadingAnjReserves, inputValueAnj])
+
   const slippageWarning = useMemo(() => {
     const totalAmount = balanceAnj.add(amountAnj)
 
@@ -405,6 +432,11 @@ function FormSection() {
               </Adornment>
             </AdornmentBox>
             <Info style={{ minHeight: '24px' }}>
+              {liquidityError && (
+                <span className="error">
+                  {liquidityError} <br />
+                </span>
+              )}
               {amountOther.gt(0) && (
                 <>
                   {slippageWarning ? (

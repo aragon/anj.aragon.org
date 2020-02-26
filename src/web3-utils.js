@@ -167,6 +167,51 @@ export function formatUnits(
   return commas ? EthersUtils.commify(valueBeforeCommas) : valueBeforeCommas
 }
 
+export function useTokenReserves(tokenSymbol) {
+  const [tokenReserves, setTokenReserves] = useState(null)
+  const [loading, setLoading] = useState(false)
+  useEffect(() => {
+    let cancelled = false
+    let retryTimer
+    async function fetchTokenReserves() {
+      try {
+        setLoading(true)
+        const [tokenAddress] = getKnownContract(`TOKEN_${tokenSymbol}`)
+        if (!tokenAddress) {
+          setLoading(false)
+          throw new Error(`Unsupported token symbol: ${tokenSymbol}`)
+        }
+
+        const tokenData = await getTokenReserves(
+          tokenAddress,
+          Number(env('CHAIN_ID'))
+        )
+
+        if (!tokenData) {
+          setLoading(false)
+          throw new Error('Could not fetch reserves')
+        }
+        if (!cancelled) {
+          setTokenReserves(tokenData)
+          setLoading(false)
+        }
+      } catch (e) {
+        setLoading(false)
+        retryTimer = setTimeout(fetchTokenReserves, UNISWAP_MARKET_RETRY_EVERY)
+      }
+
+      return () => {
+        cancelled = true
+        clearTimeout(retryTimer)
+      }
+    }
+
+    fetchTokenReserves()
+  }, [tokenSymbol])
+
+  return [tokenReserves, loading]
+}
+
 // Wraps uniswap’s getMarketDetails() to only require
 // the other token in the pair, qualified using its symbol.
 async function getAnjMarketDetails(tokenSymbol) {
