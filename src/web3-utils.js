@@ -1,13 +1,18 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import { utils as EthersUtils } from 'ethers'
-import { getTokenReserves, getMarketDetails } from '@uniswap/sdk'
+import {
+  TRADE_EXACT,
+  getMarketDetails,
+  getTokenReserves,
+  getTradeDetails,
+} from '@uniswap/sdk'
 import { getKnownContract } from './known-contracts'
 import { bigNum } from './utils'
 import env from './environment'
 
 const ADDRESS_REGEX = /^0x[0-9a-fA-F]{40}$/
-const DEFAULT_MARKET_STATE = null
 const UNISWAP_MARKET_RETRY_EVERY = 1000
+export const UNISWAP_PRECISION = 18
 
 export function isAddress(address) {
   return ADDRESS_REGEX.test(address)
@@ -162,44 +167,110 @@ export function formatUnits(
   return commas ? EthersUtils.commify(valueBeforeCommas) : valueBeforeCommas
 }
 
-export function useUniswapMarketDetails(symbol) {
-  const [marketDetails, setMarketDetails] = useState(DEFAULT_MARKET_STATE)
-  const [tokenAddress] = getKnownContract(`TOKEN_${symbol}`)
-  const [anjAddress] = getKnownContract(`TOKEN_ANJ`)
+// Wraps uniswap’s getMarketDetails() to only require
+// the other token in the pair, qualified using its symbol.
+async function getAnjMarketDetails(tokenSymbol) {
+  const [tokenData, anjData] = await Promise.all(
+    [tokenSymbol, 'ANJ'].map(symbol => {
+      // In the case of ETH, undefined should be passed as the reserves data.
+      if (symbol === 'ETH') {
+        return undefined
+      }
+
+      const [tokenAddress] = getKnownContract(`TOKEN_${symbol}`)
+      if (!tokenAddress) {
+        throw new Error(`Unsupported token symbol: ${symbol}`)
+      }
+      const tokenData = getTokenReserves(tokenAddress, Number(env('CHAIN_ID')))
+
+      if (!tokenData) {
+        throw new Error('Could not fetch reserves')
+      }
+      return tokenData
+    })
+  )
+
+  return getMarketDetails(tokenData, anjData)
+}
+
+// Wraps uniswap’s getTradeDetails() to only require
+// the other token in the pair, qualified using its symbol.
+async function getAnjTradeDetails(tokenSymbol, tradeAmount, fromAnj = false) {
+  const anjMarketDetails = await getAnjMarketDetails(tokenSymbol)
+  return getTradeDetails(
+    fromAnj ? TRADE_EXACT.OUTPUT : TRADE_EXACT.INPUT,
+    tradeAmount,
+    anjMarketDetails
+  )
+}
+
+// Fetch the rate at which a given token can get converted into ANJ.
+// Also returns the associated slippage.
+// Both are returned as BN.js instances.
+export function useAnjRate(symbol, amount, fromAnj = false) {
+  const [loading, setLoading] = useState(false)
+  const [rate, setRate] = useState(bigNum(0))
+  const [rateSlippage, setRateSlippage] = useState(bigNum(0))
 
   useEffect(() => {
-    let retryTimer
     let cancelled = false
+    let retryTimer
 
-    async function getUniswapRates() {
-      let response
+    if (amount === '0' || !amount) {
+      setLoading(false)
+      return
+    }
+
+    const updateRate = async () => {
       try {
-        const [tokenData, anjData] = await Promise.all(
-          [tokenAddress, anjAddress].map(async address => {
-            if (symbol === 'ETH' && !address) {
-              return undefined
-            }
-            return await getTokenReserves(address, Number(env('CHAIN_ID')))
-          })
-        )
-        if ((!tokenData && symbol !== 'ETH') || !anjData) {
-          throw new Error('Could not fetch reserves')
+        setLoading(true)
+
+        const {
+          executionRate,
+          executionRateSlippage,
+        } = await getAnjTradeDetails(symbol, amount, fromAnj)
+
+        const rate = fromAnj ? executionRate.rateInverted : executionRate.rate
+
+        if (!cancelled) {
+          setLoading(false)
+
+          setRate(
+            bigNum(
+              rate.isNaN() ? 0 : rate.times(10 ** UNISWAP_PRECISION).toFixed(0)
+            )
+          )
+
+          setRateSlippage(
+            bigNum(
+              executionRateSlippage.isNaN()
+                ? 0
+                : executionRateSlippage
+                    // convert from basis point to fractional
+                    .dividedBy(10000)
+                    .times(10 ** UNISWAP_PRECISION)
+                    .toFixed(0)
+            )
+          )
         }
-        response = getMarketDetails(tokenData, anjData)
-        setMarketDetails(response)
       } catch (err) {
-        retryTimer = setTimeout(getUniswapRates, UNISWAP_MARKET_RETRY_EVERY)
-        return
+        if (!cancelled) {
+          retryTimer = setTimeout(updateRate, UNISWAP_MARKET_RETRY_EVERY)
+        }
       }
     }
 
-    getUniswapRates()
+    updateRate()
 
     return () => {
       cancelled = true
       clearTimeout(retryTimer)
     }
-  }, [tokenAddress, anjAddress, symbol])
+  }, [symbol, amount, fromAnj])
 
-  return marketDetails
+  return useMemo(() => ({ loading, rate, rateSlippage }), [
+    loading,
+    rate,
+    rateSlippage,
+  ])
 }

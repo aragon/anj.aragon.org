@@ -5,7 +5,6 @@ import { request } from 'graphql-request'
 import { toBN } from 'web3-utils'
 import { useWeb3Connect } from './web3-connect'
 import env from './environment'
-import { getKnownContract } from './known-contracts'
 
 const GQL_ENDPOINT =
   'https://api.thegraph.com/subgraphs/name/aragon/aragon-court'

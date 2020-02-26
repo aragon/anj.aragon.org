@@ -4,7 +4,6 @@ import { getKnownContract } from './known-contracts'
 import tokenBalanceOfAbi from './token-balanceof.json'
 import { useWeb3Connect } from './web3-connect'
 import Web3EthContract from 'web3-eth-contract'
-import env from './environment'
 import { calculateSlippageAmount, bigNum } from './utils'
 
 const NETWORK_AGENT_ADDR = '0x5E8c17A6065C35b172B10E80493D2266e2947DF4'
