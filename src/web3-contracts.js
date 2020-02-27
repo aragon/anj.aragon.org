@@ -276,7 +276,7 @@ export function useConvertTokenToAnj(selectedToken) {
 
       // As minAnj already ensures the amount of tokens received,
       // we can safely ignore this value by setting it to 1
-      const minEth = '1'
+      const minEth = bigNum(1)
       // If the user has selected ETH, we can just send the ETH to the function
       if (selectedToken === 'ETH') {
         return await wrapperContract.contributeEth(
