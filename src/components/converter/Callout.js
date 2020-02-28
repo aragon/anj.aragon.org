@@ -20,8 +20,14 @@ function Callout() {
         <p>
           Manage your ANJ balance from the{' '}
           <a className="pink" href="http://court.aragon.org/">
-            dashboard
+            dashboard.
           </a>
+          <br />
+          You can also{' '}
+          <a className="pink" href="https://uniswap.exchange/swap">
+            convert your ANJ
+          </a>{' '}
+          back to ANT and other tokens.
         </p>
       )}
     </CalloutContainer>
