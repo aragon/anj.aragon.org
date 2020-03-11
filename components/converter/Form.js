@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import * as Sentry from '@sentry/browser'
 import { OverlayTrigger, Tooltip } from 'react-bootstrap'
-import { bigNum, calculateSlippageAmount, usePostEmail } from 'lib/utils'
+import { bigNum, usePostEmail } from 'lib/utils'
 import { breakpoint, GU } from 'lib/microsite-logic'
 import {
   useConvertTokenToAnj,
@@ -16,6 +16,7 @@ import {
   formatUnits,
   parseUnits,
   useAnjRate,
+  useTokenReserve,
 } from 'lib/web3-utils'
 import { useConverterStatus, CONVERTER_STATUSES } from './converter-status'
 import ComboInput from './ComboInput'
@@ -233,6 +234,7 @@ function FormSection() {
   const [selectedOption, setSelectedOption] = useState(0)
   const tokenBalance = useTokenBalance(options[selectedOption])
   const ethBalance = useEthBalance()
+  const [anjReserve, loadingAnjReserve] = useTokenReserve('ANJ')
 
   const {
     amountAnj,
@@ -334,6 +336,23 @@ function FormSection() {
       !acceptTerms
   )
 
+  const liquidityError = useMemo(() => {
+    // Reserves are still loading, so we cannot
+    // do any computation yet
+    if (loadingAnjReserve || !anjReserve || inputValueAnj.includes('Loading')) {
+      return false
+    }
+
+    return anjReserve.lt(amountAnj)
+      ? `There is not enough liquidity in the market at this time to purchase ${formatUnits(
+          amountAnj
+        )} ANJ. The maximum amount available for a purchase order at the current price is ${formatUnits(
+          anjReserve,
+          { truncateToDecimalPlace: 3 }
+        )} ANJ`
+      : ''
+  }, [amountAnj, anjReserve, loadingAnjReserve, inputValueAnj])
+
   const slippageWarning = useMemo(() => {
     const totalAmount = balanceAnj.add(amountAnj)
 
@@ -405,6 +424,11 @@ function FormSection() {
               </Adornment>
             </AdornmentBox>
             <Info style={{ minHeight: '24px' }}>
+              {liquidityError && (
+                <span className="error">
+                  {liquidityError} <br />
+                </span>
+              )}
               {amountOther.gt(0) && (
                 <>
                   {slippageWarning ? (
