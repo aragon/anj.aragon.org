@@ -9,13 +9,19 @@
 /artifacts
 
 # misc
-.DS_Store
-._.DS_Store
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
 
+# npm
 npm-debug.log*
+
+# Next
+.next/
+
+# Yarn
+.yarn/cache/
+.yarn/unplugged/
 yarn-debug.log*
 yarn-error.log*
