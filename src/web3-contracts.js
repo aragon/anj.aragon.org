@@ -4,8 +4,7 @@ import { getKnownContract } from './known-contracts'
 import tokenBalanceOfAbi from './token-balanceof.json'
 import { useWeb3Connect } from './web3-connect'
 import Web3EthContract from 'web3-eth-contract'
-import { calculateSlippageAmount, bigNum, useUniswapTokenRate } from './utils'
-import { fromWei, toWei } from 'web3-utils'
+import { calculateSlippageAmount, bigNum } from './utils'
 
 const NETWORK_AGENT_ADDR = '0x5E8c17A6065C35b172B10E80493D2266e2947DF4'
 const NETWORK_RESERVE_ADDR = '0xec0dd1579551964703246becfbf199c27cb84485'
@@ -264,7 +263,6 @@ export function useConvertTokenToAnj(selectedToken) {
   const wrapperContract = useKnownContract(`WRAPPER`)
   const [tokenAddress] = getKnownContract(`TOKEN_${selectedToken}`)
   const [wrapperAddress] = getKnownContract('WRAPPER')
-  const ethToAnjRate = useUniswapTokenRate('ETH')
 
   return useCallback(
     async (amount, estimatedAnj, activate = true) => {
@@ -276,17 +274,9 @@ export function useConvertTokenToAnj(selectedToken) {
       const twoHourExpiry = Math.floor(Date.now() / 1000) + 60 * 120
       const minAnj = calculateSlippageAmount(estimatedAnj).toString()
 
-      const minEth = calculateSlippageAmount(
-        bigNum(
-          toWei(
-            String(
-              parseFloat(ethToAnjRate.rateInverted.toString()) *
-                parseFloat(fromWei(estimatedAnj.toString(), 'ether'))
-            )
-          )
-        )
-      )
-
+      // As minAnj already ensures the amount of tokens received,
+      // we can safely ignore this value by setting it to 1
+      const minEth = bigNum(1)
       // If the user has selected ETH, we can just send the ETH to the function
       if (selectedToken === 'ETH') {
         return await wrapperContract.contributeEth(
@@ -362,7 +352,6 @@ export function useConvertTokenToAnj(selectedToken) {
       wrapperAddress,
       wrapperContract,
       account,
-      ethToAnjRate,
     ]
   )
 }
@@ -374,12 +363,12 @@ export function useAntStaked() {
       Web3EthContract.setProvider('wss://mainnet.eth.aragon.network/ws')
       const ANT_ADDR = getKnownContract('TOKEN_ANT')[0]
       const ant = new Web3EthContract(tokenBalanceOfAbi, ANT_ADDR)
-      const antStakedInAgent = bigNum(
-        await ant.methods.balanceOf(NETWORK_AGENT_ADDR).call()
-      )
-      const antStakedInVault = bigNum(
-        await ant.methods.balanceOf(NETWORK_RESERVE_ADDR).call()
-      )
+      const antInAgent = await ant.methods.balanceOf(NETWORK_AGENT_ADDR).call()
+      const antInVault = await ant.methods
+        .balanceOf(NETWORK_RESERVE_ADDR)
+        .call()
+      const antStakedInAgent = bigNum(antInAgent)
+      const antStakedInVault = bigNum(antInVault)
       const totalAntStaked = antStakedInAgent.add(antStakedInVault).toString()
       setAntStaked(totalAntStaked)
     }

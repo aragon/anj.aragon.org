@@ -29,7 +29,13 @@ function Info() {
             <br />
             <p className="content">
               ANJ is now available at a variable rate, based on supply and
-              demand. Price discovery is automated by a bonding curve.
+              demand. Price discovery is automated by a{' '}
+              <a
+                className="pink"
+                href="https://www.notion.so/aragonone/ANJ-Arbitrage-d0e22ec7890f4174bae42a9a50e12f50"
+              >
+                bonding curve.
+              </a>
             </p>
           </>
         ),
