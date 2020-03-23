@@ -99,7 +99,7 @@ const TextContainer = styled.div`
     font-size: 20px;
     ${medium('font-size: 24px;')};
     line-height: 1.58;
-    text-align: left
+    text-align: left;
     color: white;
     max-width: 750px;
     margin-top: 20px;
