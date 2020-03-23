@@ -32,7 +32,7 @@ function Info() {
               demand. Price discovery is automated by a{' '}
               <a
                 className="pink"
-                href="https://www.notion.so/aragonone/ANJ-Arbitrage-d0e22ec7890f4174bae42a9a50e12f50"
+                href="https://help.aragon.org/article/44-how-to-get-anj-and-become-an-aragon-court-juror#bonding-curve"
               >
                 bonding curve.
               </a>
