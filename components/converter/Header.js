@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { animated, useTransition } from 'react-spring'
 import { breakpoint } from 'lib/microsite-logic'
 import Token from './Token'

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import Carousel from 'react-bootstrap/Carousel'
 import { breakpoint } from 'lib/microsite-logic'
 

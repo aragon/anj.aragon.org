@@ -1,5 +1,5 @@
 import React from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { breakpoint } from 'lib/microsite-logic'
 
 import logo from './assets/footer-logo.svg'

@@ -1,5 +1,5 @@
 import React from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { breakpoint } from 'lib/microsite-logic'
 import MenuModal from './MenuModal'
 

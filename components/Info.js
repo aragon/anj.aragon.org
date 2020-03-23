@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { breakpoint } from 'lib/microsite-logic'
 import { useNow, FIRST_TERM, PREACTIVATION_END } from 'lib/utils'
 

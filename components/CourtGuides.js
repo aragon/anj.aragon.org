@@ -1,5 +1,5 @@
 import React from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import guide from './assets/juror-guide.svg'
 import howto from './assets/howto-anj.svg'
 import tech from './assets/tech-breakdown.svg'

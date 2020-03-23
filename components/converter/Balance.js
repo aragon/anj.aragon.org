@@ -1,5 +1,5 @@
 import React from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import Token from './Token'
 import { useWeb3Connect } from 'lib/web3-connect'
 import { formatUnits } from 'lib/web3-utils'

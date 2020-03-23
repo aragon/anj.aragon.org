@@ -1,6 +1,5 @@
 import React from 'react'
-import styled from 'styled-components'
-import 'styled-components/macro'
+import styled from 'styled-components/macro'
 import Fade from 'react-reveal/Fade'
 import { breakpoint } from 'lib/microsite-logic'
 import { bigNum, useAnJurors } from 'lib/utils'
