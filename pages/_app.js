@@ -16,8 +16,6 @@ if (env('SENTRY_DSN')) {
   })
 }
 
-console.log('BUILD2', process.env.BUILD)
-
 export default class extends App {
   render() {
     const { Component, pageProps } = this.props
