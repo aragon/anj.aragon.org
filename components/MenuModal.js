@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import styled from 'styled-components/macro'
 import Modal from 'react-bootstrap/Modal'
 import ButtonToolbar from 'react-bootstrap/ButtonToolbar'
@@ -6,9 +6,21 @@ import Button from 'react-bootstrap/Button'
 
 function MenuModal() {
   const [show, setShow] = useState(false)
+  const [animate, setAnimate] = useState(true)
 
-  const close = () => setShow(false)
-  const toggle = () => setShow(show => !show)
+  const toggle = useCallback(() => setShow(show => !show), [])
+
+  const hide = useCallback(() => setShow(false), [])
+
+  // Prevent the Modal to animate so that we can scroll on <body> immediately.
+  const hideAndScroll = useCallback(() => {
+    setAnimate(false)
+    setShow(false)
+  }, [])
+
+  const handleExited = useCallback(() => {
+    setAnimate(true)
+  }, [])
 
   return (
     <ButtonToolbar>
@@ -25,23 +37,30 @@ function MenuModal() {
           <span className="hamburger-inner" />
         </span>
       </Button>
-      <StyledModal size="lg" aria-labelledby="title" show={show} onHide={close}>
+      <StyledModal
+        size="lg"
+        aria-labelledby="title"
+        show={show}
+        onHide={hide}
+        onExited={handleExited}
+        animation={animate}
+      >
         <LinksBox>
           <div className="links">
             <ul>
               <li>
-                <a href={'./#get-anj'} onClick={close}>
+                <a href="#get-anj" onClick={hideAndScroll}>
                   Get ANJ
                 </a>
               </li>
               <li>
-                <a href={'./#learn'} onClick={close}>
+                <a href="#learn" onClick={hideAndScroll}>
                   Learn
                 </a>
               </li>
 
               <li>
-                <a href={'./#subscribe'} onClick={close}>
+                <a href="#subscribe" onClick={hideAndScroll}>
                   Subscribe
                 </a>
               </li>

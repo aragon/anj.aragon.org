@@ -69,10 +69,10 @@ function Navbar() {
               }
             `}
           >
-            <a href="./#get-anj">Become a Juror</a>
-            <a href="./#learn">Learn</a>
-            <a href="./#how-it-works">Dispute Example</a>
-            <a href="./#subscribe">Subscribe</a>
+            <a href="#get-anj">Become a Juror</a>
+            <a href="#learn">Learn</a>
+            <a href="#how-it-works">Dispute Example</a>
+            <a href="#subscribe">Subscribe</a>
           </div>
         </div>
         <div
