@@ -9,79 +9,83 @@ const medium = css => breakpoint('medium', css)
 
 function Navbar() {
   return (
-    <Container>
-      <CourtNavbar>
-        <Left>
-          <LogoLink to="/">
-            <img src={logo} alt="" />
-          </LogoLink>
-          <LinksBox>
+    <div
+      css={`
+        width: 100%;
+        max-width: 1180px;
+        height: 65px;
+        background: #1c1c1c;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 3000;
+      `}
+    >
+      <div
+        css={`
+          width: 76%;
+          max-width: 1180px;
+          height: 65px;
+          background: transparent;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          z-index: 3000;
+        `}
+      >
+        <div
+          css={`
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+          `}
+        >
+          <div
+            css={`
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              width: auto;
+              height: 100%;
+              padding-right: 15px;
+              img {
+                display: block;
+                height: 50px;
+              }
+            `}
+          >
+            <img src={logo} alt="Aragon Court" />
+          </div>
+          <div
+            css={`
+              display: none;
+              ${medium('display: block;')};
+              a {
+                font-weight: 600;
+                font-size: 16px;
+                line-height: 19px;
+                color: #ffffff;
+                padding: 15px;
+              }
+            `}
+          >
             <a href="./#get-anj">Become a Juror</a>
             <a href="./#learn">Learn</a>
             <a href="./#how-it-works">Dispute Example</a>
             <a href="./#subscribe">Subscribe</a>
-          </LinksBox>
-        </Left>
-        <MenuModalBox>
+          </div>
+        </div>
+        <div
+          css={`
+            display: block;
+            ${medium('display: none;')};
+          `}
+        >
           <MenuModal />
-        </MenuModalBox>
-      </CourtNavbar>
-    </Container>
+        </div>
+      </div>
+    </div>
   )
 }
-
-const Left = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-`
-const LinksBox = styled.div`
-  display: none;
-  ${medium('display: block;')};
-  a {
-    font-weight: 600;
-    font-size: 16px;
-    line-height: 19px;
-    color: #ffffff;
-    padding: 15px;
-  }
-`
-const Container = styled.div`
-  width: 100%;
-  max-width: 1180px;
-  height: 65px;
-  background: #1c1c1c;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 3000;
-`
-
-const CourtNavbar = styled.div`
-  width: 76%;
-  max-width: 1180px;
-  height: 65px;
-  background: transparent;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  z-index: 3000;
-`
-const MenuModalBox = styled.div`
-  display: block;
-  ${medium('display: none;')};
-`
-
-const LogoLink = styled.a`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: auto;
-  height: 100%;
-  padding-right: 15px;
-  img {
-    height: 50px;
-  }
-`
 
 export default Navbar
