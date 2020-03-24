@@ -36,7 +36,7 @@ function Info() {
         <li>
           {preactivationActive
             ? 'ANJ will be automatically activated and locked until February 10th.'
-            : 'You can manage your activate ANJ by going to the jurors dashboard.'}
+            : 'You can manage your active ANJ by going to the jurors dashboard.'}
         </li>
       </ul>
     </InfoIn>
