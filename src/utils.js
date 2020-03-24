@@ -37,13 +37,13 @@ export function useAnJurors() {
           GQL_ENDPOINT,
           `
             {
-              jurors(first: 1000, where: { activeBalance_gt: 0 }) {
-                activeBalance
+              jurorsRegistryModules (first: 1) {
+                totalActive
               }
             }
           `
         )
-        if (!response.jurors) {
+        if (!response.jurorsRegistryModules || response.jurorsRegistryModules.length === 0) {
           throw new Error('Wrong response')
         }
       } catch (err) {
@@ -51,12 +51,9 @@ export function useAnJurors() {
         return
       }
 
-      const { jurors } = response
+      const { jurorsRegistryModules } = response
 
-      const anjActivated = jurors.reduce(
-        (acc, { activeBalance }) => acc.add(toBN(activeBalance)),
-        toBN(0)
-      )
+      const anjActivated = toBn(jurorsRegistryModules[0].totalActive)
 
       setJurors(jurors.length)
       setActiveAnj(anjActivated)
