@@ -46,7 +46,6 @@ export function useAnJurors() {
             }
           `
         )
-        console.log(response)
         if (
           !response.jurorsRegistryModules ||
           response.jurorsRegistryModules.length === 0
