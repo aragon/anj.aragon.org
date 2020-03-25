@@ -40,13 +40,14 @@ export function useAnJurors() {
               jurorsRegistryModules (first: 1) {
                 totalActive
               }
-               jurors(first: 1000, where: { activeBalance_gt: 0 }) {
-                activeBalance
+              jurors(first: 1000, where: { activeBalance_gt: 0 }) {
+                id
               }
             }
           `
         )
         if (
+          !response.jurors ||
           !response.jurorsRegistryModules ||
           response.jurorsRegistryModules.length === 0
         ) {
