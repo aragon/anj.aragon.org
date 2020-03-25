@@ -40,10 +40,16 @@ export function useAnJurors() {
               jurorsRegistryModules (first: 1) {
                 totalActive
               }
+               jurors(first: 1000, where: { activeBalance_gt: 0 }) {
+                activeBalance
+              }
             }
           `
         )
-        if (!response.jurorsRegistryModules || response.jurorsRegistryModules.length === 0) {
+        if (
+          !response.jurorsRegistryModules ||
+          response.jurorsRegistryModules.length === 0
+        ) {
           throw new Error('Wrong response')
         }
       } catch (err) {
@@ -51,9 +57,9 @@ export function useAnJurors() {
         return
       }
 
-      const { jurorsRegistryModules } = response
+      const { jurors, jurorsRegistryModules } = response
 
-      const anjActivated = toBn(jurorsRegistryModules[0].totalActive)
+      const anjActivated = toBN(jurorsRegistryModules[0].totalActive)
 
       setJurors(jurors.length)
       setActiveAnj(anjActivated)
@@ -64,7 +70,7 @@ export function useAnJurors() {
     return () => {
       clearTimeout(retryTimer)
     }
-  }, [])
+  }, [jurors])
 
   return [jurors, activeAnj]
 }
