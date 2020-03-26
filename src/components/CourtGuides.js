@@ -31,7 +31,7 @@ const CourtGuides = () => (
           <br />
         </h3>
         <br />
-        <a href="https://blog.aragon.org/precedence-campaign-primer/">Read more</a>
+        <a href="https://blog.aragon.org/juror-dispute-guide-app-mining/">Read more</a>
       </div>
     </Card>
     <Card>
