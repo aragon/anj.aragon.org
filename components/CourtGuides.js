@@ -24,14 +24,14 @@ const CourtGuides = () => (
     <Card>
       <img src={howto} alt="" />{' '}
       <div className="info">
-        <h2>Precedence Campaign</h2>
+        <h2>Juror Dispute Guide</h2>
         <br />
         <h3>
-          Learn more about the first disputes to be tried
+          Learn more about app mining disputes in Aragon Court
           <br />
         </h3>
         <br />
-        <a href="https://blog.aragon.org/precedence-campaign-primer/">Read more</a>
+        <a href="https://blog.aragon.org/juror-dispute-guide-app-mining/">Read more</a>
       </div>
     </Card>
     <Card>

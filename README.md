@@ -1,6 +1,20 @@
 ![Aragon Court](./aragon-court.png)
 
-## Deploy
+## Build Setup
+
+``` bash
+# install dependencies
+$ yarn
+
+# serve with hot reload at localhost:3000
+$ yarn start
+```
+
+## Deployment
+
+Pushes to `master` will automatically deploy with the mainnet configuration to `anj.aragon.org` via a [Github action](./github/workflows/gh-pages-deploy.yml).
+
+To do this manually, you'll have to add some environment variables.
 
 For rinkeby with Portis + Fortmatic:
 
