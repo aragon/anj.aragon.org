@@ -1,12 +1,12 @@
 # dependencies
-/node_modules
+/node_modules/
 
 # testing
-/coverage
+/coverage/
 
 # production
-/dist
-/artifacts
+/out/
+/artifacts/
 
 # misc
 .env.local
