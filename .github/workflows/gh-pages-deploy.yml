@@ -30,4 +30,4 @@ jobs:
         with:
           cname: 'anj.aragon.org'
           deploy_key: ${{ secrets.GH_PAGES_ACTIONS_DEPLOY_KEY }}
-          publish_dir: ./public
+          publish_dir: ./out
