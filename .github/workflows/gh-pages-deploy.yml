@@ -9,24 +9,25 @@ jobs:
   build-deploy:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
-    - name: Setup Node.js 12.x
-      uses: actions/setup-node@v1
-      with:
-        node-version: '12.x'
-    - name: yarn install, yarn build
-      run: |
-        yarn --frozen-lockfile
-        yarn build
-      env:
-        NODE_ENV: 'production'
-        SITE_ROOT: 'https://anj.aragon.org/'
-        SENTRY_DSN: ${{ secrets.GH_PAGES_SENTRY_DSN }}
-        PORTIS_DAPP_ID: ${{ secrets.GH_PAGES_PORTIS_DAPP_ID }}
-        FORTMATIC_API_KEY: ${{ secrets.GH_PAGES_FORTMATIC_API_KEY }}
-    - name: push to gh-pages
-      uses: peaceiris/actions-gh-pages@v3
-      with:
-        cname: 'anj.aragon.org'
-        deploy_key: ${{ secrets.GH_PAGES_ACTIONS_DEPLOY_KEY }}
-        publish_dir: ./dist
+      - uses: actions/checkout@v1
+      - name: Setup Node.js 12.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: '12.x'
+      - name: yarn install, yarn build
+        run: |
+          yarn --frozen-lockfile
+          yarn build
+        env:
+          NODE_ENV: 'production'
+          SITE_ROOT: 'https://anj.aragon.org/'
+          SENTRY_DSN: ${{ secrets.GH_PAGES_SENTRY_DSN }}
+          PORTIS_DAPP_ID: ${{ secrets.GH_PAGES_PORTIS_DAPP_ID }}
+          FORTMATIC_API_KEY: ${{ secrets.GH_PAGES_FORTMATIC_API_KEY }}
+          COMMIT_SHA: GITHUB_SHA
+      - name: push to gh-pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          cname: 'anj.aragon.org'
+          deploy_key: ${{ secrets.GH_PAGES_ACTIONS_DEPLOY_KEY }}
+          publish_dir: ./out
