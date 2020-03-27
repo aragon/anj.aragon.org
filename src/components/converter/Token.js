@@ -5,7 +5,12 @@ function Token({ symbol, badge }) {
   return (
     <TokenSection className={badge ? 'badge' : undefined}>
       <div>
-        <img src={require(`./assets/${symbol.toLowerCase()}.svg`)} alt="" />
+        <img
+          alt=""
+          height="24"
+          src={require(`./assets/${symbol.toLowerCase()}.svg`)}
+          width="24"
+        />
         <span>{symbol}</span>
       </div>
     </TokenSection>
