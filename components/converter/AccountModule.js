@@ -4,8 +4,8 @@ import styled from 'styled-components/macro'
 import { OverlayTrigger, Popover } from 'react-bootstrap'
 import { useWeb3Connect } from 'lib/web3-connect'
 import {
-  useJurorRegistryAnjBalance,
   useEthBalance,
+  useJurorRegistryAnjBalance,
   useTokenBalance,
   useTokenDecimals,
 } from 'lib/web3-contracts'

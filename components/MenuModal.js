@@ -9,7 +9,6 @@ function MenuModal() {
   const [animate, setAnimate] = useState(true)
 
   const toggle = useCallback(() => setShow(show => !show), [])
-
   const hide = useCallback(() => setShow(false), [])
 
   // Prevent the Modal to animate so that we can scroll on <body> immediately.
@@ -38,12 +37,12 @@ function MenuModal() {
         </span>
       </Button>
       <StyledModal
-        size="lg"
-        aria-labelledby="title"
-        show={show}
-        onHide={hide}
-        onExited={handleExited}
         animation={animate}
+        aria-labelledby="title"
+        onExited={handleExited}
+        onHide={hide}
+        show={show}
+        size="lg"
       >
         <LinksBox>
           <div className="links">
