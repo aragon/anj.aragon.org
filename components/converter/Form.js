@@ -259,6 +259,7 @@ function FormSection() {
   const converterStatus = useConverterStatus()
   const [email, setEmail] = useState('')
   const [acceptTerms, setAcceptTerms] = useState(false)
+  const selectedToken = useMemo(() => options[selectedOption], [selectedOption])
 
   const handleSubmit = async event => {
     event.preventDefault()
@@ -270,7 +271,6 @@ function FormSection() {
       return
     }
 
-    const selectedToken = options[selectedOption]
     converterStatus.setStatus(
       selectedToken === 'DAI' || selectedToken === 'USDC'
         ? CONVERTER_STATUSES.SIGNING_ERC
@@ -292,7 +292,7 @@ function FormSection() {
 
   const [placeholder, setPlaceholder] = useState('')
   const selectedTokenBalance =
-    options[selectedOption] === 'ETH' ? ethBalance : tokenBalance
+    selectedToken === 'ETH' ? ethBalance : tokenBalance
 
   useEffect(() => {
     if (balanceAnj && balanceAnj.gte(bigNum('10000'))) {
@@ -384,14 +384,11 @@ function FormSection() {
 
   const formattedTokenBalance = selectedTokenBalance.eq(-1)
     ? 'Fetching…'
-    : `${formatUnits(
-        options[selectedOption] === 'ETH' ? ethBalance : tokenBalance,
-        {
-          digits: selectedTokenDecimals,
-          replaceZeroBy: '0',
-          truncateToDecimalPlace: STD_DECIMAL_PLACES,
-        }
-      )} ${options[selectedOption]}.`
+    : `${formatUnits(selectedToken === 'ETH' ? ethBalance : tokenBalance, {
+        digits: selectedTokenDecimals,
+        replaceZeroBy: '0',
+        truncateToDecimalPlace: STD_DECIMAL_PLACES,
+      })} ${selectedToken}.`
 
   return (
     <Form onSubmit={handleSubmit}>
@@ -401,7 +398,7 @@ function FormSection() {
         `}
       >
         <div>
-          <Label>Amount of {options[selectedOption]} you want to convert</Label>
+          <Label>Amount of {selectedToken} you want to convert</Label>
           <ComboInput
             inputValue={inputValueOther}
             options={[
@@ -415,10 +412,17 @@ function FormSection() {
             {...bindOtherInput}
           />
           <Info>
-            {tokenBalanceError && (
-              <span className="error"> {tokenBalanceError.message} </span>
-            )}
-            <span className={tokenBalanceError ? 'error' : ''}>
+            {tokenBalanceError &&
+              tokenBalanceError.type === ERROR_INSUFFICIENT_BALANCE && (
+                <span className="error"> {tokenBalanceError.message} </span>
+              )}
+            <span
+              className={
+                tokenBalanceError &&
+                tokenBalanceError.type === ERROR_INSUFFICIENT_BALANCE &&
+                'error'
+              }
+            >
               {(!tokenBalanceError ||
                 tokenBalanceError.type !== ERROR_INSUFFICIENT_BALANCE) &&
                 'Balance:'}
@@ -440,6 +444,10 @@ function FormSection() {
               </Adornment>
             </AdornmentBox>
             <Info style={{ minHeight: '24px' }}>
+              {tokenBalanceError &&
+                tokenBalanceError.type === ERROR_MIN_ANJ && (
+                  <span className="error"> {tokenBalanceError.message}</span>
+                )}
               {liquidityError && (
                 <span className="error">
                   {liquidityError} <br />
@@ -512,7 +520,7 @@ function FormSection() {
       <Conditions>
         <label>
           {emailExists ? (
-            'You have accepted the '
+            'You have already accepted the '
           ) : (
             <>
               <input

@@ -23,8 +23,8 @@ function Callout() {
         <a className="pink" href="https://convert.aragon.org/">
           Converter
         </a>{' '}
-        tool, that uses the bonding curve on the background, to exchange ANT to
-        ANJ and back at a better price.
+        tool, that uses the bonding curve to exchange between ANT and ANJ at a
+        better price.
       </p>
     </CalloutContainer>
   )
