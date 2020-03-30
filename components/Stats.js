@@ -7,7 +7,7 @@ import { useAntStaked } from 'lib/web3-contracts'
 import { formatUnits, useTokenBalanceToUsd } from 'lib/web3-utils'
 
 import anj from './assets/anj-token.svg'
-import ant from './assets/ant-token.svg'
+import ant from './converter/assets/ant.svg'
 import jurors from './assets/juror-total.svg'
 
 const medium = css => breakpoint('medium', css)

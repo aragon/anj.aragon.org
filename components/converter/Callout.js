@@ -3,6 +3,7 @@ import styled from 'styled-components/macro'
 import { breakpoint } from 'lib/microsite-logic'
 
 const medium = css => breakpoint('medium', css)
+const small = css => breakpoint('small', css)
 
 function Callout() {
   return (
@@ -37,8 +38,7 @@ const CalloutContainer = styled.div`
   p {
     font-size: 20px !important;
     margin: 0;
-    line-height: 1 !important;
-    ${medium('line-height: 135% !important;')};
+    line-height: 135% !important;
   }
   ${medium('padding: 20px 40px;')};
 

@@ -16,8 +16,8 @@ function Info() {
         <>
           <p className="content">
             As a juror, you can now access your ANJ by using the{' '}
-            <a className="pink" href="http://court.aragon.org/">
-              jurors dashboard.
+            <a className="pink" href="https://court.aragon.org/">
+              court dashboard.
             </a>{' '}
             You can still check your active balance by connecting your wallet to
             the conversion module.
@@ -30,8 +30,8 @@ function Info() {
               className="pink"
               href="https://help.aragon.org/article/44-how-to-get-anj-and-become-an-aragon-court-juror#bonding-curve"
             >
-              bonding curve.
-            </a>
+              bonding curve
+            </a>.
           </p>
           <br />
           <p className="content">
