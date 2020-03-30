@@ -1,22 +1,12 @@
 import React from 'react'
 import styled from 'styled-components/macro'
 import { breakpoint } from 'lib/microsite-logic'
-import { useNow, PREACTIVATION_END } from 'lib/utils'
-import Timer from '../Timer'
 
 const medium = css => breakpoint('medium', css)
 
 function Callout() {
-  const now = useNow(5000) // update every 5s
-  const preactivationActive = now < PREACTIVATION_END
   return (
     <CalloutContainer>
-      {preactivationActive ? (
-        <>
-          <p>Special ANJ pre-activation rate ends in</p>
-          <Timer date={PREACTIVATION_END} />
-        </>
-      ) : (
         <p>
           Manage your ANJ balance from the{' '}
           <a className="pink" href="http://court.aragon.org/">
@@ -29,7 +19,6 @@ function Callout() {
           </a>{' '}
           back to ANT and other tokens.
         </p>
-      )}
     </CalloutContainer>
   )
 }

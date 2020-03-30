@@ -1,13 +1,11 @@
 import React from 'react'
 import styled from 'styled-components/macro'
 import { formatUnits } from 'lib/web3-utils'
-import { PREACTIVATION_END } from 'lib/utils'
 import { useTokenBalance, useTokenDecimals } from 'lib/web3-contracts'
 
 function Info() {
   const balanceAnj = useTokenBalance('ANJ')
   const anjDecimals = useTokenDecimals('ANJ')
-  const preactivationActive = new Date() < PREACTIVATION_END
 
   return (
     <InfoIn>
@@ -20,24 +18,12 @@ function Info() {
             : formatUnits(balanceAnj, {
                 digits: anjDecimals,
                 replaceZeroBy: '0',
-                truncateToDecimalPlace: 2,
+                truncateToDecimalPlace: 3,
               })}{' '}
           ANJ in your wallet.
         </li>
         <li>Minimum 10,000 ANJ is required to become a juror.</li>
-        <li>
-          The pre-activation period {preactivationActive ? 'ends' : 'ended'}{' '}
-          February 10th.
-        </li>
-        {preactivationActive && (
-          <li>1 ANT = 100 ANJ during pre-activation period only.</li>
-        )}
         <li>ANT will be converted to ANJ.</li>
-        <li>
-          {preactivationActive
-            ? 'ANJ will be automatically activated and locked until February 10th.'
-            : 'You can manage your active ANJ by going to the jurors dashboard.'}
-        </li>
       </ul>
     </InfoIn>
   )
