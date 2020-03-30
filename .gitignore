@@ -7,7 +7,6 @@
 # production
 /out/
 /artifacts/
-dist/
 
 # misc
 .env.local

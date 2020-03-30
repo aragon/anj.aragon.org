@@ -12,11 +12,12 @@ import {
   useTokenDecimals,
 } from 'lib/web3-contracts'
 import {
-  UNISWAP_PRECISION,
   formatUnits,
   parseUnits,
   useAnjRate,
   useTokenReserve,
+  UNISWAP_PRECISION,
+  STD_DECIMAL_PLACES,
 } from 'lib/web3-utils'
 import { useConverterStatus, CONVERTER_STATUSES } from './converter-status'
 import ComboInput from './ComboInput'
@@ -357,7 +358,7 @@ function FormSection() {
           amountAnj
         )} ANJ. The maximum amount available for a purchase order at the current price is ${formatUnits(
           anjReserve,
-          { truncateToDecimalPlace: 3 }
+          { truncateToDecimalPlace: STD_DECIMAL_PLACES }
         )} ANJ`
       : ''
   }, [amountAnj, anjReserve, loadingAnjReserve, inputValueAnj])
@@ -388,7 +389,7 @@ function FormSection() {
         {
           digits: selectedTokenDecimals,
           replaceZeroBy: '0',
-          truncateToDecimalPlace: 3,
+          truncateToDecimalPlace: STD_DECIMAL_PLACES,
         }
       )} ${options[selectedOption]}.`
 

@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components/macro'
-import { formatUnits } from 'lib/web3-utils'
+import { formatUnits, STD_DECIMAL_PLACES } from 'lib/web3-utils'
 import { useTokenBalance, useTokenDecimals } from 'lib/web3-contracts'
 
 function Info() {
@@ -18,7 +18,7 @@ function Info() {
             : formatUnits(balanceAnj, {
                 digits: anjDecimals,
                 replaceZeroBy: '0',
-                truncateToDecimalPlace: 3,
+                truncateToDecimalPlace: STD_DECIMAL_PLACES,
               })}{' '}
           ANJ in your wallet.
         </li>
