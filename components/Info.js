@@ -35,7 +35,7 @@ function Info() {
           </p>
           <br />
           <p className="content">
-            You can visit{' '}
+            You can visit the{' '}
             <a
               className="pink"
               href="https://help.aragon.org/article/48-aragon-court-faq"
