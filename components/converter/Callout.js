@@ -3,7 +3,6 @@ import styled from 'styled-components/macro'
 import { breakpoint } from 'lib/microsite-logic'
 
 const medium = css => breakpoint('medium', css)
-const small = css => breakpoint('small', css)
 
 function Callout() {
   return (
@@ -11,10 +10,13 @@ function Callout() {
       <p>
         Manage your ANJ balance from the{' '}
         <a className="pink" href="http://court.aragon.org/">
-          dashboard.
-        </a>{' '}
-        You can use{' '}
-        <a className="pink" href="https://uniswap.exchange/swap">
+          dashboard
+        </a>
+        . You can use{' '}
+        <a
+          className="pink"
+          href="https://uniswap.exchange/swap?inputCurrency=0xcD62b1C403fa761BAadFC74C525ce2B51780b184?outputCurrency=0x960b236A07cf122663c4303350609A66A7B288C0"
+        >
           Uniswap
         </a>{' '}
         to convert ANJ to other tokens such as ETH or DAI, and our own{' '}

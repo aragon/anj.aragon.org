@@ -9,11 +9,15 @@ const large = css => breakpoint('large', css)
 const medium = css => breakpoint('medium', css)
 
 function Info() {
-  const { title, content } = useMemo(() => {
-    return {
-      title: 'Aragon Court has launched',
-      content: (
-        <>
+  return (
+    <InfoSection>
+      <InfoWrapper>
+        <TextContainer>
+          <TitleWrapper>
+            <Img src={anj} alt="" />
+            <h2 className="pink header">Aragon Court has launched</h2>
+          </TitleWrapper>
+          <br />
           <p className="content">
             As a juror, you can now access your ANJ by using the{' '}
             <a className="pink" href="https://court.aragon.org/">
@@ -31,7 +35,8 @@ function Info() {
               href="https://help.aragon.org/article/44-how-to-get-anj-and-become-an-aragon-court-juror#bonding-curve"
             >
               bonding curve
-            </a>.
+            </a>
+            .
           </p>
           <br />
           <p className="content">
@@ -45,21 +50,6 @@ function Info() {
             for more information on frequent questions and answers on all Court
             related topics.
           </p>
-        </>
-      ),
-    }
-  }, [])
-
-  return (
-    <InfoSection>
-      <InfoWrapper>
-        <TextContainer>
-          <TitleWrapper>
-            <Img src={anj} alt="" />
-            <h2 className="pink header">{title}</h2>
-          </TitleWrapper>
-          <br />
-          {content}
         </TextContainer>
       </InfoWrapper>
     </InfoSection>
