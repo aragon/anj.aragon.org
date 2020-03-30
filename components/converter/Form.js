@@ -1,85 +1,85 @@
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
-import styled from 'styled-components/macro';
-import * as Sentry from '@sentry/browser';
-import {OverlayTrigger, Tooltip} from 'react-bootstrap';
-import {bigNum, usePostEmail} from 'lib/utils';
-import {breakpoint, GU} from 'lib/microsite-logic';
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import styled from 'styled-components/macro'
+import * as Sentry from '@sentry/browser'
+import { OverlayTrigger, Tooltip } from 'react-bootstrap'
+import { bigNum, usePostEmail, useCheckEmailForAddress } from 'lib/utils'
+import { breakpoint, GU } from 'lib/microsite-logic'
 import {
   useConvertTokenToAnj,
   useEthBalance,
   useJurorRegistryAnjBalance,
   useTokenBalance,
   useTokenDecimals,
-} from 'lib/web3-contracts';
+} from 'lib/web3-contracts'
 import {
   UNISWAP_PRECISION,
   formatUnits,
   parseUnits,
   useAnjRate,
   useTokenReserve,
-} from 'lib/web3-utils';
-import {useConverterStatus, CONVERTER_STATUSES} from './converter-status';
-import ComboInput from './ComboInput';
-import Token from './Token';
-import Anchor from '../Anchor';
+} from 'lib/web3-utils'
+import { useConverterStatus, CONVERTER_STATUSES } from './converter-status'
+import ComboInput from './ComboInput'
+import Token from './Token'
+import Anchor from '../Anchor'
 
-import question from './assets/question.svg';
+import question from './assets/question.svg'
 
-const ERROR_MIN_ANJ = Symbol('ERROR_MIN_ANJ');
-const ERROR_INSUFFICIENT_BALANCE = Symbol('ERROR_INSUFFICIENT_BALANCE');
+const ERROR_MIN_ANJ = Symbol('ERROR_MIN_ANJ')
+const ERROR_INSUFFICIENT_BALANCE = Symbol('ERROR_INSUFFICIENT_BALANCE')
 const ANJ_MIN_REQUIRED = bigNum(10)
   .pow(18)
-  .mul(10000);
+  .mul(10000)
 
-const large = css => breakpoint('large', css);
-const options = ['ANT', 'DAI', 'ETH', 'USDC'];
+const large = css => breakpoint('large', css)
+const options = ['ANT', 'DAI', 'ETH', 'USDC']
 
 // Filters and parse the input value of a token amount.
 // Returns a BN.js instance and the filtered value.
 function parseInputValue(inputValue, decimals) {
   if (decimals === -1) {
-    return null;
+    return null
   }
 
-  inputValue = inputValue.trim();
+  inputValue = inputValue.trim()
 
   // amount is the parsed value (BN.js instance)
-  const amount = parseUnits(inputValue, {digits: decimals});
+  const amount = parseUnits(inputValue, { digits: decimals })
 
   if (amount.lt(0)) {
-    return null;
+    return null
   }
 
-  return {amount, inputValue};
+  return { amount, inputValue }
 }
 
 // Convert the two input values as the user types.
 // The token which it is converted from is referred to as “other”.
 function useConvertInputs(otherSymbol) {
-  const [inputValueAnj, setInputValueAnj] = useState('');
-  const [inputValueOther, setInputValueOther] = useState('');
-  const [amountAnj, setAmountAnj] = useState(bigNum(0));
-  const [amountOther, setAmountOther] = useState(bigNum(0));
-  const [editing, setEditing] = useState(null);
+  const [inputValueAnj, setInputValueAnj] = useState('')
+  const [inputValueOther, setInputValueOther] = useState('')
+  const [amountAnj, setAmountAnj] = useState(bigNum(0))
+  const [amountOther, setAmountOther] = useState(bigNum(0))
+  const [editing, setEditing] = useState(null)
 
-  const anjDecimals = useTokenDecimals('ANJ');
-  const otherDecimals = useTokenDecimals(otherSymbol);
+  const anjDecimals = useTokenDecimals('ANJ')
+  const otherDecimals = useTokenDecimals(otherSymbol)
 
   // convertFromAnj is used as a toggle to execute a conversion to or from ANJ.
-  const [convertFromAnj, setConvertFromAnj] = useState(false);
+  const [convertFromAnj, setConvertFromAnj] = useState(false)
   const anjRate = useAnjRate(
     otherSymbol,
     (convertFromAnj ? amountAnj : amountOther).toString(),
-    convertFromAnj,
-  );
+    convertFromAnj
+  )
 
   // Reset the inputs anytime the selected token changes
   useEffect(() => {
-    setInputValueOther('');
-    setInputValueAnj('');
-    setAmountAnj(bigNum(0));
-    setAmountOther(bigNum(0));
-  }, [otherSymbol]);
+    setInputValueOther('')
+    setInputValueAnj('')
+    setAmountAnj(bigNum(0))
+    setAmountOther(bigNum(0))
+  }, [otherSymbol])
 
   // Calculate the ANJ amount from the other amount
   useEffect(() => {
@@ -90,16 +90,16 @@ function useConvertInputs(otherSymbol) {
       convertFromAnj ||
       editing === 'anj'
     ) {
-      return;
+      return
     }
 
     const amount = amountOther
       .mul(bigNum(10).pow(anjDecimals - otherDecimals))
       .mul(anjRate.rate)
-      .div(bigNum(10).pow(UNISWAP_PRECISION));
+      .div(bigNum(10).pow(UNISWAP_PRECISION))
 
-    setAmountAnj(amount);
-    setInputValueAnj(formatUnits(amount, {digits: anjDecimals}));
+    setAmountAnj(amount)
+    setInputValueAnj(formatUnits(amount, { digits: anjDecimals }))
   }, [
     amountOther,
     anjDecimals,
@@ -107,7 +107,7 @@ function useConvertInputs(otherSymbol) {
     convertFromAnj,
     editing,
     otherDecimals,
-  ]);
+  ])
 
   // Calculate the other amount from the ANJ amount
   useEffect(() => {
@@ -118,78 +118,78 @@ function useConvertInputs(otherSymbol) {
       !convertFromAnj ||
       editing === 'other'
     ) {
-      return;
+      return
     }
 
     const amount = amountAnj
       .div(bigNum(10).pow(anjDecimals - otherDecimals))
       .mul(anjRate.rate)
-      .div(bigNum(10).pow(UNISWAP_PRECISION));
+      .div(bigNum(10).pow(UNISWAP_PRECISION))
 
-    setAmountOther(amount);
-    setInputValueOther(formatUnits(amount, {digits: otherDecimals}));
-  }, [amountAnj, anjDecimals, anjRate, convertFromAnj, editing, otherDecimals]);
+    setAmountOther(amount)
+    setInputValueOther(formatUnits(amount, { digits: otherDecimals }))
+  }, [amountAnj, anjDecimals, anjRate, convertFromAnj, editing, otherDecimals])
 
   // Alternate the comma-separated format, based on the fields focus state.
   const setEditModeOther = useCallback(
     editMode => {
-      setEditing(editMode ? 'other' : null);
+      setEditing(editMode ? 'other' : null)
       setInputValueOther(
         formatUnits(amountOther, {
           digits: otherDecimals,
           commas: !editMode,
-        }),
-      );
+        })
+      )
     },
-    [amountOther, otherDecimals],
-  );
+    [amountOther, otherDecimals]
+  )
 
   const setEditModeAnj = useCallback(
     editMode => {
-      setEditing(editMode ? 'anj' : null);
+      setEditing(editMode ? 'anj' : null)
       setInputValueAnj(
         formatUnits(amountAnj, {
           digits: anjDecimals,
           commas: !editMode,
-        }),
-      );
+        })
+      )
     },
-    [amountAnj, anjDecimals],
-  );
+    [amountAnj, anjDecimals]
+  )
 
   const handleOtherInputChange = useCallback(
     event => {
-      setConvertFromAnj(false);
+      setConvertFromAnj(false)
 
       if (otherDecimals === -1) {
-        return;
+        return
       }
 
-      const parsed = parseInputValue(event.target.value, otherDecimals);
+      const parsed = parseInputValue(event.target.value, otherDecimals)
       if (parsed !== null) {
-        setInputValueOther(parsed.inputValue);
-        setAmountOther(parsed.amount);
+        setInputValueOther(parsed.inputValue)
+        setAmountOther(parsed.amount)
       }
     },
-    [otherDecimals],
-  );
+    [otherDecimals]
+  )
 
   const handleAnjInputChange = useCallback(
     event => {
-      setConvertFromAnj(true);
+      setConvertFromAnj(true)
 
       if (anjDecimals === -1) {
-        return;
+        return
       }
 
-      const parsed = parseInputValue(event.target.value, anjDecimals);
+      const parsed = parseInputValue(event.target.value, anjDecimals)
       if (parsed !== null) {
-        setInputValueAnj(parsed.inputValue);
-        setAmountAnj(parsed.amount);
+        setInputValueAnj(parsed.inputValue)
+        setAmountAnj(parsed.amount)
       }
     },
-    [anjDecimals],
-  );
+    [anjDecimals]
+  )
 
   const bindOtherInput = useMemo(
     () => ({
@@ -197,8 +197,8 @@ function useConvertInputs(otherSymbol) {
       onBlur: () => setEditModeOther(false),
       onFocus: () => setEditModeOther(true),
     }),
-    [setEditModeOther, handleOtherInputChange],
-  );
+    [setEditModeOther, handleOtherInputChange]
+  )
 
   const bindAnjInput = useMemo(
     () => ({
@@ -206,8 +206,8 @@ function useConvertInputs(otherSymbol) {
       onBlur: () => setEditModeAnj(false),
       onFocus: () => setEditModeAnj(true),
     }),
-    [setEditModeAnj, handleAnjInputChange],
-  );
+    [setEditModeAnj, handleAnjInputChange]
+  )
 
   return {
     // The parsed amount
@@ -230,14 +230,14 @@ function useConvertInputs(otherSymbol) {
         : inputValueOther,
 
     rateSlippage: anjRate.rateSlippage,
-  };
+  }
 }
 
 function FormSection() {
-  const [selectedOption, setSelectedOption] = useState(0);
-  const tokenBalance = useTokenBalance(options[selectedOption]);
-  const ethBalance = useEthBalance();
-  const [anjReserve, loadingAnjReserve] = useTokenReserve('ANJ');
+  const [selectedOption, setSelectedOption] = useState(0)
+  const tokenBalance = useTokenBalance(options[selectedOption])
+  const ethBalance = useEthBalance()
+  const [anjReserve, loadingAnjReserve] = useTokenReserve('ANJ')
 
   const {
     amountAnj,
@@ -247,59 +247,60 @@ function FormSection() {
     inputValueAnj,
     inputValueOther,
     rateSlippage,
-  } = useConvertInputs(options[selectedOption]);
+  } = useConvertInputs(options[selectedOption])
 
-  const convertTokenToAnj = useConvertTokenToAnj(options[selectedOption]);
-  const postEmail = usePostEmail();
+  const convertTokenToAnj = useConvertTokenToAnj(options[selectedOption])
+  const postEmail = usePostEmail()
+  const checkEmailForAddress = useCheckEmailForAddress()
+  checkEmailForAddress()
+  const balanceAnj = useJurorRegistryAnjBalance()
+  const selectedTokenDecimals = useTokenDecimals(options[selectedOption])
 
-  const balanceAnj = useJurorRegistryAnjBalance();
-  const selectedTokenDecimals = useTokenDecimals(options[selectedOption]);
-
-  const converterStatus = useConverterStatus();
-  const [email, setEmail] = useState('');
-  const [acceptTerms, setAcceptTerms] = useState(false);
+  const converterStatus = useConverterStatus()
+  const [email, setEmail] = useState('')
+  const [acceptTerms, setAcceptTerms] = useState(false)
 
   const handleSubmit = async event => {
-    event.preventDefault();
+    event.preventDefault()
 
     try {
-      await postEmail(email);
+      await postEmail(email)
     } catch (err) {
-      converterStatus.setStatus(CONVERTER_STATUSES.ERROR);
-      return;
+      converterStatus.setStatus(CONVERTER_STATUSES.ERROR)
+      return
     }
 
-    const selectedToken = options[selectedOption];
+    const selectedToken = options[selectedOption]
     converterStatus.setStatus(
       selectedToken === 'DAI' || selectedToken === 'USDC'
         ? CONVERTER_STATUSES.SIGNING_ERC
-        : CONVERTER_STATUSES.SIGNING,
-    );
+        : CONVERTER_STATUSES.SIGNING
+    )
     try {
-      const tx = await convertTokenToAnj(amountOther, amountAnj);
-      converterStatus.setStatus(CONVERTER_STATUSES.PENDING);
-      await tx.wait(1);
-      converterStatus.setStatus(CONVERTER_STATUSES.SUCCESS);
+      const tx = await convertTokenToAnj(amountOther, amountAnj)
+      converterStatus.setStatus(CONVERTER_STATUSES.PENDING)
+      await tx.wait(1)
+      converterStatus.setStatus(CONVERTER_STATUSES.SUCCESS)
     } catch (err) {
-      console.log(err);
+      console.log(err)
       if (process.env.NODE_ENV === 'production') {
-        Sentry.captureException(err);
+        Sentry.captureException(err)
       }
-      converterStatus.setStatus(CONVERTER_STATUSES.ERROR);
+      converterStatus.setStatus(CONVERTER_STATUSES.ERROR)
     }
-  };
+  }
 
-  const [placeholder, setPlaceholder] = useState('');
+  const [placeholder, setPlaceholder] = useState('')
   const selectedTokenBalance =
-    options[selectedOption] === 'ETH' ? ethBalance : tokenBalance;
+    options[selectedOption] === 'ETH' ? ethBalance : tokenBalance
 
   useEffect(() => {
     if (balanceAnj && balanceAnj.gte(bigNum('10000'))) {
-      setPlaceholder('');
+      setPlaceholder('')
     } else {
-      setPlaceholder('Min. 10,000 ANJ');
+      setPlaceholder('Min. 10,000 ANJ')
     }
-  }, [balanceAnj]);
+  }, [balanceAnj])
 
   const tokenBalanceError = useMemo(() => {
     if (
@@ -312,7 +313,7 @@ function FormSection() {
       return {
         type: ERROR_MIN_ANJ,
         message: 'You need to activate at least 10,000 ANJ.',
-      };
+      }
     }
 
     if (
@@ -324,17 +325,17 @@ function FormSection() {
       return {
         type: ERROR_INSUFFICIENT_BALANCE,
         message: 'Insufficient balance: ',
-      };
+      }
     }
 
-    return null;
+    return null
   }, [
     amountOther,
     inputValueOther,
     balanceAnj,
     amountAnj,
     selectedTokenBalance,
-  ]);
+  ])
 
   const disabled = Boolean(
     !inputValueOther.trim() ||
@@ -342,44 +343,44 @@ function FormSection() {
       tokenBalanceError ||
       converterStatus.status !== CONVERTER_STATUSES.FORM ||
       !/[^@]+@[^@]+/.test(email) ||
-      !acceptTerms,
-  );
+      !acceptTerms
+  )
 
   const liquidityError = useMemo(() => {
     // Reserves are still loading, so we cannot
     // do any computation yet
     if (loadingAnjReserve || !anjReserve || inputValueAnj.includes('Loading')) {
-      return false;
+      return false
     }
 
     return anjReserve.lt(amountAnj)
       ? `There is not enough liquidity in the market at this time to purchase ${formatUnits(
-          amountAnj,
+          amountAnj
         )} ANJ. The maximum amount available for a purchase order at the current price is ${formatUnits(
           anjReserve,
-          {truncateToDecimalPlace: 3},
+          { truncateToDecimalPlace: 3 }
         )} ANJ`
-      : '';
-  }, [amountAnj, anjReserve, loadingAnjReserve, inputValueAnj]);
+      : ''
+  }, [amountAnj, anjReserve, loadingAnjReserve, inputValueAnj])
 
   const slippageWarning = useMemo(() => {
-    const totalAmount = balanceAnj.add(amountAnj);
+    const totalAmount = balanceAnj.add(amountAnj)
 
     const slippageWarning =
       totalAmount.gte(ANJ_MIN_REQUIRED) &&
       totalAmount
         .sub(
-          totalAmount.mul(rateSlippage).div(bigNum(10).pow(UNISWAP_PRECISION)),
+          totalAmount.mul(rateSlippage).div(bigNum(10).pow(UNISWAP_PRECISION))
         )
-        .lt(ANJ_MIN_REQUIRED);
+        .lt(ANJ_MIN_REQUIRED)
 
-    return slippageWarning;
-  }, [amountAnj, balanceAnj, rateSlippage]);
+    return slippageWarning
+  }, [amountAnj, balanceAnj, rateSlippage])
 
   const handleSelect = useCallback(
     optionIndex => setSelectedOption(optionIndex),
-    [],
-  );
+    []
+  )
 
   const formattedTokenBalance = selectedTokenBalance.eq(-1)
     ? 'Fetching…'
@@ -388,15 +389,17 @@ function FormSection() {
         {
           digits: selectedTokenDecimals,
           replaceZeroBy: '0',
-        },
-      )} ${options[selectedOption]}.`;
+          truncateToDecimalPlace: 3,
+        }
+      )} ${options[selectedOption]}.`
 
   return (
     <Form onSubmit={handleSubmit}>
       <div
         css={`
           margin-bottom: ${3 * GU}px;
-        `}>
+        `}
+      >
         <div>
           <Label>Amount of {options[selectedOption]} you want to convert</Label>
           <ComboInput
@@ -436,7 +439,7 @@ function FormSection() {
                 <Token symbol="ANJ" />
               </Adornment>
             </AdornmentBox>
-            <Info style={{minHeight: '24px'}}>
+            <Info style={{ minHeight: '24px' }}>
               {liquidityError && (
                 <span className="error">
                   {liquidityError} <br />
@@ -454,7 +457,7 @@ function FormSection() {
                   <OverlayTrigger
                     show="true"
                     placement="top"
-                    delay={{hide: 400}}
+                    delay={{ hide: 400 }}
                     overlay={props => (
                       <Tooltip {...props} show="true">
                         As this transaction will use an external, decentralized
@@ -469,7 +472,8 @@ function FormSection() {
                           </p>
                         )}
                       </Tooltip>
-                    )}>
+                    )}
+                  >
                     <span className="insight"> Why?</span>
                   </OverlayTrigger>
                 </>
@@ -479,7 +483,7 @@ function FormSection() {
         </div>
         <OverlayTrigger
           placement="top"
-          delay={{hide: 400}}
+          delay={{ hide: 400 }}
           overlay={props => (
             <Tooltip {...props} show="true">
               By entering your email address, we will notify you directly about
@@ -488,7 +492,8 @@ function FormSection() {
               participating in cases you are drafted in, we would like all
               jurors to sign up for court notifications via email.
             </Tooltip>
-          )}>
+          )}
+        >
           <Label>
             Notify me about actions I need to take as a juror
             <img src={question} alt="" />
@@ -520,7 +525,7 @@ function FormSection() {
         Become a Juror
       </Button>
     </Form>
-  );
+  )
 }
 
 const Form = styled.form`
@@ -530,7 +535,7 @@ const Form = styled.form`
   flex-direction: column;
   margin-top: 130px;
   ${large('padding-right: 30px; margin-top: 0;')};
-`;
+`
 
 const Conditions = styled.p`
   margin: 24px 0;
@@ -546,7 +551,7 @@ const Conditions = styled.p`
     margin-right: 8px;
     vertical-align: text-top;
   }
-`;
+`
 
 const Label = styled.label`
   font-size: 24px;
@@ -560,7 +565,7 @@ const Label = styled.label`
   img {
     padding-left: 10px;
   }
-`;
+`
 const Info = styled.div`
   margin-top: 3px;
   margin-bottom: 12px;
@@ -574,11 +579,11 @@ const Info = styled.div`
   .insight {
     color: #516dff;
   }
-`;
+`
 
 const InputBox = styled.div`
   margin-bottom: 20px;
-`;
+`
 const Input = styled.input`
   width: 100%;
   height: 50px;
@@ -606,7 +611,7 @@ const Input = styled.input`
   &:invalid {
     box-shadow: none;
   }
-`;
+`
 
 const Button = styled.button`
   background: linear-gradient(189.76deg, #ffb36d 6.08%, #ff8888 93.18%);
@@ -624,7 +629,7 @@ const Button = styled.button`
     opacity: 0.5;
     cursor: inherit;
   }
-`;
+`
 
 const Adornment = styled.div`
   position: absolute;
@@ -635,7 +640,7 @@ const Adornment = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-`;
+`
 
 const AdornmentBox = styled.div`
   display: inline-flex;
@@ -644,6 +649,6 @@ const AdornmentBox = styled.div`
   input {
     padding-right: 39px;
   }
-`;
+`
 
-export default FormSection;
+export default FormSection

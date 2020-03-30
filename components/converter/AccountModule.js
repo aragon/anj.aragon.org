@@ -60,28 +60,28 @@ function ConnectedMode() {
               <Row>
                 <Token symbol="ANT" />
                 <div>
-                  <p>{formatUnits(balanceAnt, { digits: antDecimals })}</p>
+                  <p>{formatUnits(balanceAnt, { digits: antDecimals, truncateToDecimalPlace: 3 })}</p>
                   <p>${antToUsd}</p>
                 </div>
               </Row>
               <Row>
                 <Token symbol="DAI" />
                 <div>
-                  <p>{formatUnits(balanceDai, { digits: daiDecimals })}</p>
+                  <p>{formatUnits(balanceDai, { digits: daiDecimals, truncateToDecimalPlace: 3 })}</p>
                   <p>${daiToUsd}</p>
                 </div>
               </Row>
               <Row>
                 <Token symbol="ETH" />
                 <div>
-                  <p>{formatUnits(balanceEth, { digits: 18 })}</p>
+                  <p>{formatUnits(balanceEth, { digits: 18, truncateToDecimalPlace: 3 })}</p>
                   <p>${ethToUsd}</p>
                 </div>
               </Row>
               <Row>
                 <Token symbol="USDC" />
                 <div>
-                  <p>{formatUnits(balanceUsdc, { digits: usdcDecimals })}</p>
+                  <p>{formatUnits(balanceUsdc, { digits: usdcDecimals, truncateToDecimalPlace: 3 })}</p>
                   <p>${usdcToUsd}</p>
                 </div>
               </Row>
@@ -89,7 +89,7 @@ function ConnectedMode() {
                 <Token symbol="ANJ" />
                 <div>
                   <p>
-                    {formatUnits(balanceAnj, { digits: anjDecimals }) || '0'}
+                    {formatUnits(balanceAnj, { digits: anjDecimals, truncateToDecimalPlace: 3 }) || '0'}
                   </p>
                 </div>
               </Row>
