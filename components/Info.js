@@ -1,7 +1,6 @@
 import React, { useMemo } from 'react'
 import styled from 'styled-components/macro'
 import { breakpoint } from 'lib/microsite-logic'
-import { useNow, FIRST_TERM } from 'lib/utils'
 
 import infoBackground from './assets/info-background.svg'
 import anj from './assets/anj-logo.png'
@@ -10,36 +9,46 @@ const large = css => breakpoint('large', css)
 const medium = css => breakpoint('medium', css)
 
 function Info() {
-
   const { title, content } = useMemo(() => {
-      return {
-        title: 'Aragon Court has launched',
-        content: (
-          <>
-            <p className="content">
-              As a juror, you can now access your ANJ by using the{' '}
-              <a className="pink" href="http://court.aragon.org/">
-                jurors dashboard.
-              </a>{' '}
-              You can still check your active balance by connecting your wallet
-              to the conversion module.
-            </p>
-            <br />
-            <p className="content">
-              ANJ is now available at a variable rate, based on supply and
-              demand. Price discovery is automated by a{' '}
-              <a
-                className="pink"
-                href="https://help.aragon.org/article/44-how-to-get-anj-and-become-an-aragon-court-juror#bonding-curve"
-              >
-                bonding curve.
-              </a>
-            </p>
-          </>
-        ),
-      }
-   })
-
+    return {
+      title: 'Aragon Court has launched',
+      content: (
+        <>
+          <p className="content">
+            As a juror, you can now access your ANJ by using the{' '}
+            <a className="pink" href="http://court.aragon.org/">
+              jurors dashboard.
+            </a>{' '}
+            You can still check your active balance by connecting your wallet to
+            the conversion module.
+          </p>
+          <br />
+          <p className="content">
+            ANJ is now available at a variable rate, based on supply and demand.
+            Price discovery is automated by a{' '}
+            <a
+              className="pink"
+              href="https://help.aragon.org/article/44-how-to-get-anj-and-become-an-aragon-court-juror#bonding-curve"
+            >
+              bonding curve.
+            </a>
+          </p>
+          <br />
+          <p className="content">
+            You can visit{' '}
+            <a
+              className="pink"
+              href="https://help.aragon.org/article/48-aragon-court-faq"
+            >
+              Aragon Court FAQ
+            </a>{' '}
+            for more information on frequent questions and answers on all Court
+            related topics.
+          </p>
+        </>
+      ),
+    }
+  }, [])
 
   return (
     <InfoSection>

@@ -7,18 +7,22 @@ const medium = css => breakpoint('medium', css)
 function Callout() {
   return (
     <CalloutContainer>
-        <p>
-          Manage your ANJ balance from the{' '}
-          <a className="pink" href="http://court.aragon.org/">
-            dashboard.
-          </a>
-          <br />
-          You can also{' '}
-          <a className="pink" href="https://uniswap.exchange/swap">
-            convert your ANJ
-          </a>{' '}
-          back to ANT and other tokens.
-        </p>
+      <p>
+        Manage your ANJ balance from the{' '}
+        <a className="pink" href="http://court.aragon.org/">
+          dashboard.
+        </a>{' '}
+        You can use{' '}
+        <a className="pink" href="https://uniswap.exchange/swap">
+          Uniswap
+        </a>{' '}
+        to convert ANJ to other tokens such as ETH or DAI, and our own{' '}
+        <a className="pink" href="https://convert.aragon.org/">
+          Converter
+        </a>{' '}
+        tool, that uses the bonding curve on the background, to exchange ANT to
+        ANJ and back at a better price.
+      </p>
     </CalloutContainer>
   )
 }
@@ -31,9 +35,10 @@ const CalloutContainer = styled.div`
   position: relative;
   width: 100%;
   p {
+    font-size: 20px !important;
     margin: 0;
-    line-height: 1.1 !important;
-    ${medium('line-height: 38px !important;')};
+    line-height: 1 !important;
+    ${medium('line-height: 135% !important;')};
   }
   ${medium('padding: 20px 40px;')};
 

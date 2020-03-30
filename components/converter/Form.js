@@ -251,8 +251,7 @@ function FormSection() {
 
   const convertTokenToAnj = useConvertTokenToAnj(options[selectedOption])
   const postEmail = usePostEmail()
-  const checkEmailForAddress = useCheckEmailForAddress()
-  checkEmailForAddress()
+  const emailExists = useCheckEmailForAddress()
   const balanceAnj = useJurorRegistryAnjBalance()
   const selectedTokenDecimals = useTokenDecimals(options[selectedOption])
 
@@ -481,35 +480,48 @@ function FormSection() {
             </Info>
           </InputBox>
         </div>
-        <OverlayTrigger
-          placement="top"
-          delay={{ hide: 400 }}
-          overlay={props => (
-            <Tooltip {...props} show="true">
-              By entering your email address, we will notify you directly about
-              any necessary actions you'll need to take as a juror in upcoming
-              court cases. Since there are financial penalties for not
-              participating in cases you are drafted in, we would like all
-              jurors to sign up for court notifications via email.
-            </Tooltip>
-          )}
-        >
-          <Label>
-            Notify me about actions I need to take as a juror
-            <img src={question} alt="" />
-          </Label>
-        </OverlayTrigger>
-        <Input type="email" onChange={event => setEmail(event.target.value)} />
+        {!emailExists && (
+          <>
+            <OverlayTrigger
+              placement="top"
+              delay={{ hide: 400 }}
+              overlay={props => (
+                <Tooltip {...props} show="true">
+                  By entering your email address, we will notify you directly
+                  about any necessary actions you'll need to take as a juror in
+                  upcoming court cases. Since there are financial penalties for
+                  not participating in cases you are drafted in, we would like
+                  all jurors to sign up for court notifications via email.
+                </Tooltip>
+              )}
+            >
+              <Label>
+                Notify me about actions I need to take as a juror
+                <img src={question} alt="" />
+              </Label>
+            </OverlayTrigger>
+            <Input
+              type="email"
+              onChange={event => setEmail(event.target.value)}
+            />
+          </>
+        )}
       </div>
 
       <Conditions>
         <label>
-          <input
-            type="checkbox"
-            onChange={() => setAcceptTerms(acceptTerms => !acceptTerms)}
-            checked={acceptTerms}
-          />
-          By clicking on “Become a juror”, you are accepting the{' '}
+          {emailExists ? (
+            'You have accepted the '
+          ) : (
+            <>
+              <input
+                type="checkbox"
+                onChange={() => setAcceptTerms(acceptTerms => !acceptTerms)}
+                checked={acceptTerms}
+              />
+              By clicking on “Become a juror”, you are accepting the{' '}
+            </>
+          )}
           <Anchor href="https://anj.aragon.org/legal/terms-general.pdf">
             court terms
           </Anchor>{' '}
