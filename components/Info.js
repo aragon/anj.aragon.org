@@ -1,9 +1,9 @@
-import React, { useMemo } from 'react'
+import React from 'react'
 import styled from 'styled-components/macro'
 import { breakpoint } from 'lib/microsite-logic'
 
 import infoBackground from './assets/info-background.svg'
-import anj from './assets/anj-logo.png'
+import anj from './assets/anj-logo.svg'
 
 const large = css => breakpoint('large', css)
 const medium = css => breakpoint('medium', css)
