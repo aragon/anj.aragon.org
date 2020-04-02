@@ -342,8 +342,8 @@ function FormSection() {
       !inputValueAnj.trim() ||
       tokenBalanceError ||
       converterStatus.status !== CONVERTER_STATUSES.FORM ||
-      !/[^@]+@[^@]+/.test(email) ||
-      !acceptTerms
+      (!/[^@]+@[^@]+/.test(email) && !emailExists) ||
+      (!acceptTerms && !emailExists)
   )
 
   const liquidityError = useMemo(() => {
@@ -394,7 +394,7 @@ function FormSection() {
     <Form onSubmit={handleSubmit}>
       <div
         css={`
-          margin-bottom: ${3 * GU}px;
+          margin-bottom: ${1.5 * GU}px;
         `}
       >
         <div>
@@ -415,8 +415,7 @@ function FormSection() {
             {tokenBalanceError &&
               tokenBalanceError.type === ERROR_INSUFFICIENT_BALANCE && (
                 <span className="error"> {tokenBalanceError.message} </span>
-              )
-            }
+              )}
             <span
               className={
                 tokenBalanceError &&
@@ -449,8 +448,7 @@ function FormSection() {
               {tokenBalanceError &&
                 tokenBalanceError.type === ERROR_MIN_ANJ && (
                   <span className="error">{tokenBalanceError.message} </span>
-                )
-              }
+                )}
               {liquidityError && (
                 <span className="error">
                   {liquidityError} <br />
