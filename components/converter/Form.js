@@ -394,7 +394,7 @@ function FormSection() {
     <Form onSubmit={handleSubmit}>
       <div
         css={`
-          margin-bottom: ${3 * GU}px;
+          margin-bottom: ${1.5 * GU}px;
         `}
       >
         <div>
