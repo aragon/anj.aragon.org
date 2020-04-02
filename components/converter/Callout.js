@@ -1,35 +1,31 @@
 import React from 'react'
 import styled from 'styled-components/macro'
 import { breakpoint } from 'lib/microsite-logic'
-import { useNow, PREACTIVATION_END } from 'lib/utils'
-import Timer from '../Timer'
 
 const medium = css => breakpoint('medium', css)
 
 function Callout() {
-  const now = useNow(5000) // update every 5s
-  const preactivationActive = now < PREACTIVATION_END
   return (
     <CalloutContainer>
-      {preactivationActive ? (
-        <>
-          <p>Special ANJ pre-activation rate ends in</p>
-          <Timer date={PREACTIVATION_END} />
-        </>
-      ) : (
-        <p>
-          Manage your ANJ balance from the{' '}
-          <a className="pink" href="http://court.aragon.org/">
-            dashboard.
-          </a>
-          <br />
-          You can also{' '}
-          <a className="pink" href="https://uniswap.exchange/swap">
-            convert your ANJ
-          </a>{' '}
-          back to ANT and other tokens.
-        </p>
-      )}
+      <p>
+        Manage your ANJ balance from the{' '}
+        <a className="pink" href="http://court.aragon.org/">
+          dashboard
+        </a>
+        . You can use{' '}
+        <a
+          className="pink"
+          href="https://uniswap.exchange/swap?inputCurrency=0xcD62b1C403fa761BAadFC74C525ce2B51780b184?outputCurrency=0x960b236A07cf122663c4303350609A66A7B288C0"
+        >
+          Uniswap
+        </a>{' '}
+        to convert ANJ to other tokens such as ETH or DAI, and our own{' '}
+        <a className="pink" href="https://convert.aragon.org/">
+          Converter
+        </a>{' '}
+        tool, that uses the bonding curve to exchange between ANT and ANJ at a
+        better price.
+      </p>
     </CalloutContainer>
   )
 }
@@ -42,9 +38,9 @@ const CalloutContainer = styled.div`
   position: relative;
   width: 100%;
   p {
+    font-size: 20px !important;
     margin: 0;
-    line-height: 1.1 !important;
-    ${medium('line-height: 38px !important;')};
+    line-height: 135% !important;
   }
   ${medium('padding: 20px 40px;')};
 

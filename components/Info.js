@@ -1,101 +1,55 @@
-import React, { useMemo } from 'react'
+import React from 'react'
 import styled from 'styled-components/macro'
 import { breakpoint } from 'lib/microsite-logic'
-import { useNow, FIRST_TERM, PREACTIVATION_END } from 'lib/utils'
 
 import infoBackground from './assets/info-background.svg'
-import anj from './assets/anj-logo.png'
+import anj from './assets/anj-logo.svg'
 
 const large = css => breakpoint('large', css)
 const medium = css => breakpoint('medium', css)
 
 function Info() {
-  const now = useNow(5000) // re-render every 5s
-
-  const { title, content } = useMemo(() => {
-    if (now > FIRST_TERM) {
-      return {
-        title: 'Aragon Court has launched',
-        content: (
-          <>
-            <p className="content">
-              As a juror, you can now access your ANJ by using the{' '}
-              <a className="pink" href="http://court.aragon.org/">
-                jurors dashboard.
-              </a>{' '}
-              You can still check your active balance by connecting your wallet
-              to the conversion module.
-            </p>
-            <br />
-            <p className="content">
-              ANJ is now available at a variable rate, based on supply and
-              demand. Price discovery is automated by a{' '}
-              <a
-                className="pink"
-                href="https://help.aragon.org/article/44-how-to-get-anj-and-become-an-aragon-court-juror#bonding-curve"
-              >
-                bonding curve.
-              </a>
-            </p>
-          </>
-        ),
-      }
-    }
-
-    if (now > PREACTIVATION_END) {
-      return {
-        title: 'Aragon Court’s first term starts today',
-        content: (
-          <>
-            <p className="content">
-              When Aragon Court’s first term begins today at 16:00 UTC, jurors
-              will be able to deactivate and unstake ANJ using the jurors
-              dashboard.
-            </p>
-            <br />
-            <p className="content">
-              ANJ is now available at a variable rate, based on supply and
-              demand. Price discovery is automated by a bonding curve.
-            </p>
-          </>
-        ),
-      }
-    }
-
-    return {
-      title: 'Pre-activation ends when Aragon Court Launches on Feb 10th',
-      content: (
-        <>
-          <p className="content">
-            On February 10th, when Aragon Court’s first term begins, jurors will
-            be able to deactivate and unstake ANJ using the jurors dashboard. In
-            the meantime, you can check your active balance by connecting your
-            wallet to the{' '}
-            <a className="pink" href="#get-anj">
-              conversion module.
-            </a>
-          </p>
-          <br />
-          <p className="content">
-            When the pre-activation phase ends, ANJ will be available at a
-            variable rate. Price discovery will be automated by a bonding curve
-            and it will vary based on supply and demand.
-          </p>
-        </>
-      ),
-    }
-  }, [now])
-
   return (
     <InfoSection>
       <InfoWrapper>
         <TextContainer>
           <TitleWrapper>
             <Img src={anj} alt="" />
-            <h2 className="pink header">{title}</h2>
+            <h2 className="pink header">Aragon Court has launched</h2>
           </TitleWrapper>
           <br />
-          {content}
+          <p className="content">
+            As a juror, you can now access your ANJ by using the{' '}
+            <a className="pink" href="https://court.aragon.org/">
+              court dashboard.
+            </a>{' '}
+            You can still check your active balance by connecting your wallet to
+            the conversion module.
+          </p>
+          <br />
+          <p className="content">
+            ANJ is now available at a variable rate, based on supply and demand.
+            Price discovery is automated by a{' '}
+            <a
+              className="pink"
+              href="https://help.aragon.org/article/44-how-to-get-anj-and-become-an-aragon-court-juror#bonding-curve"
+            >
+              bonding curve
+            </a>
+            .
+          </p>
+          <br />
+          <p className="content">
+            You can visit the{' '}
+            <a
+              className="pink"
+              href="https://help.aragon.org/article/48-aragon-court-faq"
+            >
+              Aragon Court FAQ
+            </a>{' '}
+            for more information on frequent questions and answers on all Court
+            related topics.
+          </p>
         </TextContainer>
       </InfoWrapper>
     </InfoSection>

@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components/macro'
 import Token from './Token'
 import { useWeb3Connect } from 'lib/web3-connect'
-import { formatUnits } from 'lib/web3-utils'
+import { formatUnits, STD_DECIMAL_PLACES } from 'lib/web3-utils'
 import {
   useJurorRegistryAnjBalance,
   useTokenDecimals,
@@ -21,7 +21,7 @@ function Balance() {
           {(account &&
             formatUnits(anjBalance, {
               digits: anjDecimals,
-              truncateToDecimalPlace: 3,
+              truncateToDecimalPlace: STD_DECIMAL_PLACES,
             })) ||
             '0.00'}
         </span>{' '}

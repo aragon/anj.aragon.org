@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components/macro'
 import * as Sentry from '@sentry/browser'
 import { OverlayTrigger, Tooltip } from 'react-bootstrap'
-import { bigNum, usePostEmail } from 'lib/utils'
+import { bigNum, usePostEmail, useCheckEmailForAddress } from 'lib/utils'
 import { breakpoint, GU } from 'lib/microsite-logic'
 import {
   useConvertTokenToAnj,
@@ -12,11 +12,12 @@ import {
   useTokenDecimals,
 } from 'lib/web3-contracts'
 import {
-  UNISWAP_PRECISION,
   formatUnits,
   parseUnits,
   useAnjRate,
   useTokenReserve,
+  UNISWAP_PRECISION,
+  STD_DECIMAL_PLACES,
 } from 'lib/web3-utils'
 import { useConverterStatus, CONVERTER_STATUSES } from './converter-status'
 import ComboInput from './ComboInput'
@@ -25,11 +26,14 @@ import Anchor from '../Anchor'
 
 import question from './assets/question.svg'
 
-const large = css => breakpoint('large', css)
-const options = ['ANT', 'DAI', 'ETH', 'USDC']
+const ERROR_MIN_ANJ = Symbol('ERROR_MIN_ANJ')
+const ERROR_INSUFFICIENT_BALANCE = Symbol('ERROR_INSUFFICIENT_BALANCE')
 const ANJ_MIN_REQUIRED = bigNum(10)
   .pow(18)
   .mul(10000)
+
+const large = css => breakpoint('large', css)
+const options = ['ANT', 'DAI', 'ETH', 'USDC']
 
 // Filters and parse the input value of a token amount.
 // Returns a BN.js instance and the filtered value.
@@ -248,13 +252,14 @@ function FormSection() {
 
   const convertTokenToAnj = useConvertTokenToAnj(options[selectedOption])
   const postEmail = usePostEmail()
-
+  const emailExists = useCheckEmailForAddress()
   const balanceAnj = useJurorRegistryAnjBalance()
   const selectedTokenDecimals = useTokenDecimals(options[selectedOption])
 
   const converterStatus = useConverterStatus()
   const [email, setEmail] = useState('')
   const [acceptTerms, setAcceptTerms] = useState(false)
+  const selectedToken = useMemo(() => options[selectedOption], [selectedOption])
 
   const handleSubmit = async event => {
     event.preventDefault()
@@ -266,7 +271,6 @@ function FormSection() {
       return
     }
 
-    const selectedToken = options[selectedOption]
     converterStatus.setStatus(
       selectedToken === 'DAI' || selectedToken === 'USDC'
         ? CONVERTER_STATUSES.SIGNING_ERC
@@ -288,7 +292,7 @@ function FormSection() {
 
   const [placeholder, setPlaceholder] = useState('')
   const selectedTokenBalance =
-    options[selectedOption] === 'ETH' ? ethBalance : tokenBalance
+    selectedToken === 'ETH' ? ethBalance : tokenBalance
 
   useEffect(() => {
     if (balanceAnj && balanceAnj.gte(bigNum('10000'))) {
@@ -306,7 +310,10 @@ function FormSection() {
       balanceAnj.lt(ANJ_MIN_REQUIRED) &&
       amountAnj.lt(ANJ_MIN_REQUIRED)
     ) {
-      return 'You need to activate at least 10,000 ANJ.'
+      return {
+        type: ERROR_MIN_ANJ,
+        message: 'You need to activate at least 10,000 ANJ.',
+      }
     }
 
     if (
@@ -315,7 +322,10 @@ function FormSection() {
       amountOther.gt(selectedTokenBalance) &&
       !selectedTokenBalance.eq(-1)
     ) {
-      return 'Amount is greater than balance held.'
+      return {
+        type: ERROR_INSUFFICIENT_BALANCE,
+        message: 'Insufficient balance: ',
+      }
     }
 
     return null
@@ -348,7 +358,7 @@ function FormSection() {
           amountAnj
         )} ANJ. The maximum amount available for a purchase order at the current price is ${formatUnits(
           anjReserve,
-          { truncateToDecimalPlace: 3 }
+          { truncateToDecimalPlace: STD_DECIMAL_PLACES }
         )} ANJ`
       : ''
   }, [amountAnj, anjReserve, loadingAnjReserve, inputValueAnj])
@@ -374,13 +384,11 @@ function FormSection() {
 
   const formattedTokenBalance = selectedTokenBalance.eq(-1)
     ? 'Fetching…'
-    : `${formatUnits(
-        options[selectedOption] === 'ETH' ? ethBalance : tokenBalance,
-        {
-          digits: selectedTokenDecimals,
-          replaceZeroBy: '0',
-        }
-      )} ${options[selectedOption]}.`
+    : `${formatUnits(selectedToken === 'ETH' ? ethBalance : tokenBalance, {
+        digits: selectedTokenDecimals,
+        replaceZeroBy: '0',
+        truncateToDecimalPlace: STD_DECIMAL_PLACES,
+      })} ${selectedToken}.`
 
   return (
     <Form onSubmit={handleSubmit}>
@@ -390,7 +398,7 @@ function FormSection() {
         `}
       >
         <div>
-          <Label>Amount of {options[selectedOption]} you want to convert</Label>
+          <Label>Amount of {selectedToken} you want to convert</Label>
           <ComboInput
             inputValue={inputValueOther}
             options={[
@@ -404,10 +412,24 @@ function FormSection() {
             {...bindOtherInput}
           />
           <Info>
-            <span>Balance:{` ${formattedTokenBalance}`}</span>
-            {tokenBalanceError && (
-              <span className="error"> {tokenBalanceError} </span>
-            )}
+            {tokenBalanceError &&
+              tokenBalanceError.type === ERROR_INSUFFICIENT_BALANCE && (
+                <span className="error"> {tokenBalanceError.message} </span>
+              )
+            }
+            <span
+              className={
+                tokenBalanceError &&
+                tokenBalanceError.type === ERROR_INSUFFICIENT_BALANCE
+                  ? 'error'
+                  : ''
+              }
+            >
+              {(!tokenBalanceError ||
+                tokenBalanceError.type !== ERROR_INSUFFICIENT_BALANCE) &&
+                'Balance:'}
+              {` ${formattedTokenBalance}`}
+            </span>
           </Info>
         </div>
         <div>
@@ -424,6 +446,11 @@ function FormSection() {
               </Adornment>
             </AdornmentBox>
             <Info style={{ minHeight: '24px' }}>
+              {tokenBalanceError &&
+                tokenBalanceError.type === ERROR_MIN_ANJ && (
+                  <span className="error">{tokenBalanceError.message} </span>
+                )
+              }
               {liquidityError && (
                 <span className="error">
                   {liquidityError} <br />
@@ -465,35 +492,48 @@ function FormSection() {
             </Info>
           </InputBox>
         </div>
-        <OverlayTrigger
-          placement="right"
-          delay={{ hide: 400 }}
-          overlay={props => (
-            <Tooltip {...props} show="true">
-              By entering your email address, we will notify you directly about
-              any necessary actions you'll need to take as a juror in upcoming
-              court cases. Since there are financial penalties for not
-              participating in cases you are drafted in, we would like all
-              jurors to sign up for court notifications via email.
-            </Tooltip>
-          )}
-        >
-          <Label>
-            Notify me about actions I need to take as a juror
-            <img src={question} alt="" />
-          </Label>
-        </OverlayTrigger>
-        <Input type="email" onChange={event => setEmail(event.target.value)} />
+        {!emailExists && (
+          <>
+            <OverlayTrigger
+              placement="top"
+              delay={{ hide: 400 }}
+              overlay={props => (
+                <Tooltip {...props} show="true">
+                  By entering your email address, we will notify you directly
+                  about any necessary actions you'll need to take as a juror in
+                  upcoming court cases. Since there are financial penalties for
+                  not participating in cases you are drafted in, we would like
+                  all jurors to sign up for court notifications via email.
+                </Tooltip>
+              )}
+            >
+              <Label>
+                Notify me about actions I need to take as a juror
+                <img src={question} alt="" />
+              </Label>
+            </OverlayTrigger>
+            <Input
+              type="email"
+              onChange={event => setEmail(event.target.value)}
+            />
+          </>
+        )}
       </div>
 
       <Conditions>
         <label>
-          <input
-            type="checkbox"
-            onChange={() => setAcceptTerms(acceptTerms => !acceptTerms)}
-            checked={acceptTerms}
-          />
-          By clicking on “Become a juror”, you are accepting the{' '}
+          {emailExists ? (
+            'You have already accepted the '
+          ) : (
+            <>
+              <input
+                type="checkbox"
+                onChange={() => setAcceptTerms(acceptTerms => !acceptTerms)}
+                checked={acceptTerms}
+              />
+              By clicking on “Become a juror”, you are accepting the{' '}
+            </>
+          )}
           <Anchor href="https://anj.aragon.org/legal/terms-general.pdf">
             court terms
           </Anchor>{' '}
