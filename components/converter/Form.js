@@ -415,12 +415,14 @@ function FormSection() {
             {tokenBalanceError &&
               tokenBalanceError.type === ERROR_INSUFFICIENT_BALANCE && (
                 <span className="error"> {tokenBalanceError.message} </span>
-              )}
+              )
+            }
             <span
               className={
                 tokenBalanceError &&
-                tokenBalanceError.type === ERROR_INSUFFICIENT_BALANCE &&
-                'error'
+                tokenBalanceError.type === ERROR_INSUFFICIENT_BALANCE
+                  ? 'error'
+                  : ''
               }
             >
               {(!tokenBalanceError ||
@@ -446,8 +448,9 @@ function FormSection() {
             <Info style={{ minHeight: '24px' }}>
               {tokenBalanceError &&
                 tokenBalanceError.type === ERROR_MIN_ANJ && (
-                  <span className="error"> {tokenBalanceError.message}</span>
-                )}
+                  <span className="error">{tokenBalanceError.message} </span>
+                )
+              }
               {liquidityError && (
                 <span className="error">
                   {liquidityError} <br />
