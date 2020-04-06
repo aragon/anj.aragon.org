@@ -263,12 +263,13 @@ function FormSection() {
 
   const handleSubmit = async event => {
     event.preventDefault()
-
-    try {
-      await postEmail(email)
-    } catch (err) {
-      converterStatus.setStatus(CONVERTER_STATUSES.ERROR)
-      return
+    if (!emailExists) {
+      try {
+        await postEmail(email)
+      } catch (err) {
+        converterStatus.setStatus(CONVERTER_STATUSES.ERROR)
+        return
+      }
     }
 
     converterStatus.setStatus(
