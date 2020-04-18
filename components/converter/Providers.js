@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react'
 import styled from 'styled-components/macro'
+import { trackEvent } from 'lib/analytics'
 import { breakpoint } from 'lib/microsite-logic'
 import { useWeb3Connect } from 'lib/web3-connect'
 import { identifyProvider } from 'lib/web3-utils'
@@ -21,8 +22,12 @@ function Providers() {
   const activateAndTrack = useCallback(
     async providerId => {
       const ok = await activate(providerId)
-      if (ok && window._paq && window._paq.push) {
-        window._paq.push(['trackEvent', 'Web3', 'connect', providerId])
+      if (ok) {
+        trackEvent('web3_connect', {
+          segmentation: {
+            provider: providerId,
+          },
+        })
       }
     },
     [activate]
