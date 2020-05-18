@@ -15,7 +15,7 @@ function Callout() {
         . You can use{' '}
         <a
           className="pink"
-          href="https://uniswap.exchange/swap?inputCurrency=0xcD62b1C403fa761BAadFC74C525ce2B51780b184?outputCurrency=0x960b236A07cf122663c4303350609A66A7B288C0"
+          href="https://v1.uniswap.exchange/swap?inputCurrency=0xcD62b1C403fa761BAadFC74C525ce2B51780b184?outputCurrency=0x960b236A07cf122663c4303350609A66A7B288C0"
         >
           Uniswap
         </a>{' '}
