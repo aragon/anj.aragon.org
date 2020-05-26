@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react'
 import styled from 'styled-components/macro'
 import { breakpoint } from 'lib/microsite-logic'
+import { useCheckEmailForAddress } from 'lib/utils'
 import Header from './Header'
 import ConverterContent from './ConverterContent'
 import ErrorScreen from './Error'
@@ -29,13 +30,14 @@ function Converter() {
 
 function ConverterIn() {
   const { status, setStatus } = useConverterStatus()
+  const emailExistsAtStart = useCheckEmailForAddress()
 
   const backToForm = useCallback(() => {
     setStatus(CONVERTER_STATUSES.FORM)
   }, [setStatus])
 
   if (status === CONVERTER_STATUSES.SUCCESS) {
-    return <SuccessScreen onDone={backToForm} />
+    return <SuccessScreen newJuror={!emailExistsAtStart} onDone={backToForm} />
   }
   if (status === CONVERTER_STATUSES.ERROR) {
     return <ErrorScreen onDone={backToForm} />
@@ -54,7 +56,7 @@ function ConverterIn() {
   ) {
     return <ProcessingScreen signing={status === CONVERTER_STATUSES.SIGNING} />
   }
-  return <ConverterContent />
+  return <ConverterContent emailExists={emailExistsAtStart} />
 }
 
 const ConverterSection = styled.div`
