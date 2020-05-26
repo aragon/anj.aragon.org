@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components/macro'
 import * as Sentry from '@sentry/browser'
 import { OverlayTrigger, Tooltip } from 'react-bootstrap'
-import { bigNum, usePostEmail, useCheckEmailForAddress } from 'lib/utils'
+import { bigNum, usePostEmail } from 'lib/utils'
 import { breakpoint, GU } from 'lib/microsite-logic'
 import {
   useConvertTokenToAnj,
@@ -234,7 +234,7 @@ function useConvertInputs(otherSymbol) {
   }
 }
 
-function FormSection() {
+function FormSection({ emailExists }) {
   const [selectedOption, setSelectedOption] = useState(0)
   const tokenBalance = useTokenBalance(options[selectedOption])
   const ethBalance = useEthBalance()
@@ -252,7 +252,6 @@ function FormSection() {
 
   const convertTokenToAnj = useConvertTokenToAnj(options[selectedOption])
   const postEmail = usePostEmail()
-  const emailExists = useCheckEmailForAddress()
   const balanceAnj = useJurorRegistryAnjBalance()
   const selectedTokenDecimals = useTokenDecimals(options[selectedOption])
 

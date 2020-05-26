@@ -6,7 +6,7 @@ import { useConverterStatus } from './converter-status'
 
 import successImg from './assets/success.svg'
 
-function SuccessSection({ onDone }) {
+function SuccessSection({ newJuror, onDone }) {
   const { lastAnjBought } = useConverterStatus()
   const decimals = useTokenDecimals('ANJ')
   return (
@@ -15,13 +15,20 @@ function SuccessSection({ onDone }) {
         <img src={successImg} alt="" />
         <p className="green">The transaction was successful</p>
         <p>
-          Welcome juror. You have successfully activated
+          {newJuror ? 'Welcome juror' : 'Welcome back, juror'}. You have
+          successfully activated
           {decimals > -1 && lastAnjBought.gte(0)
             ? ` the total amount of ${formatUnits(lastAnjBought, {
                 digits: decimals,
               })} ANJ.`
             : ` the requested ANJ amount.`}
         </p>
+        {newJuror && (
+          <p>
+            Please check your email to verify your subscription to Aragon Court
+            notifications.
+          </p>
+        )}
         <Button onClick={onDone}>Continue</Button>
       </div>
     </Success>
@@ -41,7 +48,6 @@ const Success = styled.div`
   }
   p {
     max-width: 410px;
-    margin: 0;
   }
   p.green {
     color: #7fdfa6;
@@ -53,7 +59,7 @@ const Button = styled.button`
   border: 1px solid #c7d1da;
   box-sizing: border-box;
   box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.05);
-  margin-top: 30px;
+  margin-top: 20px;
   border-radius: 4px;
   width: 227px;
   height: 52px;

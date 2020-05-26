@@ -10,17 +10,21 @@ import Providers from './Providers'
 
 const large = css => breakpoint('large', css)
 
-function ConverterContent() {
+function ConverterContent({ emailExists }) {
   const { account } = useWeb3Connect()
   return (
     <Content>
-      <div className="primary">{account ? <Form /> : <Providers />}</div>
+      <div className="primary">
+        {account ? <Form emailExists={emailExists} /> : <Providers />}
+      </div>
       <div className="secondary">
         <Balance />
         <Info />
         <Callout />
       </div>
-      <div className="primary-mobile">{account ? <Form /> : <Providers />}</div>
+      <div className="primary-mobile">
+        {account ? <Form emailExists={emailExists} /> : <Providers />}
+      </div>
     </Content>
   )
 }
