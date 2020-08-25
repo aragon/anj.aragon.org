@@ -39,7 +39,7 @@ const Stats = () => {
         <Fade bottom duration={1200} delay={300}>
           <Stat>
             <TokenImg src={ant} alt="" />
-            <h2>Staked ANT</h2>
+            <h2>Bonded ANT</h2>
             <NumberWrapper>
               <h2 className="pink number">
                 {wholeAnt}
