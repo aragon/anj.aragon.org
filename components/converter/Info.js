@@ -11,6 +11,21 @@ function Info() {
     <InfoIn>
       <h1>Please read</h1>
       <ul>
+        <li class="warning">
+          <span>
+            This converter uses Uniswap v1 for converting between tokens and
+            ANJ. We don't recommend using it for amounts above 10,000 ANJ.
+            Please use{' '}
+            <a
+              href="https://convert.aragon.org"
+              target="blank"
+              rel="noopener _noreferrer"
+            >
+              the bonding curve converter tool&nbsp;
+            </a>
+            for larger amounts.
+          </span>
+        </li>
         <li>
           You currently have{' '}
           {balanceAnj.eq(-1)
@@ -51,6 +66,13 @@ const InfoIn = styled.section`
     color: #8a96a0;
     &:before {
       content: '− ';
+    }
+    a {
+      text-decoration: underline;
+      color: inherit;
+    }
+    span {
+      color: #ff5354;
     }
   }
 `

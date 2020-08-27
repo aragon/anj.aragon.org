@@ -7195,6 +7195,11 @@ lodash.templatesettings@^4.0.0:
   dependencies:
     lodash._reinterpolate "^3.0.0"
 
+lodash.throttle@^4.1.1:
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/lodash.throttle/-/lodash.throttle-4.1.1.tgz#c23e91b710242ac70c37f1e1cda9274cc39bf2f4"
+  integrity sha1-wj6RtxAkKscMN/HhzaknTMOb8vQ=
+
 lodash@^4.17.11, lodash@^4.17.12, lodash@^4.17.13, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.4:
   version "4.17.15"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.15.tgz#b447f6670a0455bbfeedd11392eff330ea097548"
@@ -10710,6 +10715,14 @@ use-subscription@1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/use-subscription/-/use-subscription-1.1.1.tgz#5509363e9bb152c4fb334151d4dceb943beaa7bb"
   integrity sha512-gk4fPTYvNhs6Ia7u8/+K7bM7sZ7O7AMfWtS+zPO8luH+zWuiGgGcrW0hL4MRWZSzXo+4ofNorf87wZwBKz2YdQ==
+
+use-viewport@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/use-viewport/-/use-viewport-0.2.0.tgz#0a5971515de2704bdceb0a7ff998bc9cd14eb039"
+  integrity sha512-D3bY0Co9ZUdXCQGMTaUQZhLgpWpXFw2xbHDXccxtHyGch5oY0OVprQldEm2U5CwUuNbKMNW9n8Kyj8AlbbY4yQ==
+  dependencies:
+    lodash.throttle "^4.1.1"
+    prop-types "^15.7.2"
 
 use@^3.1.0:
   version "3.1.1"

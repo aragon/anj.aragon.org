@@ -391,162 +391,165 @@ function FormSection({ emailExists }) {
       })} ${selectedToken}.`
 
   return (
-    <Form onSubmit={handleSubmit}>
-      <div
-        css={`
-          margin-bottom: ${1.5 * GU}px;
-        `}
-      >
-        <div>
-          <Label>Amount of {selectedToken} you want to convert</Label>
-          <ComboInput
-            inputValue={inputValueOther}
-            options={[
-              <Token symbol="ANT" />,
-              <Token symbol="DAI" />,
-              <Token symbol="ETH" />,
-              <Token symbol="USDC" />,
-            ]}
-            onSelect={handleSelect}
-            selectedOption={selectedOption}
-            {...bindOtherInput}
-          />
-          <Info>
-            {tokenBalanceError &&
-              tokenBalanceError.type === ERROR_INSUFFICIENT_BALANCE && (
-                <span className="error"> {tokenBalanceError.message} </span>
-              )}
-            <span
-              className={
-                tokenBalanceError &&
-                tokenBalanceError.type === ERROR_INSUFFICIENT_BALANCE
-                  ? 'error'
-                  : ''
-              }
-            >
-              {(!tokenBalanceError ||
-                tokenBalanceError.type !== ERROR_INSUFFICIENT_BALANCE) &&
-                'Balance:'}
-              {` ${formattedTokenBalance}`}
-            </span>
-          </Info>
-        </div>
-        <div>
-          <InputBox>
-            <Label>Amount of ANJ you will receive and activate</Label>
-            <AdornmentBox>
-              <Input
-                value={inputValueAnj}
-                placeholder={placeholder}
-                {...bindAnjInput}
-              />
-              <Adornment>
-                <Token symbol="ANJ" />
-              </Adornment>
-            </AdornmentBox>
-            <Info style={{ minHeight: '24px' }}>
-              {tokenBalanceError &&
-                tokenBalanceError.type === ERROR_MIN_ANJ && (
-                  <span className="error">{tokenBalanceError.message} </span>
-                )}
-              {liquidityError && (
-                <span className="error">
-                  {liquidityError} <br />
-                </span>
-              )}
-              {amountOther.gt(0) && (
-                <>
-                  {slippageWarning ? (
-                    <span className="warning">
-                      The transaction may fail if the price of ANJ increases.
-                    </span>
-                  ) : (
-                    'This amount is an approximation.'
-                  )}
-                  <OverlayTrigger
-                    show="true"
-                    placement="top"
-                    delay={{ hide: 400 }}
-                    overlay={props => (
-                      <Tooltip {...props} show="true">
-                        As this transaction will use an external, decentralized
-                        exchange, we will not know the final exchange rate until
-                        your transaction is mined.{' '}
-                        {slippageWarning && (
-                          <p>
-                            If the price of ANJ increases before you transaction
-                            is mined, you will not reach the required 10,000 ANJ
-                            to successfully activate as a juror and the
-                            transaction will fail.
-                          </p>
-                        )}
-                      </Tooltip>
-                    )}
-                  >
-                    <span className="insight"> Why?</span>
-                  </OverlayTrigger>
-                </>
-              )}
-            </Info>
-          </InputBox>
-        </div>
-        {!emailExists && (
-          <>
-            <OverlayTrigger
-              placement="top"
-              delay={{ hide: 400 }}
-              overlay={props => (
-                <Tooltip {...props} show="true">
-                  By entering your email address, we will notify you directly
-                  about any necessary actions you'll need to take as a juror in
-                  upcoming court cases. Since there are financial penalties for
-                  not participating in cases you are drafted in, we would like
-                  all jurors to sign up for court notifications via email.
-                </Tooltip>
-              )}
-            >
-              <Label>
-                Notify me about actions I need to take as a juror
-                <img src={question} alt="" />
-              </Label>
-            </OverlayTrigger>
-            <Input
-              type="email"
-              onChange={event => setEmail(event.target.value)}
+    <React.Fragment>
+      <Form onSubmit={handleSubmit}>
+        <div
+          css={`
+            margin-bottom: ${1.5 * GU}px;
+          `}
+        >
+          <div>
+            <Label>Amount of {selectedToken} you want to convert</Label>
+            <ComboInput
+              inputValue={inputValueOther}
+              options={[
+                <Token symbol="ANT" />,
+                <Token symbol="DAI" />,
+                <Token symbol="ETH" />,
+                <Token symbol="USDC" />,
+              ]}
+              onSelect={handleSelect}
+              selectedOption={selectedOption}
+              {...bindOtherInput}
             />
-          </>
-        )}
-      </div>
-
-      <Conditions>
-        <label>
-          {emailExists ? (
-            'You have already accepted the '
-          ) : (
+            <Info>
+              {tokenBalanceError &&
+                tokenBalanceError.type === ERROR_INSUFFICIENT_BALANCE && (
+                  <span className="error"> {tokenBalanceError.message} </span>
+                )}
+              <span
+                className={
+                  tokenBalanceError &&
+                  tokenBalanceError.type === ERROR_INSUFFICIENT_BALANCE
+                    ? 'error'
+                    : ''
+                }
+              >
+                {(!tokenBalanceError ||
+                  tokenBalanceError.type !== ERROR_INSUFFICIENT_BALANCE) &&
+                  'Balance:'}
+                {` ${formattedTokenBalance}`}
+              </span>
+            </Info>
+          </div>
+          <div>
+            <InputBox>
+              <Label>Amount of ANJ you will receive and activate</Label>
+              <AdornmentBox>
+                <Input
+                  value={inputValueAnj}
+                  placeholder={placeholder}
+                  {...bindAnjInput}
+                />
+                <Adornment>
+                  <Token symbol="ANJ" />
+                </Adornment>
+              </AdornmentBox>
+              <Info style={{ minHeight: '24px' }}>
+                {tokenBalanceError &&
+                  tokenBalanceError.type === ERROR_MIN_ANJ && (
+                    <span className="error">{tokenBalanceError.message} </span>
+                  )}
+                {liquidityError && (
+                  <span className="error">
+                    {liquidityError} <br />
+                  </span>
+                )}
+                {amountOther.gt(0) && (
+                  <>
+                    {slippageWarning ? (
+                      <span className="warning">
+                        The transaction may fail if the price of ANJ increases.
+                      </span>
+                    ) : (
+                      'This amount is an approximation.'
+                    )}
+                    <OverlayTrigger
+                      show="true"
+                      placement="top"
+                      delay={{ hide: 400 }}
+                      overlay={props => (
+                        <Tooltip {...props} show="true">
+                          As this transaction will use an external,
+                          decentralized exchange, we will not know the final
+                          exchange rate until your transaction is mined.{' '}
+                          {slippageWarning && (
+                            <p>
+                              If the price of ANJ increases before you
+                              transaction is mined, you will not reach the
+                              required 10,000 ANJ to successfully activate as a
+                              juror and the transaction will fail.
+                            </p>
+                          )}
+                        </Tooltip>
+                      )}
+                    >
+                      <span className="insight"> Why?</span>
+                    </OverlayTrigger>
+                  </>
+                )}
+              </Info>
+            </InputBox>
+          </div>
+          {!emailExists && (
             <>
-              <input
-                type="checkbox"
-                onChange={() => setAcceptTerms(acceptTerms => !acceptTerms)}
-                checked={acceptTerms}
+              <OverlayTrigger
+                placement="top"
+                delay={{ hide: 400 }}
+                overlay={props => (
+                  <Tooltip {...props} show="true">
+                    By entering your email address, we will notify you directly
+                    about any necessary actions you'll need to take as a juror
+                    in upcoming court cases. Since there are financial penalties
+                    for not participating in cases you are drafted in, we would
+                    like all jurors to sign up for court notifications via
+                    email.
+                  </Tooltip>
+                )}
+              >
+                <Label>
+                  Notify me about actions I need to take as a juror
+                  <img src={question} alt="" />
+                </Label>
+              </OverlayTrigger>
+              <Input
+                type="email"
+                onChange={event => setEmail(event.target.value)}
               />
-              By clicking on “Become a juror”, you are accepting the{' '}
             </>
           )}
-          <Anchor href="https://anj.aragon.org/legal/terms-general.pdf">
-            court terms
-          </Anchor>{' '}
-          and the{' '}
-          <Anchor href="https://aragon.one/email-collection.md">
-            email collection policy
-          </Anchor>
-          .
-        </label>
-      </Conditions>
+        </div>
 
-      <Button type="submit" disabled={disabled}>
-        Become a Juror
-      </Button>
-    </Form>
+        <Conditions>
+          <label>
+            {emailExists ? (
+              'You have already accepted the '
+            ) : (
+              <>
+                <input
+                  type="checkbox"
+                  onChange={() => setAcceptTerms(acceptTerms => !acceptTerms)}
+                  checked={acceptTerms}
+                />
+                By clicking on “Become a juror”, you are accepting the{' '}
+              </>
+            )}
+            <Anchor href="https://anj.aragon.org/legal/terms-general.pdf">
+              court terms
+            </Anchor>{' '}
+            and the{' '}
+            <Anchor href="https://aragon.one/email-collection.md">
+              email collection policy
+            </Anchor>
+            .
+          </label>
+        </Conditions>
+
+        <Button type="submit" disabled={disabled}>
+          Become a Juror
+        </Button>
+      </Form>
+    </React.Fragment>
   )
 }
 
