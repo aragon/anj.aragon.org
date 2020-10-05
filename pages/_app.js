@@ -3,7 +3,6 @@ import * as Sentry from '@sentry/browser'
 import App from 'next/app'
 import Head from 'next/head'
 import Navbar from 'components/Navbar'
-import WarningBanner from 'components/WarningBanner'
 import { Web3ConnectProvider } from 'lib/web3-connect'
 import env from 'lib/environment'
 
@@ -26,7 +25,6 @@ export default class extends App {
           <title>Aragon Court</title>
         </Head>
         <Web3ConnectProvider>
-          <WarningBanner />
           <Navbar />
           <div>
             <Component {...pageProps} />
