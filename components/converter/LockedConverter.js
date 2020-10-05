@@ -3,12 +3,19 @@ import styled from 'styled-components/macro'
 import { breakpoint } from 'lib/microsite-logic'
 
 import content from '../assets/convert-module.png'
+import antlogo from '../assets/antlogo.svg'
+import anjlogo from '../assets/anj-token.svg'
 import lock from '../assets/orangelock.svg'
 import contentMobile from '../assets/convert-module-mobile.png'
+import {useBondingCurvePrice} from '../../lib/web3-contracts'
+import { formatUnits } from '../../lib/web3-utils'
 
 const medium = css => breakpoint('medium', css)
 
-const LockedConverter = () => (
+const LockedConverter = () => {
+  const { price, loading } = useBondingCurvePrice('1000000000000000000', false)
+
+  return (
   <LockedConverterSection id="get-anj">
     <Content className="medium" src={content} />
     <Content className="mobile" src={contentMobile} />
@@ -35,10 +42,61 @@ const LockedConverter = () => (
             Learn more
           </a>
         </p>
+        <p className="pause-rate">The currently paused exchange rate is: </p>
+        <div className="exchange-rate">
+        <RateNumber rate="1.00" token="ANJ" showSeparator />
+        <RateNumber rate={loading ? '0.014' : formatUnits(price, {
+          truncateToDecimalPlace: 3
+          })} token="ANT" />
+        </div>
       </div>
     </div>
-  </LockedConverterSection>
-)
+  </LockedConverterSection>)
+}
+
+function RateNumber({ rate, token, showSeparator }) {
+  return (
+    <div
+      css={`
+        display: flex;
+        padding-right: 0px !important;
+        .rate {
+          font-size: 24px;
+          line-height: 31px;
+          padding-right: 8px;
+        }
+        img {
+          padding-right: 8px;
+        }
+        .symbol {
+          color: #8A96A0;
+          font-size: 20px;
+        }
+        .separator {
+          font-size: 20px;
+          padding-right: 8px;
+          padding-left: 8px;
+        }
+      `}
+    >
+      <span className="rate" css={`margin-right: 0px; padding-right: 0 !important;`}>{rate}</span>
+      <img
+        src={token === 'ANT' ? antlogo : anjlogo}
+        alt="Token logo"
+        css={`
+          width: 32px;
+          height: 32px;
+          padding-bottom: 8px;
+          padding-right: 0px !important;
+        `}
+      />
+        <span className="symbol">{token}</span>
+        {showSeparator && (
+          <span className="separator">:</span>
+          )}
+    </div>
+  )
+}
 
 const LockedConverterSection = styled.section`
   background: linear-gradient(
@@ -66,6 +124,8 @@ const LockedConverterSection = styled.section`
     box-sizing: border-box;
     border-radius: 100px;
     display: flex;
+    flex-direction: column;
+    ${medium('flex-direction: row;')}
     align-items: center;
     justify-content: flex-start;
     padding: 20px 12px;
@@ -75,6 +135,7 @@ const LockedConverterSection = styled.section`
     }
     p {
       font-family: 'FontRegular', sans-serif;
+      font-weight: '400';
       font-size: 18px;
       line-height: 1.43;
       align-items: center;
@@ -82,6 +143,16 @@ const LockedConverterSection = styled.section`
       margin: 0;
       padding-bottom: 8px;
       ${medium('font-size: 23px;')};
+    }
+    .exchange-rate {
+      display: flex;
+      justify-content: center;
+      ${medium('justify-content: flex-start;')}
+  }
+    .pause-rate {
+      padding-top: 8px;
+      font-size: 20px;
+      color: #8a96a0;
     }
     a {
       color: #ff9683;
