@@ -23,7 +23,7 @@ const LockedConverter = () => {
       <img src={lock} alt="Lock" />
       <div>
         <p>
-          We have submitted a{' '}
+          Aragon One has submitted a{' '}
           <a
             href="https://gov.aragon.org/#/aragon/proposal/QmNTgjdR3rNj25Ah6PxYzAzb8cD7cT6HmKoFFmKADrr2gC"
             rel="noopener noreferrer"
@@ -31,7 +31,7 @@ const LockedConverter = () => {
           >
             proposal
           </a>{' '}
-          to merge ANJ back into ANT and in the meantime, trading is paused.
+          to merge ANJ back into ANT and in the meantime, conversion is paused.
         </p>
         <p>
           <a
