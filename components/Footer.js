@@ -20,7 +20,6 @@ class Footer extends React.Component {
             <a href="https://help.aragon.org/article/48-aragon-court-faq">
               FAQ
             </a>
-            <a href="./#get-anj">Get ANJ</a>
             <a href="./#how-it-works">How it works</a>
             <a
               href="https://aragon.org/network/"
