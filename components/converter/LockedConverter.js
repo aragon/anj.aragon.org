@@ -1,8 +1,6 @@
 import React from 'react'
 import styled from 'styled-components/macro'
 import { breakpoint } from 'lib/microsite-logic'
-import { FIRST_TERM } from 'lib/utils'
-import Timer from '../Timer'
 
 import content from '../assets/convert-module.png'
 import lock from '../assets/lock.svg'
