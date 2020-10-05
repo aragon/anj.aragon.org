@@ -25,7 +25,7 @@ const LockedConverter = () => {
         <p>
           We have submitted a{' '}
           <a
-            href="https://gov.aragon.org/#/aragon"
+            href="https://gov.aragon.org/#/aragon/proposal/QmNTgjdR3rNj25Ah6PxYzAzb8cD7cT6HmKoFFmKADrr2gC"
             rel="noopener noreferrer"
             target="_blank"
           >
