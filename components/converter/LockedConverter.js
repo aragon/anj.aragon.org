@@ -17,8 +17,7 @@ const LockedConverter = () => (
     <a href="#how-it-works">
       <img src={lock} alt="" />
       <div>
-        <p>The world's first digital jurisdiction opens in </p>
-        <Timer date={FIRST_TERM} />
+        <p>The converter is currently frozen.</p>
       </div>
     </a>
   </LockedConverterSection>
