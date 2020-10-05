@@ -35,7 +35,7 @@ const LockedConverter = () => {
         </p>
         <p>
           <a
-            href="https://gov.aragon.org/#/aragon"
+            href="https://aragon.org/blog/merge-anj"
             rel="noopener noreferrer"
             target="_blank"
           >
