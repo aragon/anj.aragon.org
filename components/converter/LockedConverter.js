@@ -3,7 +3,7 @@ import styled from 'styled-components/macro'
 import { breakpoint } from 'lib/microsite-logic'
 
 import content from '../assets/convert-module.png'
-import lock from '../assets/lock.svg'
+import lock from '../assets/orangelock.svg'
 import contentMobile from '../assets/convert-module-mobile.png'
 
 const medium = css => breakpoint('medium', css)
@@ -12,12 +12,31 @@ const LockedConverter = () => (
   <LockedConverterSection id="get-anj">
     <Content className="medium" src={content} />
     <Content className="mobile" src={contentMobile} />
-    <a href="#how-it-works">
-      <img src={lock} alt="" />
+    <div className="lock" href="#how-it-works">
+      <img src={lock} alt="Lock" />
       <div>
-        <p>The converter is currently frozen.</p>
+        <p>
+          We have submitted a{' '}
+          <a
+            href="https://gov.aragon.org/#/aragon"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            proposal
+          </a>{' '}
+          to merge ANJ back into ANT and in the meantime, trading is paused.
+        </p>
+        <p>
+          <a
+            href="https://gov.aragon.org/#/aragon"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            Learn more
+          </a>
+        </p>
       </div>
-    </a>
+    </div>
   </LockedConverterSection>
 )
 
@@ -35,12 +54,13 @@ const LockedConverterSection = styled.section`
   justify-content: center;
   position: relative;
   overflow: hidden;
-  a {
+  .lock {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 328px;
+    width: 100%;
+    max-width: 328px;
     background: #ffffff;
     border: 2px solid rgba(212, 220, 227, 0.5);
     box-sizing: border-box;
@@ -57,16 +77,18 @@ const LockedConverterSection = styled.section`
       font-family: 'FontRegular', sans-serif;
       font-size: 18px;
       line-height: 1.43;
-      display: flex;
       align-items: center;
-      color: #8a96a0;
+      color: black;
       margin: 0;
       padding-bottom: 8px;
       ${medium('font-size: 23px;')};
     }
-    ${medium('width: 376px;')};
+    a {
+      color: #ff9683;
+    }
+    ${medium('max-width: 724px;')};
   }
-  a img {
+  .lock img {
     max-width: 94px;
     padding-right: 10px;
     ${medium('padding-right: 16px;')};
