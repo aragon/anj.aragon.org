@@ -44,9 +44,9 @@ const LockedConverter = () => {
         </p>
         <p className="pause-rate">The currently paused exchange rate is: </p>
         <div className="exchange-rate">
-        <RateNumber rate="1.000" token="ANJ" showSeparator />
+        <RateNumber rate="1.0000" token="ANJ" showSeparator />
         <RateNumber rate={loading ? '0.014' : formatUnits(price, {
-          truncateToDecimalPlace: 3
+          truncateToDecimalPlace: 4
           })} token="ANT" />
         </div>
       </div>
